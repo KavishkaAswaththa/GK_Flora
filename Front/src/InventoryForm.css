@@ -1,0 +1,84 @@
+/* General form container */
+form {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    background-color: #f9f9f9;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Form input container */
+  form div {
+    margin-bottom: 15px;
+  }
+  
+  /* Form labels */
+  form label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #333;
+  }
+  
+  /* Text and number inputs */
+  form input[type="text"],
+  form input[type="number"],
+  form textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1rem;
+    box-sizing: border-box;
+  }
+  
+  /* File input styling */
+  form input[type="file"] {
+    padding: 5px;
+    font-size: 1rem;
+  }
+  
+  /* Textarea */
+  form textarea {
+    height: 80px;
+    resize: none;
+  }
+  
+  /* Submit button */
+  form button[type="submit"] {
+    width: 100%;
+    padding: 10px;
+    font-size: 1rem;
+    font-weight: bold;
+    color: #fff;
+    background-color: #007bff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  form button[type="submit"]:hover {
+    background-color: #0056b3;
+  }
+  
+  /* Responsive styling */
+  @media (max-width: 768px) {
+    form {
+      padding: 15px;
+    }
+  
+    form input[type="text"],
+    form input[type="number"],
+    form textarea {
+      font-size: 0.9rem;
+    }
+  
+    form button[type="submit"] {
+      font-size: 0.9rem;
+      padding: 8px;
+    }
+  }
+  
