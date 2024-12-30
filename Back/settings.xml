@@ -1,0 +1,16 @@
+<settings>
+    <profiles>
+        <profile>
+            <id>sonar</id>
+            <repositories>
+                <repository>
+                    <id>sonarsource</id>
+                    <url>https://repo1.maven.org/maven2</url>
+                </repository>
+            </repositories>
+        </profile>
+    </profiles>
+    <activeProfiles>
+        <activeProfile>sonar</activeProfile>
+    </activeProfiles>
+</settings>
