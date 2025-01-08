@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.util.*;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:8080") // Allow only this origin
 @RequestMapping("/api/inventory")
 public class InventoryController {
 
@@ -25,86 +26,87 @@ public class InventoryController {
     @Autowired
     private ImageService imageService;
 
-
-    /**
-     * Save a new inventory item with an associated image
-     */
-
     @PostMapping("/save")
-    public ResponseEntity<String> saveInventoryWithImage(
-            @RequestParam("file") MultipartFile file,
-            @RequestParam("id") String id,
+    public ResponseEntity<String> saveInventoryWithImages(
+            @RequestParam("files") MultipartFile[] files,
             @RequestParam("name") String name,
             @RequestParam("category") String category,
             @RequestParam("description") String description,
             @RequestParam("price") Double price,
-            @RequestParam("qty") int qty) {
+            @RequestParam("bloomContains") String bloomContains) {
         try {
-            // Step 1: Upload the image and get its ObjectId
-            ObjectId fileId = imageService.uploadImage(file);
+            if (files.length < 1 || files.length > 6) {
+                return ResponseEntity.badRequest().body("Please upload between 1 and 6 images.");
+            }
 
-            // Step 2: Create an Inventory object
+            List<String> imageIds = imageService.uploadImages(files);
+
             Inventory inventory = new Inventory();
-            inventory.set_id(id);
-            inventory.setName(name);
-            inventory.setCategory(category);
-            inventory.setDescription(description);
+            inventory.setName(name.trim());
+            inventory.setCategory(category.trim());
+            inventory.setDescription(description.trim());
             inventory.setPrice(price);
-            inventory.setQty(qty);
-            inventory.setImageId(fileId.toString());
+            inventory.setBloomContains(bloomContains.trim());
+            inventory.setImageIds(imageIds);
 
-            // Step 3: Save the Inventory object to the database
             inventoryService.save(inventory);
 
             return ResponseEntity.ok("Inventory saved successfully with ID: " + inventory.get_id());
         } catch (IOException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to save inventory!");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to save inventory.");
         }
     }
 
-
-
-
-
-    @GetMapping("search/{id}")
-    public ResponseEntity<byte[]> getImage(@PathVariable String id) {
+    @GetMapping("/{id}")
+    public ResponseEntity<Map<String, Object>> getInventoryDetails(@PathVariable String id) {
         try {
-            byte[] imageData = imageService.getImageById(imageService.getStudentByID(id));
-
             Inventory inventory = inventoryService.getById(id);
+            if (inventory == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", "Inventory not found."));
+            }
 
-            HttpHeaders headers = new HttpHeaders();
-            headers.add("Content-Type", "image/jpeg");
-            headers.add("X-ID", inventory.get_id());
-            headers.add("X-Name", inventory.getName());
-            headers.add("X-Category", inventory.getCategory());
-            headers.add("X-Description", inventory.getDescription());
-            headers.add("X-Price", String.valueOf(inventory.getPrice()));
-            headers.add("X-Qty", String.valueOf(inventory.getQty()));
-// Adjust as per your needs
+            // Prepare images in base64 format
+            List<Map<String, String>> images = new ArrayList<>();
+            for (String imageId : inventory.getImageIds()) {
+                byte[] imageData = imageService.getImageById(imageId);
+                if (imageData != null) {
+                    String base64Image = Base64.getEncoder().encodeToString(imageData);
+                    images.add(Map.of("id", imageId, "base64", base64Image));
+                } else {
+                    images.add(Map.of("id", imageId, "base64", "Image not found"));
+                }
+            }
 
+            // Prepare response map
+            Map<String, Object> response = new HashMap<>();
+            response.put("id", inventory.get_id());
+            response.put("name", inventory.getName());
+            response.put("category", inventory.getCategory());
+            response.put("description", inventory.getDescription());
+            response.put("price", inventory.getPrice());
+            response.put("bloomContains", inventory.getBloomContains());
+            response.put("images", images);
 
-
-            return ResponseEntity.ok()
-                    .headers(headers)
-                    .body(imageData);
+            return ResponseEntity.ok(response);
         } catch (Exception e) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("error", "Failed to retrieve inventory: " + e.getMessage()));
         }
     }
 
-
-
-    @GetMapping("search/all")
+    @GetMapping("/search/all")
     public ResponseEntity<List<Map<String, Object>>> getAllItems() {
         try {
-            List<Inventory> inventories = inventoryService.getAllInventories(); // Fetch all inventory items
+            List<Inventory> inventories = inventoryService.getAllInventories();
             List<Map<String, Object>> responseList = new ArrayList<>();
 
             for (Inventory inventory : inventories) {
-                String id = inventory.get_id();
-                byte[] imageData = imageService.getImageById(imageService.getStudentByID(id));
-                String base64Image = Base64.getEncoder().encodeToString(imageData);
+                String base64Image = null;
+
+                if (inventory.getImageIds() != null && !inventory.getImageIds().isEmpty()) {
+                    byte[] imageData = imageService.getImageById(inventory.getImageIds().get(0));
+                    base64Image = Base64.getEncoder().encodeToString(imageData);
+                }
 
                 Map<String, Object> item = new HashMap<>();
                 item.put("id", inventory.get_id());
@@ -112,75 +114,63 @@ public class InventoryController {
                 item.put("category", inventory.getCategory());
                 item.put("description", inventory.getDescription());
                 item.put("price", inventory.getPrice());
-                item.put("qty", inventory.getQty());
-                item.put("image", base64Image); // Add base64 image string
+                item.put("bloomContains", inventory.getBloomContains());
+                item.put("image", base64Image);
 
                 responseList.add(item);
             }
 
             return ResponseEntity.ok(responseList);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Collections.emptyList());
         }
     }
 
-
-
-
-
-/*
-    @GetMapping("/all")
-    public ResponseEntity<List<InventoryResponse>> getAllItemsWithImages() {
+    @PutMapping("/update")
+    public ResponseEntity<String> updateInventoryWithImages(
+            @RequestParam("id") String id,
+            @RequestParam(value = "files", required = false) MultipartFile[] files,
+            @RequestParam("name") String name,
+            @RequestParam("category") String category,
+            @RequestParam("description") String description,
+            @RequestParam("price") Double price,
+            @RequestParam("bloomContains") String bloomContains) {
         try {
-            // Step 1: Fetch all items
-            List<Inventory> inventories = inventoryService.getAllInventories();
+            Inventory existingInventory = inventoryService.getById(id);
+            if (existingInventory == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Inventory item with ID " + id + " not found.");
+            }
 
-            // Step 2: Build a list of InventoryResponse (custom DTO with image data)
-            List<InventoryResponse> responseList = inventories.stream()
-                    .map(item -> {
-                        try {
-                            // Step 3: Fetch image data for each item
-                            byte[] imageData = imageService.getImageById(item.getImageId());
+            // Update inventory details
+            existingInventory.setName(name);
+            existingInventory.setCategory(category);
+            existingInventory.setDescription(description);
+            existingInventory.setPrice(price);
+            existingInventory.setBloomContains(bloomContains);
 
-                            // Step 4: Build response object
-                            InventoryResponse response = new InventoryResponse();
-                            response.setId(item.get_id());
-                            response.setName(item.getName());
-                            response.setCategory(item.getCategory());
-                            response.setDescription(item.getDescription());
-                            response.setPrice(item.getPrice());
-                            response.setQty(item.getQty());
-                            response.setImageData(imageData);
+            // If new images are provided, validate and update the images
+            if (files != null && files.length > 0) {
+                if (files.length < 1 || files.length > 6) {
+                    return ResponseEntity.badRequest().body("You must upload between 1 and 6 images.");
+                }
 
-                            return response;
-                        } catch (Exception e) {
-                            // Handle image fetch failure gracefully
-                            return null;
-                        }
-                    })
-                    .filter(response -> response != null) // Filter out null responses
-                    .toList();
+                List<String> newImageIds = imageService.uploadImages(files);
+                existingInventory.setImageIds(newImageIds);
+            }
 
-            // Return the list of responses
-            return ResponseEntity.ok(responseList);
+            // Save the updated inventory object
+            inventoryService.save(existingInventory);
 
-        } catch (Exception e) {
-            // Handle errors (e.g., database access failure)
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            return ResponseEntity.ok("Inventory updated successfully with ID: " + existingInventory.get_id());
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to update inventory!");
         }
     }
-
-
-*/
-
-
 
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteInventory(@PathVariable String id) {
         try {
-            // Call the service to delete the inventory item
             boolean deleted = inventoryService.deleteById(id);
-
             if (deleted) {
                 return ResponseEntity.ok("Inventory with ID " + id + " deleted successfully.");
             } else {
@@ -191,49 +181,6 @@ public class InventoryController {
         }
     }
 
-
-
-    @PutMapping("/update")
-    public ResponseEntity<String> updateInventoryWithImage(
-            @RequestParam("id") String id,
-            @RequestParam(value = "file", required = false) MultipartFile file,
-            @RequestParam("name") String name,
-            @RequestParam("category") String category,
-            @RequestParam("description") String description,
-            @RequestParam("price") Double price,
-            @RequestParam("qty") int qty) {
-        try {
-            // Step 1: Find the existing inventory item
-            Inventory existingInventory = inventoryService.getById(id);
-            if (existingInventory == null) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Inventory item with ID " + id + " not found.");
-            }
-
-            // Step 2: Update fields
-            existingInventory.setName(name);
-            existingInventory.setCategory(category);
-            existingInventory.setDescription(description);
-            existingInventory.setPrice(price);
-            existingInventory.setQty(qty);
-
-            // Step 3: Optionally update the image if a new file is provided
-            if (file != null && !file.isEmpty()) {
-                // Upload new image and update the imageId
-                ObjectId fileId = imageService.uploadImage(file);
-                existingInventory.setImageId(fileId.toString());
-            }
-
-            // Step 4: Save the updated inventory item
-            inventoryService.save(existingInventory);
-
-            return ResponseEntity.ok("Inventory updated successfully with ID: " + existingInventory.get_id());
-        } catch (IOException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to update inventory!");
-        }
-    }
-
-
-
     /**
      * Retrieve all inventory items (without image)
      */
@@ -243,33 +190,5 @@ public class InventoryController {
         List<Inventory> inventories = inventoryService.getAllInventories();
         return ResponseEntity.ok(inventories);
     }
-
-
-
-
-
-
-    /**
-     * Retrieve a single inventory item by ID with image URL
-     */
-/*    @GetMapping("/{id}")
-    public String getById(@PathVariable String id) {
-        Inventory inventory = inventoryService.getById(id);
-
-        if (inventory == null) {
-            //return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        }
-
-        // Fetch image URL from the image service
-
-        return imageService.getImageUrlById(inventory.getImageId());
-    }
-*/
-
-
-
-
-
-
 
 }

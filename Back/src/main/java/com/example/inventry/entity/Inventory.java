@@ -3,18 +3,18 @@ package com.example.inventry.entity;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.List;
+
 @Document(collection = "inventory") // Marks it as a MongoDB document
 public class Inventory {
     @Id
     private String _id;
     private String name;
     private String category;
-    private String imageId;
-
+    private List<String> imageIds; // Updated to store multiple image IDs
     private String description;
     private Double price;
-    private  int qty;
-
+    private String bloomContains;
 
     // Getters and Setters
     public String get_id() {
@@ -41,12 +41,12 @@ public class Inventory {
         this.category = category;
     }
 
-    public String getImageId() {
-        return imageId;
+    public List<String> getImageIds() {
+        return imageIds;
     }
 
-    public void setImageId(String imageId) {
-        this.imageId = imageId;
+    public void setImageIds(List<String> imageIds) {
+        this.imageIds = imageIds;
     }
 
     public String getDescription() {
@@ -65,11 +65,11 @@ public class Inventory {
         this.price = price;
     }
 
-    public Integer getQty() {
-        return qty;
+    public String getBloomContains() {
+        return bloomContains;
     }
 
-    public void setQty(int qty) {
-        this.qty = qty;
+    public void setBloomContains(String bloomContains) {
+        this.bloomContains = bloomContains;
     }
 }
