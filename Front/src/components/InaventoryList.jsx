@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom"; // Import Link for navigation
+import { Link } from "react-router-dom";
 import "../styles/InventoryList.css";
 import banner from "../images/banner.jpg";
 // Import footer images
@@ -42,6 +42,25 @@ const InventoryList = () => {
 
       {/* Inventory Cards */}
       <h1>Flower Bouquets</h1>
+
+      {/* Corrected Delivery Details Link */}
+      <Link to="/CustomerDeliveryForm" className="delivery-link">
+        Delivery Details
+      </Link>
+      <br></br>
+      <Link to="/Delivery" className="delivery-link">
+        Delivery List
+      </Link>
+      <br></br>
+      <Link to="/AdminDeliveryForm" className="delivery-link">
+        Admin Form
+      </Link>
+      <br></br>
+      <Link to="/DeliveryPerson" className="delivery-link">
+        Delivery Person
+      </Link>
+
+
       <div className="card-columns">
         {items.map((item) => (
           <Link to={`/inventory/${item.id}`} key={item.id} className="card-link">
