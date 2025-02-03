@@ -11,18 +11,18 @@ public class Delivery {
 
     private String _id;
     @Setter
+
     private String name;
     private String  phone;
     private String address;
-
     private String city;
     private  String deliveryDate;
     private String deliveryTime;
     private String delivername;
-
     private String deliverphone;
+    private String message;
 
-    public Delivery( String _id,String name, String phone,String address, String city,String deliveryDate,String deliveryTime,String delivername,String deliverphone){
+    public Delivery( String _id,String name, String phone,String address, String city,String deliveryDate,String deliveryTime,String delivername,String deliverphone,String message){
         this._id = _id;
         this.name = name;
         this.phone =phone;
@@ -32,6 +32,7 @@ public class Delivery {
         this.deliveryTime = deliveryTime;
         this.delivername = delivername;
         this.deliverphone = deliverphone;
+        this.message = message;
 
     }
     public  Delivery(){
@@ -56,6 +57,8 @@ public class Delivery {
 
         this.name = name;
     }
+
+
 
     public String getPhone() {
 
@@ -122,6 +125,15 @@ public class Delivery {
 
         this.deliverphone = deliverphone;
     }
+    public String getMessage() {
+
+        return message;
+    }
+
+    public void setMessage(String message) {
+
+        this.message = message;
+    }
 
 
     @Override
@@ -136,6 +148,7 @@ public class Delivery {
                 ",deliveryTime = '" + deliveryTime + '\'' +
                 ",delivername = '" + delivername + '\'' +
                 ",deliverphone = '" + deliverphone + '\'' +
+                ",message = '" + message + '\'' +
                 '}';
     }
 }
