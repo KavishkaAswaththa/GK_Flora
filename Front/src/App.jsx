@@ -3,6 +3,9 @@ import { BrowserRouter as Router, Routes, Route, Link, useNavigate } from "react
 import InventoryForm from "./components/InventoryForm";
 import InventoryList from "./components/InaventoryList";
 import InventoryDetailsImage from "./components/InventoryDetailsImage";
+import Login from "./components/Login";
+import Signup from "./components/Signup";
+import UserDetails from "./components/UserDetails";
 import "./styles/app.css";
 import logo from "./images/logo.png";
 import profileIcon from "./images/profile.png"; // Add profile icon
@@ -45,6 +48,7 @@ const App = () => {
           <Link to="/order-status" className="nav-item">
             Order Status
           </Link>
+          
         </div>
 
         {/* Icons for Cart and Profile */}
@@ -52,9 +56,10 @@ const App = () => {
           <Link to="/cart">
             <img src={cartIcon} alt="Cart" className="icon cart-icon" />
           </Link>
-          <Link to="/profile">
-            <img src={profileIcon} alt="Profile" className="icon profile-icon" />
-          </Link>
+          <Link to="/Login">
+            <img src={profileIcon} alt="Login" className="icon profile-icon" />
+        </Link>
+
         </div>
       </nav>
 
@@ -66,7 +71,9 @@ const App = () => {
         <Route path="/category/:category" element={<h1>Category Page</h1>} />
         <Route path="/order-status" element={<h1>Order Status Page</h1>} />
         <Route path="/cart" element={<h1>Cart Page</h1>} />
-        <Route path="/profile" element={<h1>Profile Page</h1>} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
+        <Route path="/userdetails" element={<UserDetails />} />
       </Routes>
     </Router>
   );
