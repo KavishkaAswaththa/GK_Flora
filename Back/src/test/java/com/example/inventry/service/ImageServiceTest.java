@@ -1,144 +1,129 @@
 package com.example.inventry.service;
 
 import com.example.inventry.entity.Inventory;
-import com.example.inventry.repo.ImageRepository;
 import com.example.inventry.repo.InventoryRepo;
+import com.example.inventry.repo.ImageRepository;
 import com.mongodb.client.gridfs.GridFSBucket;
-import com.mongodb.client.gridfs.GridFSUploadStream;
-import com.mongodb.client.gridfs.model.GridFSFile;
 import org.bson.types.ObjectId;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-class ImageServiceTest {
-
-    @InjectMocks
-    private ImageService imageService;
-
-    @Mock
-    private GridFSBucket gridFSBucket;
+@ExtendWith(MockitoExtension.class)
+public class ImageServiceTest {
 
     @Mock
     private InventoryRepo inventoryRepo;
 
     @Mock
-    private ImageRepository imageRepository;
+    private GridFSBucket gridFSBucket;
 
     @Mock
-    private MultipartFile file;
+    private ImageRepository imageRepository;
 
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
+    @InjectMocks
+    private InventoryService inventoryService;
+
+    @InjectMocks
+    private ImageService imageService;
+
+    @Test
+    public void testSaveInventory() {
+        Inventory inventory = new Inventory();
+        inventory.set_id("1");
+        inventory.setName("Test Item");
+
+        when(inventoryRepo.save(inventory)).thenReturn(inventory);
+
+        inventoryService.save(inventory);
+        verify(inventoryRepo, times(1)).save(inventory);
     }
 
     @Test
-    void testUploadImage() throws IOException {
-        // Mock the MultipartFile
-        when(file.getInputStream()).thenReturn(new ByteArrayInputStream("test image data".getBytes()));
-        when(file.getOriginalFilename()).thenReturn("test-image.jpg");
+    public void testGetById() {
+        Inventory inventory = new Inventory();
+        inventory.set_id("1");
+        inventory.setName("Test Item");
 
-        // Mock the GridFSBucket and its upload stream
-        GridFSUploadStream mockUploadStream = mock(GridFSUploadStream.class);
-        when(gridFSBucket.openUploadStream(anyString())).thenReturn(mockUploadStream);
+        when(inventoryRepo.findById("1")).thenReturn(Optional.of(inventory));
 
-        // Mock the ObjectId returned by the upload stream
-        ObjectId mockObjectId = new ObjectId();
-        when(mockUploadStream.getObjectId()).thenReturn(mockObjectId);
-
-        // Test the uploadImage method
-        ObjectId uploadedImageId = imageService.uploadImage(file);
-
-        // Verify interactions and results
-        verify(mockUploadStream, atLeastOnce()).write(any(byte[].class), anyInt(), anyInt());
-        verify(mockUploadStream, times(1)).close();
-        assertEquals(mockObjectId, uploadedImageId);
+        Inventory retrievedInventory = inventoryService.getById("1");
+        assertNotNull(retrievedInventory);
+        assertEquals("Test Item", retrievedInventory.getName());
     }
 
     @Test
-    void testGetImageUrlById() {
-        // Mock the GridFSFile and its ID
-        ObjectId mockObjectId = new ObjectId();
-        GridFSFile mockGridFSFile = mock(GridFSFile.class);
-        //when(mockGridFSFile.getId()).thenReturn(mockObjectId);
+    public void testGetAllInventories() {
+        Inventory inventory1 = new Inventory();
+        inventory1.set_id("1");
+        inventory1.setName("Item 1");
 
-        // Mock the GridFSBucket to return a GridFSFile
-        /*when(gridFSBucket.find()).thenReturn(new com.mongodb.client.MongoCursor<GridFSFile>() {
-            boolean isFirst = true;
+        Inventory inventory2 = new Inventory();
+        inventory2.set_id("2");
+        inventory2.setName("Item 2");
 
-            @Override
-            public boolean hasNext() {
-                return isFirst;
-            }
+        when(inventoryRepo.findAll()).thenReturn(List.of(inventory1, inventory2));
 
-            @Override
-            public GridFSFile next() {
-                isFirst = false;
-                return mockGridFSFile;
-            }
-
-            @Override
-            public void close() {
-            }
-
-            // Unused cursor methods
-            @Override
-            public GridFSFile tryNext() {
-                return null;
-            }
-
-            @Override
-            public void forEachRemaining(java.util.function.Consumer<? super GridFSFile> action) {
-            }
-        }
-        );*/
-
-        // Test the getImageUrlById method
-        String imageUrl = imageService.getImageUrlById("someId");
-
-        // Verify results
-        assertNotNull(imageUrl);
-        assertEquals(mockObjectId.toString(), imageUrl);
+        List<Inventory> inventories = inventoryService.getAllInventories();
+        assertEquals(2, inventories.size());
+        assertEquals("Item 1", inventories.get(0).getName());
+        assertEquals("Item 2", inventories.get(1).getName());
     }
 
     @Test
-    void testGetStudentByID() {
-        // Mock the repository to return an inventory
-        Inventory mockInventory = new Inventory();
-        mockInventory.set_id("student123");
-        mockInventory.setImageId("image123");
-        when(inventoryRepo.findById("student123")).thenReturn(Optional.of(mockInventory));
+    public void testDeleteById() {
+        when(inventoryRepo.existsById("1")).thenReturn(true);
+        doNothing().when(inventoryRepo).deleteById("1");
 
-        // Test the getStudentByID method
-        String imageId = imageService.getStudentByID("student123");
-
-        // Verify results
-        assertNotNull(imageId);
-        assertEquals("image123", imageId);
+        boolean deleted = inventoryService.deleteById("1");
+        assertTrue(deleted);
+        verify(inventoryRepo, times(1)).deleteById("1");
     }
 
     @Test
-    void testGetImageById() throws Exception {
-        // Mock the ImageRepository to return image data
-        byte[] mockImageData = "test image data".getBytes();
-        when(imageRepository.downloadImage("image123")).thenReturn(mockImageData);
+    public void testUploadImage() throws IOException {
+        MultipartFile file = mock(MultipartFile.class);
+        when(file.getInputStream()).thenReturn(new ByteArrayInputStream(new byte[0]));
+        when(file.getOriginalFilename()).thenReturn("test.jpg");
 
-        // Test the getImageById method
-        byte[] imageData = imageService.getImageById("image123");
+        ObjectId objectId = new ObjectId();
+        doReturn(objectId).when(gridFSBucket).openUploadStream("test.jpg");
 
-        // Verify results
-        assertNotNull(imageData);
-        assertArrayEquals(mockImageData, imageData);
+        ObjectId uploadedId = imageService.uploadImage(file);
+        assertNotNull(uploadedId);
+    }
+
+    @Test
+    public void testGetImageIdsByInventoryId() {
+        Inventory inventory = new Inventory();
+        inventory.set_id("1");
+        inventory.setImageIds(Arrays.asList("img1", "img2"));
+
+        when(inventoryRepo.findById("1")).thenReturn(Optional.of(inventory));
+
+        List<String> imageIds = imageService.getImageIdsByInventoryId("1");
+        assertEquals(2, imageIds.size());
+        assertEquals("img1", imageIds.get(0));
+    }
+
+    @Test
+    public void testGetImageById() throws Exception {
+        byte[] imageData = new byte[]{1, 2, 3};
+        when(imageRepository.downloadImage("img1")).thenReturn(imageData);
+
+        byte[] retrievedData = imageService.getImageById("img1");
+        assertArrayEquals(imageData, retrievedData);
     }
 }

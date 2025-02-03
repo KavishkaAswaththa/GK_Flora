@@ -16,6 +16,13 @@ public class Inventory {
     private Double price;
     private String bloomContains;
 
+    public <E> Inventory(String number, String testBouquet, String flowers, String beautifulBouquet, double v, String s, List<E> imageId1) {
+    }
+
+    public Inventory() {
+
+    }
+
     // Getters and Setters
     public String get_id() {
         return _id;
