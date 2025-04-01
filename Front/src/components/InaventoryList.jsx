@@ -44,12 +44,12 @@ const InventoryList = () => {
       <h1>Flower Bouquets</h1>
 
       {/* Corrected Delivery Details Link */}
-      <Link to="/CustomerDeliveryForm" className="delivery-link">
+      <Link to="/deliveryform" className="delivery-link">
         Delivery Details
       </Link>
       <br></br>
-      <Link to="/Delivery" className="delivery-link">
-        Delivery List
+      <Link to="/order-confirmation" className="delivery-link">
+       Order Confirmation
       </Link>
       <br></br>
       <Link to="/AdminDeliveryForm" className="delivery-link">

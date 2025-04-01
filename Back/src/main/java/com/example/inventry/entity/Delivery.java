@@ -11,23 +11,29 @@ public class Delivery {
 
     private String _id;
     @Setter
-
     private String name;
-    private String  phone;
+    private String  phone1;
+    private String  phone2;
     private String address;
+    private String senderEmail;
     private String city;
+    private String senderName;
     private  String deliveryDate;
     private String deliveryTime;
     private String delivername;
+
     private String deliverphone;
     private String message;
 
-    public Delivery( String _id,String name, String phone,String address, String city,String deliveryDate,String deliveryTime,String delivername,String deliverphone,String message){
+    public Delivery( String _id,String name, String phone1,String phone2,String address, String city,String deliveryDate,String deliveryTime,String delivername,String deliverphone,String  senderName, String senderEmail,String message ){
         this._id = _id;
         this.name = name;
-        this.phone =phone;
+        this.phone1 =phone1;
+        this.phone2 =phone2;
         this.address = address;
         this.city = city;
+        this.senderName =  senderName;
+        this.senderEmail = senderEmail;
         this.deliveryDate = deliveryDate;
         this.deliveryTime = deliveryTime;
         this.delivername = delivername;
@@ -58,16 +64,23 @@ public class Delivery {
         this.name = name;
     }
 
+    public String getPhone1() {
 
-
-    public String getPhone() {
-
-        return phone;
+        return phone1;
     }
 
-    public void setPhone (String phone) {
+    public void setPhone1 (String phone1) {
 
-        this.phone = phone;
+        this.phone1 = phone1;
+    }
+    public String getPhone2() {
+
+        return phone2;
+    }
+
+    public void setPhone2 (String phone2) {
+
+        this.phone2 = phone2;
     }
 
     public String getAddress() {
@@ -87,6 +100,25 @@ public class Delivery {
     public void setCity(String city) {
 
         this.city = city;
+    }
+
+    public String getSenderName() {
+
+        return senderName;
+    }
+
+    public void setSenderEmail(String senderEmail) {
+
+        this.senderEmail = senderEmail;
+    }
+    public String getSenderEmail() {
+
+        return senderEmail;
+    }
+
+    public void setSenderName(String senderName) {
+
+        this.senderName = senderName;
     }
 
     public String getDeliveryDate() {
@@ -130,7 +162,7 @@ public class Delivery {
         return message;
     }
 
-    public void setMessage(String message) {
+    public void setDMessage(String message) {
 
         this.message = message;
     }
@@ -141,9 +173,12 @@ public class Delivery {
         return "Delivery{ " +
                 "_id='" + _id + '\'' +
                 ",name = '" + name + '\'' +
-                ",phone = '" + phone + '\'' +
+                ",phone1 = '" + phone1 + '\'' +
+                ",phone2 = '" + phone2 + '\'' +
                 ",address = '" + address + '\'' +
                 ",city = '" + city + '\'' +
+                ",senderName = '" + senderName + '\'' +
+                ",senderEmail = '" + senderEmail + '\'' +
                 ",deliveryDate = '" + deliveryDate + '\'' +
                 ",deliveryTime = '" + deliveryTime + '\'' +
                 ",delivername = '" + delivername + '\'' +
