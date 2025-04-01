@@ -17,6 +17,7 @@ import Delivery from "./pages/Delivery";
 import AdminDeliveryForm from "./pages/AdminDeliveryForm";
 import AdminDeliveryTable from "./pages/AdminDeliveryTable";
 import DeliveryPerson from "./pages/DeliveryPerson";
+import AdminDashboard from "./pages/AdminDashboard";
 
 const App = () => {
   return (
@@ -86,6 +87,7 @@ const App = () => {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/userdetails" element={<UserDetails />} />
+        <Route path="/admindashboard" element={<AdminDashboard />} />
       </Routes>
     </Router>
   );
