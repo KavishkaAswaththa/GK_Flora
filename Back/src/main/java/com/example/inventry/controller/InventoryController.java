@@ -33,6 +33,7 @@ public class InventoryController {
             @RequestParam("category") String category,
             @RequestParam("description") String description,
             @RequestParam("price") Double price,
+            @RequestParam("qty") int qty,
             @RequestParam("bloomContains") String bloomContains) {
         try {
             if (files.length < 1 || files.length > 6) {
@@ -46,6 +47,7 @@ public class InventoryController {
             inventory.setCategory(category.trim());
             inventory.setDescription(description.trim());
             inventory.setPrice(price);
+            inventory.setQty(qty);
             inventory.setBloomContains(bloomContains.trim());
             inventory.setImageIds(imageIds);
 
@@ -84,6 +86,7 @@ public class InventoryController {
             response.put("category", inventory.getCategory());
             response.put("description", inventory.getDescription());
             response.put("price", inventory.getPrice());
+            response.put("qty", inventory.getQty());
             response.put("bloomContains", inventory.getBloomContains());
             response.put("images", images);
 
@@ -114,6 +117,7 @@ public class InventoryController {
                 item.put("category", inventory.getCategory());
                 item.put("description", inventory.getDescription());
                 item.put("price", inventory.getPrice());
+                item.put("qty", inventory.getQty());
                 item.put("bloomContains", inventory.getBloomContains());
                 item.put("image", base64Image);
 
@@ -134,6 +138,7 @@ public class InventoryController {
             @RequestParam("category") String category,
             @RequestParam("description") String description,
             @RequestParam("price") Double price,
+            @RequestParam("qty") int qty,
             @RequestParam("bloomContains") String bloomContains) {
         try {
             Inventory existingInventory = inventoryService.getById(id);
@@ -146,6 +151,7 @@ public class InventoryController {
             existingInventory.setCategory(category);
             existingInventory.setDescription(description);
             existingInventory.setPrice(price);
+            existingInventory.setQty(qty);
             existingInventory.setBloomContains(bloomContains);
 
             // If new images are provided, validate and update the images

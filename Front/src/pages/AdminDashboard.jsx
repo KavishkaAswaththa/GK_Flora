@@ -44,7 +44,7 @@ function CampaignTable() {
               <td>{campaign.name}</td>
               <td>{campaign.category}</td>
               <td>${campaign.price}</td>
-              <td>{campaign.description}</td>
+              <td>{campaign.qty}</td>
               <td>{campaign.bloomContains}</td>
             </tr>
           ))}
