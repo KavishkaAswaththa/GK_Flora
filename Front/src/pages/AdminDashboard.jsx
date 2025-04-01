@@ -1,15 +1,20 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 import '../styles/AdminDashboard.css';
 
-const campaigns = [
-  { image: 'https://via.placeholder.com/40', name: '2025 First', delivery: 'Off', bidStrategy: 'Using ad set bid', budget: 'Using ad set budget', attribution: '7-day click', result: 'Messaging conversation', reach: '', impression: '' },
-  { image: 'https://via.placeholder.com/40', name: 'New Engagement campaign', delivery: 'Off', bidStrategy: 'Using ad set bid', budget: 'Using ad set budget', attribution: '7-day click', result: 'Messaging conversation', reach: '', impression: '' },
-  { image: 'https://via.placeholder.com/40', name: 'OL Master 1', delivery: 'Off', bidStrategy: 'Highest volume', budget: '$2.00 Daily', attribution: '7-day click', result: 'Link click', reach: '', impression: '' },
-  { image: 'https://via.placeholder.com/40', name: 'E-Siphala – Page Likes', delivery: 'Off', bidStrategy: 'Highest volume', budget: '$1.00 Daily', attribution: '7-day click', result: 'Follow or like', reach: '', impression: '' },
-  { image: 'https://via.placeholder.com/40', name: 'New Page Likes campaign', delivery: 'Off', bidStrategy: 'Using ad set bid', budget: 'Using ad set budget', attribution: '7-day click', result: 'Follow or like', reach: '', impression: '' }
-];
-
 function CampaignTable() {
+  const [campaigns, setCampaigns] = useState([]);
+
+  useEffect(() => {
+    axios.get('http://localhost:8080/api/inventory/search/all')
+      .then(response => {
+        setCampaigns(response.data);
+      })
+      .catch(error => {
+        console.error('Error fetching data:', error);
+      });
+  }, []);
+
   return (
     <div className="campaign-container">
       <h2 className="campaign-title">Campaign Management</h2>
@@ -18,27 +23,29 @@ function CampaignTable() {
           <tr>
             <th>Image</th>
             <th>ID</th>
-            <th>Title</th>
+            <th>Name</th>
             <th>Category</th>
             <th>Price</th>
-            <th>QTY</th>
-            <th>Edit</th>
-            <th>Delete</th>
-            <th>Blank</th>
+            <th>Description</th>
+            <th>Bloom Contains</th>
           </tr>
         </thead>
         <tbody>
           {campaigns.map((campaign, index) => (
             <tr key={index} className={index % 2 === 0 ? "even-row" : "odd-row"}>
-              <td><img src={campaign.image} alt="Campaign" className="campaign-image" /></td>
+              <td>
+                {campaign.image ? (
+                  <img src={`data:image/jpeg;base64,${campaign.image}`} alt="Campaign" className="campaign-image" />
+                ) : (
+                  'No Image'
+                )}
+              </td>
+              <td>{campaign.id}</td>
               <td>{campaign.name}</td>
-              <td>{campaign.delivery}</td>
-              <td>{campaign.bidStrategy}</td>
-              <td>{campaign.budget}</td>
-              <td>{campaign.attribution}</td>
-              <td>{campaign.result}</td>
-              <td>{campaign.reach}</td>
-              <td>{campaign.impression}</td>
+              <td>{campaign.category}</td>
+              <td>${campaign.price}</td>
+              <td>{campaign.description}</td>
+              <td>{campaign.bloomContains}</td>
             </tr>
           ))}
         </tbody>
