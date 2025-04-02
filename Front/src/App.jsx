@@ -11,6 +11,7 @@ import logo from "./images/logo.png";
 import profileIcon from "./images/profile.png"; // Add profile icon
 import cartIcon from "./images/cart.png"; // Add cart icon
 import searchIcon from "./images/search.png";
+import MyOrderPage1 from "./components/MyOrderPage1";
 
 
 
@@ -48,7 +49,7 @@ const App = () => {
           <Link to="/form" className="nav-item">
             Add Inventory
           </Link>
-          <Link to="/order-status" className="nav-item">
+          <Link to="/to-be-delivery" className="nav-item">
             Order Status
           </Link>
           
@@ -78,6 +79,7 @@ const App = () => {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/userdetails" element={<UserDetails />} />
+        <Route path="/to-be-delivery" element={<MyOrderPage1 />} />
       </Routes>
     </Router>
   );
