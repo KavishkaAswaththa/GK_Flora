@@ -43,22 +43,8 @@ const InventoryList = () => {
       {/* Inventory Cards */}
       <h1>Flower Bouquets</h1>
 
-      {/* Corrected Delivery Details Link */}
-      <Link to="/deliveryform" className="delivery-link">
-        Delivery Details
-      </Link>
-      <br></br>
-      <Link to="/order-confirmation" className="delivery-link">
-       Order Confirmation
-      </Link>
-      <br></br>
-      <Link to="/AdminDeliveryForm" className="delivery-link">
-        Admin Form
-      </Link>
-      <br></br>
-      <Link to="/DeliveryPerson" className="delivery-link">
-        Delivery Person
-      </Link>
+     
+  
 
 
       <div className="card-columns">

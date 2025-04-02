@@ -11,7 +11,16 @@ import logo from "./images/logo.png";
 import profileIcon from "./images/profile.png"; // Add profile icon
 import cartIcon from "./images/cart.png"; // Add cart icon
 import searchIcon from "./images/search.png";
-import MyOrderPage1 from "./components/MyOrderPage1";
+import DeliveryForm from "./components/DeliveryForm";
+import OrderConfirmation from "./components/OrderConfirmation";
+import PaymentPage from "./components/PaymentPage";
+import PaymentConfirmation from "./components/PaymentConfirmation";
+import MyOrdersPage from "./components/MyOrdersPage"; 
+import MyOrderPage1 from "./components/MyOrderPage1";// Ensure correct import
+import MyOrderPage2 from "./components/MyOrderPage2";
+import FlowerDeliveryPage from './components/FlowerDeliveryPage';
+import AdminDeliveryForm from "./components/AdminDeliveryForm";
+import AdminDeliveryTable from "./components/AdminDeliveryTable"
 
 
 
@@ -79,7 +88,16 @@ const App = () => {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/userdetails" element={<UserDetails />} />
+        <Route path="/deliveryform" element={<DeliveryForm />} />
+        <Route path="/order-confirmation" element={<OrderConfirmation />} />
+        <Route path="/payment" element={<PaymentPage />} />
+        <Route path="/payment-confirmation" element={<PaymentConfirmation />} />
+        <Route path="/status" element={<MyOrdersPage />} />
         <Route path="/to-be-delivery" element={<MyOrderPage1 />} />
+        <Route path="/shipped" element={<MyOrderPage2 />} />
+        <Route path="/delivery" element={<FlowerDeliveryPage />} />
+        <Route path = "/admin" element={<AdminDeliveryForm/>}/>
+        <Route path = "/Admintable" element={<AdminDeliveryTable/>}/>
       </Routes>
     </Router>
   );

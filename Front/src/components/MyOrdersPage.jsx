@@ -26,11 +26,11 @@ const MyOrdersPage = () => {
     <div className="my-orders-container">
       <div className="header">
         <div className="logo">
-         
+          <img src="src/images/logo.png" alt="GK FLORA" />
           
         </div>
         <div className="user-profile">
-          
+          <img src="/user-profile.png" alt="User Profile" />
         </div>
       </div>
 
@@ -43,14 +43,13 @@ const MyOrdersPage = () => {
           <div className="status-tab">
             <div className="status-icon unpaid">
               <img src="src/images/unpaid.png" alt="Unpaid" />
-             
+              <span className="badge">1</span>
             </div>
             <p>Unpaid</p>
           </div>
           <div className="status-tab">
             <div className="status-icon to-be-shipped">
               <img src="src/images/to-be-shipped.png" alt="To be Shipped" />
-              <span className="badge">1</span>
             </div>
             <p>To be Shipped</p>
           </div>
