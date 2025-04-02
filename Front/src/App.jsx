@@ -11,12 +11,27 @@ import logo from "./images/logo.png";
 import profileIcon from "./images/profile.png"; // Add profile icon
 import cartIcon from "./images/cart.png"; // Add cart icon
 import searchIcon from "./images/search.png";
+<<<<<<< Updated upstream
 import CustomerDeliveryForm from "./pages/CustomerDeliveryForm";
 import CustomerDeliveryTable from "./pages/CustomerDeliveryTable";
 import Delivery from "./pages/Delivery";
 import AdminDeliveryForm from "./pages/AdminDeliveryForm";
 import AdminDeliveryTable from "./pages/AdminDeliveryTable";
 import DeliveryPerson from "./pages/DeliveryPerson";
+=======
+
+import DeliveryForm from "./components/DeliveryForm";
+import OrderConfirmation from "./components/OrderConfirmation";
+import PaymentPage from "./components/PaymentPage";
+import PaymentConfirmation from "./components/PaymentConfirmation";
+import MyOrdersPage from "./components/MyOrdersPage"; 
+import MyOrderPage1 from "./components/MyOrderPage1";// Ensure correct import
+import MyOrderPage2 from "./components/MyOrderPage2";
+import FlowerDeliveryPage from './components/FlowerDeliveryPage';
+import AdminDeliveryForm from "./components/AdminDeliveryForm";
+import AdminDeliveryTable from "./components/AdminDeliveryTable";
+
+>>>>>>> Stashed changes
 import AdminDashboard from "./pages/AdminDashboard";
 
 const App = () => {
