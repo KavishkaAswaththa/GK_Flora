@@ -45,7 +45,7 @@ function CampaignTable({ onEdit }) {
             <th>Name</th>
             <th>Category</th>
             <th>Price</th>
-            <th>Description</th>
+            <th>QTY</th>
             <th>Bloom Contains</th>
             <th>Actions</th>
           </tr>
