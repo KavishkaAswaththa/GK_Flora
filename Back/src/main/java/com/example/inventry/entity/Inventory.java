@@ -14,6 +14,7 @@ public class Inventory {
     private List<String> imageIds; // Updated to store multiple image IDs
     private String description;
     private Double price;
+    private int qty;
     private String bloomContains;
 
     public <E> Inventory(String number, String testBouquet, String flowers, String beautifulBouquet, double v, String s, List<E> imageId1) {
@@ -70,6 +71,14 @@ public class Inventory {
 
     public void setPrice(Double price) {
         this.price = price;
+    }
+
+    public int getQty() {
+        return qty;
+    }
+
+    public void setQty(int qty) {
+        this.qty = qty;
     }
 
     public String getBloomContains() {
