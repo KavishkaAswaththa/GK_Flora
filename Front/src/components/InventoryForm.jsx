@@ -76,41 +76,51 @@ const InventoryForm = ({ onSuccess }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     const data = new FormData();
-    Object.keys(formData).forEach((key) => {
-      if (key === "files") {
-        formData.files.forEach((file) => data.append("files", file));
-      } else {
-        data.append(key, formData[key]);
-      }
-    });
-
+    formData.files.forEach((file) => data.append("files", file)); // Append files separately
+  
+    // Append other fields
+    data.append("name", formData.name);
+    data.append("category", formData.category);
+    data.append("description", formData.description);
+    data.append("price", formData.price);
+    data.append("qty", formData.qty);
+    data.append("bloomContains", formData.bloomContains);
+  
+    if (isUpdate) {
+      data.append("id", formData.id); // Required for updates
+    }
+  
     const url = isUpdate
       ? `http://localhost:8080/api/inventory/update`
       : "http://localhost:8080/api/inventory/save";
-
+  
     try {
-      const response = await axios.post(url, data, {
+      const response = await axios({
+        method: isUpdate ? "put" : "post", // Use PUT for updates
+        url,
+        data,
         headers: {
           "Content-Type": "multipart/form-data",
         },
       });
-      alert(response.data || "Operation successful!");
+  
+      alert(response.data || `Inventory ${isUpdate ? "updated" : "saved"} successfully!`);
       setIsUpdate(false);
       onSuccess();
-      setImagePreviews([]); // Clear previews on success
+      setImagePreviews([]); // Clear image previews
     } catch (error) {
       console.error(`Failed to ${isUpdate ? "update" : "save"} inventory:`, error);
-
+  
       let errorMessage = `Failed to ${isUpdate ? "update" : "save"} inventory!`;
-
+  
       if (error.response) {
         const { status, data } = error.response;
         if (status === 400) {
-          errorMessage = data.message || "Invalid input! Please check your data.";
+          errorMessage = data || "Invalid input! Please check your data.";
         } else if (status === 404) {
-          errorMessage = "The resource you're trying to update does not exist.";
+          errorMessage = "Inventory not found!";
         } else if (status === 500) {
           errorMessage = "Server error! Please try again later.";
         }
@@ -119,10 +129,12 @@ const InventoryForm = ({ onSuccess }) => {
       } else {
         errorMessage = error.message || "An unexpected error occurred!";
       }
-
+  
       alert(errorMessage);
     }
   };
+  
+  
 
   const handleSearch = async () => {
     try {
