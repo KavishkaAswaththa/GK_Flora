@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import axios from "axios";
 import "../styles/InventoryForm.css";
+import { useParams } from "react-router-dom";
+import { useEffect } from "react";
 
 // Import footer images
 import faqImage from "../images/faq.png";
@@ -8,15 +10,47 @@ import chatImage from "../images/chat.png";
 import contactImage from "../images/contact.png";
 
 const InventoryForm = ({ onSuccess }) => {
+  const { id } = useParams();
   const [formData, setFormData] = useState({
-    id: "",
+    id: id || "", // Set id from URL params if available
     name: "",
     category: "",
     description: "",
     price: "",
+    qty: "",
     bloomContains: "",
     files: [],
   });
+  
+  useEffect(() => {
+    if (id) {
+      fetchItemData(id);
+    }
+  }, [id]);
+
+  const fetchItemData = async (itemId) => {
+    try {
+      const response = await axios.get(`http://localhost:8080/api/inventory/${itemId}`);
+      const item = response.data;
+      setFormData({
+        id: item.id,
+        name: item.name,
+        category: item.category,
+        description: item.description,
+        price: item.price,
+        qty: item.qty,
+        bloomContains: item.bloomContains,
+        files: [],
+      });
+      setIsUpdate(true);
+      setImagePreviews([]);
+    } catch (error) {
+      console.error("Failed to fetch inventory:", error);
+      alert("No inventory found with the given ID!");
+    }
+  };
+
+  
 
   const [imagePreviews, setImagePreviews] = useState([]);
   const [searchId, setSearchId] = useState("");
@@ -102,6 +136,7 @@ const InventoryForm = ({ onSuccess }) => {
         category: item.category,
         description: item.description,
         price: item.price,
+        qty: item.qty,
         bloomContains: item.bloomContains,
         files: [],
       });
@@ -123,6 +158,7 @@ const InventoryForm = ({ onSuccess }) => {
         category: "",
         description: "",
         price: "",
+        qty: "",
         bloomContains: "",
         files: [],
       });
@@ -184,6 +220,16 @@ const InventoryForm = ({ onSuccess }) => {
               type="number"
               name="price"
               value={formData.price}
+              onChange={handleInputChange}
+              required
+            />
+          </div>
+          <div>
+            <label>QTY:</label>
+            <input
+              type="number"
+              name="qty"
+              value={formData.qty}
               onChange={handleInputChange}
               required
             />

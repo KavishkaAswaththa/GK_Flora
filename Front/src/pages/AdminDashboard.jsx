@@ -1,11 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import '../styles/AdminDashboard.css';
+import { useNavigate } from "react-router-dom";
 
-function CampaignTable() {
+
+function CampaignTable({ onEdit }) {
+  const navigate = useNavigate();
   const [campaigns, setCampaigns] = useState([]);
 
   useEffect(() => {
+    fetchCampaigns();
+  }, []);
+
+  const fetchCampaigns = () => {
     axios.get('http://localhost:8080/api/inventory/search/all')
       .then(response => {
         setCampaigns(response.data);
@@ -13,7 +20,19 @@ function CampaignTable() {
       .catch(error => {
         console.error('Error fetching data:', error);
       });
-  }, []);
+  };
+
+  const handleDelete = (id) => {
+    axios.delete(`http://localhost:8080/api/inventory/${id}`)
+      .then(() => {
+        alert('Item deleted successfully!');
+        fetchCampaigns();
+      })
+      .catch(error => {
+        console.error('Error deleting item:', error);
+        alert('Failed to delete item!');
+      });
+  };
 
   return (
     <div className="campaign-container">
@@ -28,6 +47,7 @@ function CampaignTable() {
             <th>Price</th>
             <th>Description</th>
             <th>Bloom Contains</th>
+            <th>Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -46,6 +66,10 @@ function CampaignTable() {
               <td>${campaign.price}</td>
               <td>{campaign.qty}</td>
               <td>{campaign.bloomContains}</td>
+              <td className="action-buttons">
+                <button className="edit-btn" onClick={() => navigate(`/inventory/edit/${campaign.id}`)}>Edit</button>
+                <button className="delete-btn" onClick={() => handleDelete(campaign.id)}>Delete</button>
+              </td>
             </tr>
           ))}
         </tbody>

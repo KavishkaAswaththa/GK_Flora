@@ -80,6 +80,7 @@ const App = () => {
         <Route path="/AdminDeliveryTable" element={<AdminDeliveryTable />} />
         <Route path="/DeliveryPerson" element={<DeliveryPerson />} />
         <Route path="/form" element={<InventoryFormWrapper />} />
+        <Route path="/inventory/edit/:id" element={<InventoryForm />} />
         <Route path="/inventory/:id" element={<InventoryDetailsImage />} />
         <Route path="/category/:category" element={<h1>Category Page</h1>} />
         <Route path="/order-status" element={<h1>Order Status Page</h1>} />
