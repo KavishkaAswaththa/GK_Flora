@@ -36,7 +36,7 @@ function CampaignTable({ onEdit }) {
 
   return (
     <div className="campaign-container">
-      <h2 className="campaign-title">Campaign Management</h2>
+      <h2 className="campaign-title">Admin Dashboard</h2>
       <table className="campaign-table">
         <thead>
           <tr>
