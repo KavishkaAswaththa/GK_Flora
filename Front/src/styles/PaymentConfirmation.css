@@ -1,35 +1,29 @@
-.confirmation-container {
+.payment-confirmation .confirmation-container {
     max-width: 1200px;
     margin: 0 auto;
     padding: 20px;
     font-family: 'Arial', sans-serif;
 }
 
-.header {
+.payment-confirmation .header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 30px;
 }
 
-.logo-container {
+.payment-confirmation .logo-container {
     display: flex;
     align-items: center;
 }
-  
-.logo {
+
+.payment-confirmation .logo {
     width: 80%;
     height: 50px;
     margin-right: 5px;
 }
 
-.user-icon img {
-    height: 40px;
-    width: 40px;
-    border-radius: 50%;
-}
-
-.confirmation-content {
+.payment-confirmation .confirmation-content {
     text-align: center;
     padding: 40px;
     background-color: #f9f9f9;
@@ -37,23 +31,23 @@
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
-.confirmation-message {
+.payment-confirmation .confirmation-message {
     margin-bottom: 30px;
     font-size: 18px;
     line-height: 1.6;
 }
 
-.countdown-timer {
+.payment-confirmation .countdown-timer {
     margin: 10px 0 20px;
     font-size: 16px;
     color: #666;
 }
 
-.loading-indicator {
+.payment-confirmation .loading-indicator {
     margin: 30px 0;
 }
 
-.spinner {
+.payment-confirmation .spinner {
     border: 5px solid #f3f3f3;
     border-top: 5px solid #4CAF50;
     border-radius: 50%;
@@ -68,11 +62,11 @@
     100% { transform: rotate(360deg); }
 }
 
-.success-icon {
+.payment-confirmation .success-icon {
     margin: 20px 0 30px;
 }
 
-.checkmark {
+.payment-confirmation .checkmark {
     display: inline-block;
     width: 80px;
     height: 80px;
@@ -89,13 +83,14 @@
     to { opacity: 1; transform: scale(1); }
 }
 
-.action-buttons {
+.payment-confirmation .action-buttons {
     display: flex;
     justify-content: space-between;
     margin-top: 30px;
 }
 
-.back-button, .home-button {
+.payment-confirmation .back-button, 
+.payment-confirmation .home-button {
     padding: 10px 20px;
     border: none;
     border-radius: 5px;
@@ -103,20 +98,20 @@
     font-size: 16px;
 }
 
-.back-button {
+.payment-confirmation .back-button {
     background-color: #f0f0f0;
     color: #333;
 }
 
-.home-button {
+.payment-confirmation .home-button {
     background-color: #4CAF50;
     color: white;
 }
 
-.back-button:hover {
+.payment-confirmation .back-button:hover {
     background-color: #e0e0e0;
 }
 
-.home-button:hover {
+.payment-confirmation .home-button:hover {
     background-color: #45a049;
 }

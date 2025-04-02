@@ -19,26 +19,6 @@
     color: #2c3e50;
 }
 
-.support-links {
-    display: flex;
-    gap: 15px;
-}
-
-.support-btn {
-    background: none;
-    border: 1px solid #3498db;
-    color: #3498db;
-    padding: 8px 15px;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: all 0.3s;
-}
-
-.support-btn:hover {
-    background: #3498db;
-    color: white;
-}
-
 .content-container {
     display: flex;
     gap: 30px;
@@ -81,10 +61,6 @@
     width: 100%;
 }
 
-.edit-button:hover {
-    background: #e67e22;
-}
-
 .order-item {
     display: flex;
     justify-content: space-between;
@@ -121,24 +97,6 @@
     border-top: 1px solid #ddd;
 }
 
-.payment-method {
-    margin-top: 30px;
-}
-
-.payment-options {
-    margin-top: 15px;
-}
-
-.payment-option {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 12px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    margin-bottom: 10px;
-}
-
 .place-order-button {
     background: #27ae60;
     color: white;
@@ -153,28 +111,8 @@
     font-weight: bold;
 }
 
-.place-order-button:hover {
-    background: #2ecc71;
-}
-
 @media (max-width: 768px) {
     .content-container {
         flex-direction: column;
-    }
-    
-    .header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 15px;
-    }
-    
-    .support-links {
-        width: 100%;
-        justify-content: space-between;
-    }
-    
-    .support-btn {
-        flex: 1;
-        text-align: center;
     }
 }

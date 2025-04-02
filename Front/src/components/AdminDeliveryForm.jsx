@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "../styles/DeliveryForm.css";
 
-function DeliveryForm() {
+function AdminDeliveryForm() {
     const [delivername, setName] = useState("");
     const [deliverphone, setPhone] = useState("");
     const [error, setError] = useState("");
@@ -106,4 +106,4 @@ function DeliveryForm() {
     );
 }
 
-export default DeliveryForm;
+export default AdminDeliveryForm;

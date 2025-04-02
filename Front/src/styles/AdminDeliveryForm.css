@@ -47,9 +47,10 @@ input:focus {
     box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
 }
 
-.btn {
+.btn-group {
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
+    gap: 1rem;
     margin-top: 1rem;
 }
 

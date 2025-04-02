@@ -43,8 +43,7 @@ const InventoryList = () => {
       {/* Inventory Cards */}
       <h1>Flower Bouquets</h1>
 
-     
-  
+       
 
 
       <div className="card-columns">
