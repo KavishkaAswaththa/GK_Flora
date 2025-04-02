@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import "../styles/DeliveryTable.css";
+import "../styles/AdminDeliveryTable.css";
 
 function DeliveryTable() {
     const [users, setUsers] = useState([]);
@@ -35,7 +35,7 @@ function DeliveryTable() {
     return (
         <div className="container">
             <h1>Delivery Table</h1>
-            <table border="1">
+            <table className="delivery-table" border="1">
                 <thead>
                     <tr>
                         <th>Delivery Person Name</th>

@@ -11,6 +11,20 @@ import logo from "./images/logo.png";
 import profileIcon from "./images/profile.png"; // Add profile icon
 import cartIcon from "./images/cart.png"; // Add cart icon
 import searchIcon from "./images/search.png";
+
+import DeliveryForm from "./components/DeliveryForm";
+import OrderConfirmation from "./components/OrderConfirmation";
+import PaymentPage from "./components/PaymentPage";
+import PaymentConfirmation from "./components/PaymentConfirmation";
+import MyOrdersPage from "./components/MyOrdersPage"; 
+import MyOrderPage1 from "./components/MyOrderPage1";// Ensure correct import
+import MyOrderPage2 from "./components/MyOrderPage2";
+import FlowerDeliveryPage from './components/FlowerDeliveryPage';
+import AdminDeliveryForm from "./components/AdminDeliveryForm";
+import AdminDeliveryTable from "./components/AdminDeliveryTable"
+
+
+
 import CustomerDeliveryForm from "./pages/CustomerDeliveryForm";
 import CustomerDeliveryTable from "./pages/CustomerDeliveryTable";
 import Delivery from "./pages/Delivery";
@@ -18,6 +32,7 @@ import AdminDeliveryForm from "./pages/AdminDeliveryForm";
 import AdminDeliveryTable from "./pages/AdminDeliveryTable";
 import DeliveryPerson from "./pages/DeliveryPerson";
 import AdminDashboard from "./pages/AdminDashboard";
+
 
 const App = () => {
   return (
@@ -52,7 +67,7 @@ const App = () => {
           <Link to="/form" className="nav-item">
             Add Inventory
           </Link>
-          <Link to="/order-status" className="nav-item">
+          <Link to="/to-be-delivery" className="nav-item">
             Order Status
           </Link>
           
@@ -73,12 +88,7 @@ const App = () => {
       {/* Routes */}
       <Routes>
         <Route path="/" element={<InventoryList />} />
-        <Route path="/CustomerDeliveryForm" element={<CustomerDeliveryForm />} />
-        <Route path="/Delivery" element={<Delivery />} />
-        <Route path="/Table" element={<CustomerDeliveryTable />} />
-        <Route path="/AdminDeliveryForm" element={<AdminDeliveryForm />} />
-        <Route path="/AdminDeliveryTable" element={<AdminDeliveryTable />} />
-        <Route path="/DeliveryPerson" element={<DeliveryPerson />} />
+       
         <Route path="/form" element={<InventoryFormWrapper />} />
         <Route path="/inventory/edit/:id" element={<InventoryForm />} />
         <Route path="/inventory/:id" element={<InventoryDetailsImage />} />
@@ -88,7 +98,20 @@ const App = () => {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/userdetails" element={<UserDetails />} />
+
+        <Route path="/deliveryform" element={<DeliveryForm />} />
+        <Route path="/order-confirmation" element={<OrderConfirmation />} />
+        <Route path="/payment" element={<PaymentPage />} />
+        <Route path="/payment-confirmation" element={<PaymentConfirmation />} />
+        <Route path="/status" element={<MyOrdersPage />} />
+        <Route path="/to-be-delivery" element={<MyOrderPage1 />} />
+        <Route path="/shipped" element={<MyOrderPage2 />} />
+        <Route path="/delivery" element={<FlowerDeliveryPage />} />
+        <Route path = "/admin" element={<AdminDeliveryForm/>}/>
+        <Route path = "/Admintable" element={<AdminDeliveryTable/>}/>
+
         <Route path="/admindashboard" element={<AdminDashboard />} />
+
       </Routes>
     </Router>
   );
