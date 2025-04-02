@@ -23,14 +23,6 @@ import FlowerDeliveryPage from './components/FlowerDeliveryPage';
 import AdminDeliveryForm from "./components/AdminDeliveryForm";
 import AdminDeliveryTable from "./components/AdminDeliveryTable"
 
-
-
-import CustomerDeliveryForm from "./pages/CustomerDeliveryForm";
-import CustomerDeliveryTable from "./pages/CustomerDeliveryTable";
-import Delivery from "./pages/Delivery";
-import AdminDeliveryForm from "./pages/AdminDeliveryForm";
-import AdminDeliveryTable from "./pages/AdminDeliveryTable";
-import DeliveryPerson from "./pages/DeliveryPerson";
 import AdminDashboard from "./pages/AdminDashboard";
 
 
