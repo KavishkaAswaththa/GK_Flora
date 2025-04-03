@@ -11,19 +11,21 @@ import logo from "./images/logo.png";
 import profileIcon from "./images/profile.png"; // Add profile icon
 import cartIcon from "./images/cart.png"; // Add cart icon
 import searchIcon from "./images/search.png";
-
 import DeliveryForm from "./components/DeliveryForm";
 import OrderConfirmation from "./components/OrderConfirmation";
 import PaymentPage from "./components/PaymentPage";
 import PaymentConfirmation from "./components/PaymentConfirmation";
 import MyOrdersPage from "./components/MyOrdersPage"; 
-import MyOrderPage1 from "./components/MyOrderPage1";// Ensure correct import
+import MyOrderPage1 from "./components/MyOrderPage1";
 import MyOrderPage2 from "./components/MyOrderPage2";
 import FlowerDeliveryPage from './components/FlowerDeliveryPage';
 import AdminDeliveryForm from "./components/AdminDeliveryForm";
-import AdminDeliveryTable from "./components/AdminDeliveryTable"
+
+import AdminDeliveryTable from "./components/AdminDeliveryTable";
+
 
 import AdminDashboard from "./pages/AdminDashboard";
+
 
 
 const App = () => {
@@ -82,7 +84,6 @@ const App = () => {
         <Route path="/" element={<InventoryList />} />
        
         <Route path="/form" element={<InventoryFormWrapper />} />
-        <Route path="/inventory/edit/:id" element={<InventoryForm />} />
         <Route path="/inventory/:id" element={<InventoryDetailsImage />} />
         <Route path="/category/:category" element={<h1>Category Page</h1>} />
         <Route path="/order-status" element={<h1>Order Status Page</h1>} />
@@ -90,7 +91,6 @@ const App = () => {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/userdetails" element={<UserDetails />} />
-
         <Route path="/deliveryform" element={<DeliveryForm />} />
         <Route path="/order-confirmation" element={<OrderConfirmation />} />
         <Route path="/payment" element={<PaymentPage />} />
@@ -101,9 +101,6 @@ const App = () => {
         <Route path="/delivery" element={<FlowerDeliveryPage />} />
         <Route path = "/admin" element={<AdminDeliveryForm/>}/>
         <Route path = "/Admintable" element={<AdminDeliveryTable/>}/>
-
-        <Route path="/admindashboard" element={<AdminDashboard />} />
-
       </Routes>
     </Router>
   );

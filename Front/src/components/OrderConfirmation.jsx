@@ -1,13 +1,11 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import '../styles/OrderConfirmation.css';
 
 const OrderConfirmation = () => {
     const navigate = useNavigate();
     const { state } = useLocation();
     const { deliveryDetails } = state || {};
-    
-    // Sample order items (would normally come from your cart/state)
+
     const orderItems = [
         { id: 1, name: 'GK FLORA', price: 1200, quantity: 1 },
         { id: 2, name: 'Cheriger', price: 800, quantity: 1 }
@@ -22,21 +20,31 @@ const OrderConfirmation = () => {
     };
 
     const handlePlaceOrder = () => {
-        // Here you would typically send both deliveryDetails and orderItems to your backend
         console.log('Placing order with:', { deliveryDetails, orderItems });
         alert('Order placed successfully!');
         navigate('/payment');
     };
 
+    useEffect(() => {
+        // Dynamically add the CSS file when this component is mounted
+        const link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.href = '/styles/OrderConfirmation.css'; // Make sure this file exists in the public folder
+        link.id = 'order-confirmation-style';
+
+        document.head.appendChild(link);
+
+        return () => {
+            document.getElementById('order-confirmation-style')?.remove();
+        };
+    }, []);
+
     return (
         <div className="order-confirmation-container">
             <div className="header">
                 <h1>Order Confirmation</h1>
-                <div className="support-links">
-                 
-                </div>
             </div>
-            
+
             <div className="content-container">
                 <div className="delivery-details">
                     <h2>Delivery Information</h2>
@@ -48,7 +56,6 @@ const OrderConfirmation = () => {
                             <p><strong>City:</strong> {deliveryDetails?.city || 'Not provided'}</p>
                             <p><strong>Contact:</strong> {deliveryDetails?.contactNumber || 'Not provided'}</p>
                         </div>
-                        
                         <div className="detail-section">
                             <h3>Sender</h3>
                             <p><strong>Name:</strong> {deliveryDetails?.senderName || 'Not provided'}</p>
@@ -57,22 +64,17 @@ const OrderConfirmation = () => {
                             )}
                             <p><strong>Phone:</strong> {deliveryDetails?.senderPhone || 'Not provided'}</p>
                         </div>
-                        
                         <div className="detail-section">
                             <h3>Delivery Schedule</h3>
                             <p><strong>Date:</strong> {deliveryDetails?.deliveryDate || 'Not specified'}</p>
                             <p><strong>Time:</strong> {deliveryDetails?.deliveryTime || 'Not specified'}</p>
                         </div>
-                        
-                        <button 
-                            className="edit-button"
-                            onClick={handleEditDelivery}
-                        >
+                        <button className="edit-button" onClick={handleEditDelivery}>
                             Edit Delivery Details
                         </button>
                     </div>
                 </div>
-                
+
                 <div className="order-summary">
                     <h2>Order Summary</h2>
                     <div className="summary-card">
@@ -87,7 +89,7 @@ const OrderConfirmation = () => {
                                 </div>
                             </div>
                         ))}
-                        
+
                         <div className="total-section">
                             <div className="total-row">
                                 <span>Subtotal:</span>
@@ -103,18 +105,8 @@ const OrderConfirmation = () => {
                             </div>
                         </div>
                     </div>
-                    
-                    <div className="delivery-type">
-                        <h3>Delivery Type</h3>
-                        <div className="delivery-type">
-                            
-                        </div>
-                    </div>
-                    
-                    <button 
-                        className="place-order-button"
-                        onClick={handlePlaceOrder}
-                    >
+
+                    <button className="place-order-button" onClick={handlePlaceOrder}>
                         Place Order
                     </button>
                 </div>

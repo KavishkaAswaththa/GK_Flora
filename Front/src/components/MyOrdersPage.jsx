@@ -11,7 +11,7 @@ const MyOrdersPage = () => {
       items: [
         {
           id: 1,
-          name: 'New Rose flower bunch with excellent rapping',
+          name: 'New Rose flower bunch with excellent wrapping',
           price: 2500.00,
           quantity: 1,
           image: 'src/images/rose.jpg'
@@ -24,15 +24,7 @@ const MyOrdersPage = () => {
 
   return (
     <div className="my-orders-container">
-      <div className="header">
-        <div className="logo">
-          <img src="src/images/logo.png" alt="GK FLORA" />
-          
-        </div>
-        <div className="user-profile">
-          <img src="/user-profile.png" alt="User Profile" />
-        </div>
-      </div>
+      
 
       <div className="orders-content">
         <div className="orders-header">

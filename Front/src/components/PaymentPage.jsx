@@ -57,7 +57,7 @@ const PaymentPage = () => {
             if (response.ok) {
                 setUploadStatus('Upload successful!');
                 await sendNotification('Your bank slip has been uploaded successfully. The admin will review it soon. Your payment is pending.');
-                navigate('/payment-confirmation'); // Changed to payment-confirmation
+                navigate('/payment-confirmation');
             } else {
                 const errorText = await response.text();
                 setUploadStatus(`Upload failed: ${errorText}`);
@@ -69,63 +69,62 @@ const PaymentPage = () => {
     };
 
     return (
-        <div className="payment-container">
-            <div className="header">
-           
-        <div className="logo-container">
-          <img src="src/images/logo.png" alt="GE FLORA" className="logo" />
-        </div>
-                <div className="user-icon">
-                    <img src="payment.png" alt="User" />
-                </div>
-            </div>
-
-            <div className="payment-content">
-                <div className="payment-details">
-                    <h2>Payment Details</h2>
-                    
-                    <div className="bank-details">
-                        <h3>Bank of Ceylon</h3>
-                        <div className="detail-item"><span>Account Number - </span><span>1002547896531</span></div>
-                        <div className="detail-item"><span>Beneficiary Name - </span><span>Gamindu Pasan</span></div>
-                        <div className="detail-item"><span>Branch - </span><span>Baththaramulla</span></div>
+        <div className="payment-page">
+            <div className="payment-container">
+                <div className="header">
+                    <div className="logo-container">
+                        <img src="src/images/logo.png" alt="GE FLORA" className="logo" />
                     </div>
-                    
-                    <div className="payment-icon">
-                        <img src="src/images/payment.png" alt="Payment" />
+                    <div className="user-icon">
+                        <img src="payment.png" alt="User" />
                     </div>
                 </div>
 
-                <div className="upload-section">
-                    <h2>Upload Bank Slip</h2>
-                    <p>Please upload a bank slip or screenshot in case of online payment for the selected items.</p>
-                    
-                    <div className="terms-section">
-                        <h4>Terms of Use</h4>
-                        <ol>
-                            <li>The bank slip must clearly show the payment amount and bank stamp.</li>
-                            <li>Uploading the wrong, unclear, or fake bank slip may result in payment failure.</li>
-                            <li>You can upload bank slips in PNG, JPEG, or PDF format.</li>
-                        </ol>
+                <div className="payment-content">
+                    <div className="payment-details">
+                        <h2>Payment Details</h2>
+                        <div className="bank-details">
+                            <h3>Bank of Ceylon</h3>
+                            <div className="detail-item"><span>Account Number - </span><span>1002547896531</span></div>
+                            <div className="detail-item"><span>Beneficiary Name - </span><span>Gamindu Pasan</span></div>
+                            <div className="detail-item"><span>Branch - </span><span>Baththaramulla</span></div>
+                        </div>
+                        <div className="payment-icon">
+                            <img src="src/images/payment.png" alt="Payment" />
+                        </div>
                     </div>
-                    
-                    <div className="file-upload">
-                        <input 
-                            type="file" 
-                            id="bank-slip" 
-                            accept=".png,.jpeg,.jpg,.pdf"
-                            onChange={handleFileChange}
-                        />
-                        <label htmlFor="bank-slip">Choose File</label>
-                        {bankSlip && <span>{bankSlip.name}</span>}
-                    </div>
-                    {uploadStatus && <p className="upload-status">{uploadStatus}</p>}
-                </div>
-            </div>
 
-            <div className="action-buttons">
-                <button className="back-button" onClick={() => navigate(-1)}>Back</button>
-                <button className="continue-button" onClick={handleSubmit}>Continue</button>
+                    <div className="upload-section">
+                        <h2>Upload Bank Slip</h2>
+                        <p>Please upload a bank slip or screenshot in case of online payment for the selected items.</p>
+                        
+                        <div className="terms-section">
+                            <h4>Terms of Use</h4>
+                            <ol>
+                                <li>The bank slip must clearly show the payment amount and bank stamp.</li>
+                                <li>Uploading the wrong, unclear, or fake bank slip may result in payment failure.</li>
+                                <li>You can upload bank slips in PNG, JPEG, or PDF format.</li>
+                            </ol>
+                        </div>
+                        
+                        <div className="file-upload">
+                            <input 
+                                type="file" 
+                                id="bank-slip" 
+                                accept=".png,.jpeg,.jpg,.pdf"
+                                onChange={handleFileChange}
+                            />
+                            <label htmlFor="bank-slip">Choose File</label>
+                            {bankSlip && <span>{bankSlip.name}</span>}
+                        </div>
+                        {uploadStatus && <p className="upload-status">{uploadStatus}</p>}
+                    </div>
+                </div>
+
+                <div className="action-buttons">
+                    <button className="back-button" onClick={() => navigate(-1)}>Back</button>
+                    <button className="continue-button" onClick={handleSubmit}>Continue</button>
+                </div>
             </div>
         </div>
     );
