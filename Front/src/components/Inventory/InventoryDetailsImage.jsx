@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom"; // Import Link here
-import "../styles/InventoryDetails.css";
+import "../../styles/Inventory/InventoryDetails.css";
 // Import footer images
-import faqImage from "../images/faq.png";
-import chatImage from "../images/chat.png";
-import contactImage from "../images/contact.png";
+import faqImage from "../../images/faq.png";
+import chatImage from "../../images/chat.png";
+import contactImage from "../../images/contact.png";
 
 const InventoryDetailsImage = () => {
   const { id } = useParams(); // Get the ID from the URL
@@ -77,28 +77,28 @@ const InventoryDetailsImage = () => {
 
   return (
     <>
-      <div className="details-container">
+      <div className="inventory-details-container">
         {/* Image Display */}
-        <div className="image-display">
+        <div className="inventory-image-display">
           {/* Main Image */}
           {images.length > 0 ? (
             <img
               src={images[selectedImageIndex].src}
               alt={metadata.name || "Inventory Item"}
-              className="main-image"
+              className="inventory-main-image"
             />
           ) : (
             <p>No images available</p>
           )}
 
           {/* Thumbnail Images */}
-          <div className="thumbnail-container">
+          <div className="inventory-thumbnail-container">
             {images.map((image, index) => (
               <img
                 key={image.id}
                 src={image.src}
                 alt={metadata.name || "Inventory Item"}
-                className="thumbnail"
+                className="inventory-thumbnail"
                 onClick={() => handleThumbnailClick(index)} // Set main image on thumbnail click
               />
             ))}
@@ -106,7 +106,7 @@ const InventoryDetailsImage = () => {
         </div>
 
         {/* Metadata Display */}
-        <div className="details-content">
+        <div className="inventory-details-content">
           <h1>{metadata.name}</h1>
           <p>
             <strong>Category:</strong> {metadata.category}
@@ -114,13 +114,13 @@ const InventoryDetailsImage = () => {
           <p>
             <strong>Description:</strong> {metadata.description}
           </p>
-          <p className="price">LKR {metadata.price}</p>
+          <p className="inventory-price">LKR {metadata.price}</p>
           <p>
             <strong>Bloom Contains:</strong> {metadata.bloomContains}
           </p>
 
           {/* Quantity and Button */}
-          <div className="quantity-container">
+          <div className="inventory-quantity-container">
             <input
               type="number"
               value={quantity}
@@ -129,26 +129,26 @@ const InventoryDetailsImage = () => {
             />
           </div>
 
-          <div className="button-container">
+          <div className="inventory-button-container">
             <button>ADD TO CART</button>
-            <button className="secondary-button">BUY IT NOW</button>
+            <button className="inventory-secondary-button">BUY IT NOW</button>
           </div>
         </div>
       </div>
 
       {/* Footer */}
-      <div className="footer">
-        <div className="footer-icons">
-          <Link to="/faq" className="footer-icon">
-            <img src={faqImage} alt="FAQ" className="footer-icon-image" />
+      <div className="inventory-footer">
+        <div className="inventory-footer-icons">
+          <Link to="/faq" className="inventory-footer-icon">
+            <img src={faqImage} alt="FAQ" className="inventory-footer-icon-image" />
             <span>FAQ</span>
           </Link>
-          <Link to="/chat" className="footer-icon">
-            <img src={chatImage} alt="Chat" className="footer-icon-image" />
+          <Link to="/chat" className="inventory-footer-icon">
+            <img src={chatImage} alt="Chat" className="inventory-footer-icon-image" />
             <span>Chat</span>
           </Link>
-          <Link to="/contact" className="footer-icon">
-            <img src={contactImage} alt="Contact" className="footer-icon-image" />
+          <Link to="/contact" className="inventory-footer-icon">
+            <img src={contactImage} alt="Contact" className="inventory-footer-icon-image" />
             <span>Contact</span>
           </Link>
         </div>

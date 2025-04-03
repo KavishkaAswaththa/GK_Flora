@@ -1,4 +1,4 @@
-.details-container {
+.inventory-details-container {
   display: flex;
   flex-direction: row; /* Side by side layout */
   align-items: flex-start;
@@ -12,7 +12,7 @@
   gap: 30px; /* Space between image and details */
 }
 
-.image-display {
+.inventory-image-display {
   flex: 1; /* Make image section occupy some space */
   display: flex;
   flex-direction: column;
@@ -20,7 +20,7 @@
   gap: 15px;
 }
 
-.main-image {
+.inventory-main-image {
   width: 400px;
   height: 400px;
   object-fit: cover;
@@ -28,13 +28,13 @@
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
 }
 
-.thumbnail-container {
+.inventory-thumbnail-container {
   display: flex;
   gap: 10px;
   margin-top: 15px;
 }
 
-.thumbnail {
+.inventory-thumbnail {
   width: 80px;
   height: 80px;
   object-fit: cover;
@@ -44,54 +44,49 @@
   transition: transform 0.2s, box-shadow 0.2s;
 }
 
-.thumbnail:hover {
+.inventory-thumbnail:hover {
   transform: scale(1.1);
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
 }
 
-.details-content {
+.inventory-details-content {
   flex: 2; /* Larger space for the details section */
   text-align: left;
 }
 
-.details-content h1 {
+.inventory-details-content h1 {
   font-size: 2rem;
   color: #333;
   margin-bottom: 10px;
 }
 
-.details-content .price {
+.inventory-details-content .inventory-price {
   font-size: 1.5rem;
   color: #2c7f2f;
   margin: 10px 0;
   font-weight: bold;
 }
 
-.details-content .sub-price {
-  font-size: 1rem;
-  color: #555;
-}
-
-.details-content p {
+.inventory-details-content p {
   font-size: 1rem;
   color: #555;
   margin-bottom: 10px;
   line-height: 1.6;
 }
 
-.details-content strong {
+.inventory-details-content strong {
   font-weight: bold;
   color: #333;
 }
 
-.quantity-container {
+.inventory-quantity-container {
   display: flex;
   align-items: center;
   margin: 15px 0;
   gap: 10px;
 }
 
-.quantity-container input {
+.inventory-quantity-container input {
   width: 50px;
   height: 35px;
   text-align: center;
@@ -100,7 +95,7 @@
   font-size: 1rem;
 }
 
-.button-container {
+.inventory-button-container {
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -121,12 +116,35 @@ button:hover {
   background-color: #218838;
 }
 
-.secondary-button {
+.inventory-secondary-button {
   background-color: #edf0f3;
   color: #28a745;
   border-color: #28a745;
 }
 
-.secondary-button:hover {
+.inventory-secondary-button:hover {
   background-color: #edf0f3;
+}
+
+.inventory-footer {
+  padding: 20px;
+  background-color: #f9f9f9;
+}
+
+.inventory-footer-icons {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.inventory-footer-icon {
+  text-align: center;
+  color: #333;
+  text-decoration: none;
+}
+
+.inventory-footer-icon-image {
+  width: 30px;
+  height: 30px;
+  margin-bottom: 5px;
 }
