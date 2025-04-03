@@ -11,12 +11,10 @@ import logo from "./images/logo.png";
 import profileIcon from "./images/profile.png"; // Add profile icon
 import cartIcon from "./images/cart.png"; // Add cart icon
 import searchIcon from "./images/search.png";
-import CustomerDeliveryForm from "./pages/CustomerDeliveryForm";
-import CustomerDeliveryTable from "./pages/CustomerDeliveryTable";
-import Delivery from "./pages/Delivery";
-import AdminDeliveryForm from "./pages/AdminDeliveryForm";
-import AdminDeliveryTable from "./pages/AdminDeliveryTable";
-import DeliveryPerson from "./pages/DeliveryPerson";
+
+import AdminDeliveryForm from "./components/AdminDeliveryForm";
+import AdminDeliveryTable from "./components/AdminDeliveryTable";
+
 import AdminDashboard from "./pages/AdminDashboard";
 
 const App = () => {
@@ -73,12 +71,11 @@ const App = () => {
       {/* Routes */}
       <Routes>
         <Route path="/" element={<InventoryList />} />
-        <Route path="/CustomerDeliveryForm" element={<CustomerDeliveryForm />} />
-        <Route path="/Delivery" element={<Delivery />} />
-        <Route path="/Table" element={<CustomerDeliveryTable />} />
+
+       
+
         <Route path="/AdminDeliveryForm" element={<AdminDeliveryForm />} />
         <Route path="/AdminDeliveryTable" element={<AdminDeliveryTable />} />
-        <Route path="/DeliveryPerson" element={<DeliveryPerson />} />
         <Route path="/form" element={<InventoryFormWrapper />} />
         <Route path="/inventory/edit/:id" element={<InventoryForm />} />
         <Route path="/inventory/:id" element={<InventoryDetailsImage />} />
