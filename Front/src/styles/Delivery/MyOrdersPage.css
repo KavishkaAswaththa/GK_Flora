@@ -1,0 +1,204 @@
+.my-orders-container {
+  font-family: Arial, sans-serif;
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
+  background-color: #f8f4e3;
+  min-height: 100vh;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  background-color: #f8f4e3;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+}
+
+.logo img {
+  width: 60px;
+  height: 50px;
+  margin-right: 10px;
+}
+
+.logo span {
+  font-weight: bold;
+  color: #8b4513;
+  font-size: 18px;
+}
+
+.user-profile img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+
+.orders-content {
+  padding: 20px;
+}
+
+.orders-header {
+  background-color: #f8f4e3;
+  padding: 15px 20px;
+  margin-bottom: 20px;
+}
+
+.orders-header h1 {
+  margin: 0;
+  color: #916c11;
+  font-size: 24px;
+}
+
+.order-status-tabs {
+  display: flex;
+  justify-content: space-between;
+  padding: 15px 10px;
+  margin-bottom: 20px;
+}
+
+.status-tab {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+}
+
+.status-icon {
+  position: relative;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+.status-icon img {
+  width: 35px;
+  height: 35px;
+}
+
+.badge {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background-color: #ff5722;
+  color: white;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 12px;
+}
+
+.status-tab p {
+  margin: 0;
+  font-size: 14px;
+  text-align: center;
+}
+
+.order-container {
+  background-color: white;
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.order-header {
+  display: flex;
+  justify-content: space-between;
+  padding: 15px;
+  border-bottom: 1px solid #e0e0e0;
+  background-color: #f9f9f9;
+}
+
+.order-details-link a {
+  color: #333;
+  text-decoration: none;
+}
+
+.order-items {
+  padding: 15px;
+}
+
+.order-item {
+  display: flex;
+  padding: 10px 0;
+}
+
+.item-image {
+  width: 100px;
+  height: 100px;
+  overflow: hidden;
+  margin-right: 15px;
+}
+
+.item-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.item-details {
+  flex: 1;
+}
+
+.item-details h3 {
+  margin: 0 0 10px 0;
+  font-size: 16px;
+  font-weight: normal;
+}
+
+.item-details p {
+  margin: 5px 0;
+  color: #666;
+}
+
+.item-price {
+  font-weight: bold;
+}
+
+.item-total {
+  text-align: right;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  min-width: 100px;
+}
+
+.total-label {
+  margin: 0;
+  color: #666;
+}
+
+.total-price {
+  margin: 5px 0 0 0;
+  font-weight: bold;
+  font-size: 18px;
+}
+
+/* Status icon specific colors */
+.unpaid img {
+  filter: invert(51%) sepia(82%) saturate(2878%) hue-rotate(346deg) brightness(101%) contrast(97%);
+}
+
+.to-be-shipped img {
+  filter: invert(32%) sepia(13%) saturate(2279%) hue-rotate(346deg) brightness(90%) contrast(88%);
+}
+
+.shipped img {
+  filter: invert(45%) sepia(85%) saturate(385%) hue-rotate(116deg) brightness(93%) contrast(87%);
+}
+
+.to-be-reviewed img {
+  filter: invert(42%) sepia(82%) saturate(464%) hue-rotate(182deg) brightness(94%) contrast(86%);
+}
