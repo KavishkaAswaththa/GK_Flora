@@ -14,6 +14,9 @@ import InventoryDetailsImage from "./components/Inventory/InventoryDetailsImage"
 
 
 
+//Review
+import ReviewForm from './pages/Review/ReviewForm.jsx';
+
 
 const App = () => {
   return (
@@ -35,6 +38,10 @@ const App = () => {
         <Route path="/category/:category" element={<h1>Category Page</h1>} />
         <Route path="/order-status" element={<h1>Order Status Page</h1>} />
         <Route path="/cart" element={<h1>Cart Page</h1>} />
+
+
+        <Route path="/reviewForm" element={<ReviewForm />} />
+
         
       </Routes>
     </Router>
