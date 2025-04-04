@@ -1,6 +1,8 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route, Link, useNavigate } from "react-router-dom";
 
+import { ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 
 import "./styles/App.css";
 import Navbar from "./components/Navbar";
@@ -13,15 +15,21 @@ import InventoryList from "./pages/Inventory/InaventoryList";
 import InventoryDetailsImage from "./components/Inventory/InventoryDetailsImage";
 
 
+//Profile
+import Login from './pages/Profile/Login';
+import ResetPassword from './pages/Profile/ResetPassword';
+import AccountDetails from './pages/Profile/AccountDetails';
+
 
 
 const App = () => {
   return (
-    <Router>
+    <>
       <Navbar />
 
 
       {/* Routes */}
+      <ToastContainer/>
       <Routes>
 
         
@@ -35,9 +43,14 @@ const App = () => {
         <Route path="/category/:category" element={<h1>Category Page</h1>} />
         <Route path="/order-status" element={<h1>Order Status Page</h1>} />
         <Route path="/cart" element={<h1>Cart Page</h1>} />
+
+        
+        <Route path='/login' element={<Login/>}/>
+        <Route path='/reset-password' element={<ResetPassword/>}/>
+        <Route path='/account-details' element={<AccountDetails/>}/>
         
       </Routes>
-    </Router>
+    </>
   );
 };
 
