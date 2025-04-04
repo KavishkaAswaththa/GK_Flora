@@ -41,22 +41,7 @@ const InventoryList = () => {
 
       <h1 className={styles["inventory-list__title"]}>Flower Bouquets</h1>
 
-      {/* Delivery Links */}
-      <Link to="/CustomerDeliveryForm" className={styles["inventory-list__delivery-link"]}>
-        Delivery Details
-      </Link>
-      <br />
-      <Link to="/Delivery" className={styles["inventory-list__delivery-link"]}>
-        Delivery List
-      </Link>
-      <br />
-      <Link to="/AdminDeliveryForm" className={styles["inventory-list__delivery-link"]}>
-        Admin Form
-      </Link>
-      <br />
-      <Link to="/DeliveryPerson" className={styles["inventory-list__delivery-link"]}>
-        Delivery Person
-      </Link>
+  
 
       {/* Inventory Items */}
       <div className={styles["inventory-list__grid"]}>
