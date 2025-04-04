@@ -1,0 +1,208 @@
+/* PaymentPage.css */
+.payment-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  font-family: Arial, sans-serif;
+  background-color: #f8f4e3;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  background-color: #f8f4e3;
+}
+
+.logo-container {
+  display: flex;
+  align-items: center;
+}
+
+.user-icon img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+
+.payment-content {
+  display: flex;
+  flex: 1;
+  padding: 20px;
+}
+
+.payment-details {
+  flex: 1;
+  padding-right: 20px;
+}
+
+.payment-details h2 {
+  color: #a67c00;
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+.bank-details {
+  margin-bottom: 30px;
+}
+
+.bank-details h3 {
+  color: #a67c00;
+  font-size: 18px;
+  margin-bottom: 15px;
+}
+
+.detail-item {
+  margin-bottom: 10px;
+  font-size: 16px;
+}
+
+.detail-item span:first-child {
+  font-weight: bold;
+}
+
+.payment-icon {
+  text-align: center;
+  margin-top: 30px;
+}
+
+.payment-icon img {
+  width: 350px;
+  height: 350px;
+}
+
+.upload-section {
+  flex: 1;
+  padding-left: 20px;
+  border-left: 2px solid #ddd;
+}
+
+.upload-section h2 {
+  color: #4a8f29;
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+.upload-section > p {
+  color: #4a8f29;
+  margin-bottom: 20px;
+}
+
+.terms-section {
+  margin-bottom: 20px;
+}
+
+.terms-section h4 {
+  color: #e74c3c;
+  margin-bottom: 10px;
+}
+
+.terms-section ol {
+  padding-left: 20px;
+}
+
+.terms-section li {
+  margin-bottom: 5px;
+  font-size: 14px;
+}
+
+.file-upload {
+  margin: 20px 0;
+}
+
+.file-upload input[type="file"] {
+  display: none;
+}
+
+.file-upload label {
+  display: inline-block;
+  padding: 10px 50px;
+  background-color: #4CAF50;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-right: 10px;
+}
+
+.file-upload span {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.upload-status {
+  color: #e74c3c;
+  font-size: 14px;
+}
+
+.action-buttons {
+  display: flex;
+  justify-content: space-between;
+  padding: 20px;
+}
+
+.back-button {
+  background-color: #f1c40f;
+  color: black;
+  border: none;
+  padding: 10px 30px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+}
+
+.back-button::before {
+  content: "\u2190";
+  margin-right: 10px;
+}
+
+.continue-button {
+  background-color: #f1c40f;
+  color: black;
+  border: none;
+  padding: 10px 30px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.footer-nav {
+  display: flex;
+  justify-content: space-around;
+  padding: 15px 0;
+  background-color: #f8f4e3;
+  border-top: 1px solid #ddd;
+}
+
+.nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+}
+
+.nav-item img {
+  width: 24px;
+  height: 24px;
+  margin-bottom: 5px;
+}
+
+@media (max-width: 768px) {
+  .payment-content {
+      flex-direction: column;
+  }
+  
+  .payment-details {
+      padding-right: 0;
+      margin-bottom: 30px;
+  }
+  
+  .upload-section {
+      padding-left: 0;
+      border-left: none;
+      border-top: 1px solid #ddd;
+      padding-top: 20px;
+  }
+}
