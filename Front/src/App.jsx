@@ -21,6 +21,11 @@ import ResetPassword from './pages/Profile/ResetPassword';
 import AccountDetails from './pages/Profile/AccountDetails';
 
 
+//Loyalty-points
+import Loyalty from './pages/loyalty-point/Loyalty.jsx';
+import Loyalty1 from './pages/loyalty-point/Loyalty1.jsx';
+
+
 
 const App = () => {
   return (
@@ -48,6 +53,11 @@ const App = () => {
         <Route path='/login' element={<Login/>}/>
         <Route path='/reset-password' element={<ResetPassword/>}/>
         <Route path='/account-details' element={<AccountDetails/>}/>
+
+
+        
+        <Route path='/loyalty' element={<Loyalty/>}/>
+        <Route path='/loyalty1' element={<Loyalty1/>}/>
         
       </Routes>
     </>
