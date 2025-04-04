@@ -1,6 +1,8 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route, Link, useNavigate } from "react-router-dom";
 
+import { ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 
 import "./styles/App.css";
 import Navbar from "./components/Navbar";
@@ -21,15 +23,21 @@ import FlowerDeliveryPage from './pages/Delivery/FlowerDeliveryPage';
 import AdminDeliveryForm from "./pages/Delivery/AdminDeliveryForm";
 import AdminDeliveryTable from "./pages/Delivery/AdminDeliveryTable";
 
+//Profile
+import Login from './pages/Profile/Login';
+import ResetPassword from './pages/Profile/ResetPassword';
+import AccountDetails from './pages/Profile/AccountDetails';
+
 
 
 const App = () => {
   return (
-    <Router>
+    <>
       <Navbar />
 
 
       {/* Routes */}
+      <ToastContainer/>
       <Routes>
 
         
@@ -54,11 +62,15 @@ const App = () => {
         <Route path="/delivery" element={<FlowerDeliveryPage />} />
         <Route path="/admin" element={<AdminDeliveryForm />} />
         <Route path="/admintable" element={<AdminDeliveryTable />} />
-       
-       
+
+        
+        <Route path='/login' element={<Login/>}/>
+        <Route path='/reset-password' element={<ResetPassword/>}/>
+        <Route path='/account-details' element={<AccountDetails/>}/>
+
         
       </Routes>
-    </Router>
+    </>
   );
 };
 
