@@ -46,7 +46,9 @@ const AccountDetails = () => {
           'Authorization': `Bearer ${token}`
         }
       });
+
 console.log(token)
+
       const userData = {
         ...response.data,
         firstName: response.data.name?.split(' ')[0] || '',

@@ -19,7 +19,7 @@ const Login = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState({});
 
-  // 👇 Redirect if already logged in
+  // Redirect if already logged in
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (token) {
@@ -27,7 +27,7 @@ const Login = () => {
     }
   }, [navigate]);
 
-  // 👇 Validate form inputs
+  // Validate form inputs
   const validateForm = () => {
     const newErrors = {};
 
@@ -65,6 +65,7 @@ const Login = () => {
 
   const handleAuthSubmit = async (e) => {
     e.preventDefault();
+
     if (!validateForm()) return;
 
     setIsSubmitting(true);
@@ -85,15 +86,14 @@ const Login = () => {
       );
 
       if (response.data?.token) {
+        // Store token and update auth state
         localStorage.setItem('token', response.data.token);
         axios.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`;
+
         await getUserData();
         setIsLoggedIn(true);
 
-        toast.success(authState === 'register'
-          ? 'Registration successful!'
-          : 'Login successful!');
-        
+        toast.success(authState === 'register' ? 'Registration successful!' : 'Login successful!');
         navigate('/account-details', { replace: true });
       } else {
         toast.error(response.data?.message || 'Authentication failed');
@@ -116,7 +116,7 @@ const Login = () => {
   };
 
   const toggleAuthState = () => {
-    setAuthState(prev => prev === 'login' ? 'register' : 'login');
+    setAuthState(prev => (prev === 'login' ? 'register' : 'login'));
     setErrors({});
   };
 
@@ -137,7 +137,7 @@ const Login = () => {
           <form onSubmit={handleAuthSubmit} noValidate>
             {authState === 'register' && (
               <div className="input-container">
-                <img src={assets.person_icon} alt="Name" />
+                <img src={assets.person_icon} alt="Name" aria-hidden="true" />
                 <input
                   name="name"
                   onChange={handleInputChange}
@@ -153,7 +153,7 @@ const Login = () => {
             )}
 
             <div className="input-container">
-              <img src={assets.mail_icon} alt="Email" />
+              <img src={assets.mail_icon} alt="Email" aria-hidden="true" />
               <input
                 name="email"
                 onChange={handleInputChange}
@@ -169,7 +169,7 @@ const Login = () => {
             </div>
 
             <div className="input-container">
-              <img src={assets.lock_icon} alt="Password" />
+              <img src={assets.lock_icon} alt="Password" aria-hidden="true" />
               <input
                 name="password"
                 onChange={handleInputChange}

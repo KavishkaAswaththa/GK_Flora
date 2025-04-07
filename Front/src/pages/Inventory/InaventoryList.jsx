@@ -38,6 +38,7 @@ const InventoryList = () => {
 
       <h1 className={styles["inventory-list__title"]}>Flower Bouquets</h1>
 
+
       {/* Inventory Items */}
       <div className={styles["inventory-list__grid"]}>
         {items.map((item) => (
