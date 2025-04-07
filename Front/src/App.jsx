@@ -29,6 +29,9 @@ import ResetPassword from './pages/Profile/ResetPassword';
 import AccountDetails from './pages/Profile/AccountDetails';
 
 
+//Review
+import ReviewForm from './pages/Review/ReviewForm.jsx';
+
 
 const App = () => {
   return (
@@ -53,6 +56,9 @@ const App = () => {
         
         <Route path="/cart" element={<h1>Cart Page</h1>} />
 
+
+        <Route path="/reviewForm" element={<ReviewForm />} />
+
         {/*delivery*/} 
         <Route path="/deliveryform" element={<DeliveryForm />} />
         <Route path="/order-confirmation" element={<OrderConfirmation />} />
@@ -67,6 +73,7 @@ const App = () => {
         <Route path='/login' element={<Login/>}/>
         <Route path='/reset-password' element={<ResetPassword/>}/>
         <Route path='/account-details' element={<AccountDetails/>}/>
+
 
         
       </Routes>
