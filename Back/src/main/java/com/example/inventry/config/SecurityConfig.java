@@ -36,10 +36,17 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(auth -> auth
-                        // Public GET endpoints
-                        .requestMatchers("/api/inventory", "/api/inventory/**", "/api/inventory/search/all").permitAll()
-                        .requestMatchers("/api/auth/**").permitAll()
-                        // Everything else needs authentication
+                        // Public endpoints (no token required)
+                        .requestMatchers(
+                                "/api/inventory",
+                                "/api/inventory/**",
+                                "/api/inventory/search/all",
+                                "/api/auth/**",
+                                "/api/v1/delivery/**",     // Allow all delivery endpoints
+                                "/api/bank-slips/**"       // Allow all bank slip endpoints
+                        ).permitAll()
+
+                        // All other endpoints require authentication
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

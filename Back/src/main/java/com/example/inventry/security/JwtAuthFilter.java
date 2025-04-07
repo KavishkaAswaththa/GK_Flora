@@ -39,9 +39,11 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         final String path = request.getRequestURI();
         final String method = request.getMethod();
 
-        // Public GET endpoints (no auth required)
+        // Public paths (no token required)
         if ((path.startsWith("/api/inventory") && method.equals("GET")) ||
-                path.startsWith("/api/auth/")) {
+                path.startsWith("/api/auth/") ||
+                path.startsWith("/api/v1/delivery") ||
+                path.startsWith("/api/bank-slips")) {
             filterChain.doFilter(request, response);
             return;
         }
