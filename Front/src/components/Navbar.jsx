@@ -38,7 +38,7 @@ const Navbar = () => {
         <Link to="/form" className="nav-item">
           Add Inventory
         </Link>
-        <Link to="/order-status" className="nav-item">
+        <Link to="/status" className="nav-item">
           Order Status
         </Link>
       </div>
