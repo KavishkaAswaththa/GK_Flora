@@ -1,14 +1,12 @@
 package com.example.inventry.controller;
 
 import com.example.inventry.entity.Inventory;
-//import com.example.inventry.entity.InventoryResponse;
 import com.example.inventry.service.ImageService;
 import com.example.inventry.service.InventoryService;
-import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -16,7 +14,7 @@ import java.io.IOException;
 import java.util.*;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:8080") // Allow only this origin
+@CrossOrigin(origins = "http://localhost:8080")
 @RequestMapping("/api/inventory")
 public class InventoryController {
 
@@ -26,6 +24,7 @@ public class InventoryController {
     @Autowired
     private ImageService imageService;
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/save")
     public ResponseEntity<String> saveInventoryWithImages(
             @RequestParam("files") MultipartFile[] files,
@@ -59,6 +58,7 @@ public class InventoryController {
         }
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @GetMapping("/{id}")
     public ResponseEntity<Map<String, Object>> getInventoryDetails(@PathVariable String id) {
         try {
@@ -67,19 +67,15 @@ public class InventoryController {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", "Inventory not found."));
             }
 
-            // Prepare images in base64 format
             List<Map<String, String>> images = new ArrayList<>();
             for (String imageId : inventory.getImageIds()) {
                 byte[] imageData = imageService.getImageById(imageId);
-                if (imageData != null) {
-                    String base64Image = Base64.getEncoder().encodeToString(imageData);
-                    images.add(Map.of("id", imageId, "base64", base64Image));
-                } else {
-                    images.add(Map.of("id", imageId, "base64", "Image not found"));
-                }
+                String base64Image = imageData != null
+                        ? Base64.getEncoder().encodeToString(imageData)
+                        : "Image not found";
+                images.add(Map.of("id", imageId, "base64", base64Image));
             }
 
-            // Prepare response map
             Map<String, Object> response = new HashMap<>();
             response.put("id", inventory.get_id());
             response.put("name", inventory.getName());
@@ -97,6 +93,7 @@ public class InventoryController {
         }
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @GetMapping("/search/all")
     public ResponseEntity<List<Map<String, Object>>> getAllItems() {
         try {
@@ -130,6 +127,7 @@ public class InventoryController {
         }
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/update")
     public ResponseEntity<String> updateInventoryWithImages(
             @RequestParam("id") String id,
@@ -146,7 +144,6 @@ public class InventoryController {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Inventory item with ID " + id + " not found.");
             }
 
-            // Update inventory details
             existingInventory.setName(name);
             existingInventory.setCategory(category);
             existingInventory.setDescription(description);
@@ -154,7 +151,6 @@ public class InventoryController {
             existingInventory.setQty(qty);
             existingInventory.setBloomContains(bloomContains);
 
-            // If new images are provided, validate and update the images
             if (files != null && files.length > 0) {
                 if (files.length < 1 || files.length > 6) {
                     return ResponseEntity.badRequest().body("You must upload between 1 and 6 images.");
@@ -164,15 +160,14 @@ public class InventoryController {
                 existingInventory.setImageIds(newImageIds);
             }
 
-            // Save the updated inventory object
             inventoryService.save(existingInventory);
-
             return ResponseEntity.ok("Inventory updated successfully with ID: " + existingInventory.get_id());
         } catch (IOException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to update inventory!");
         }
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteInventory(@PathVariable String id) {
         try {
@@ -187,14 +182,10 @@ public class InventoryController {
         }
     }
 
-    /**
-     * Retrieve all inventory items (without image)
-     */
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @GetMapping
     public ResponseEntity<List<Inventory>> getAllInventories() {
-
         List<Inventory> inventories = inventoryService.getAllInventories();
         return ResponseEntity.ok(inventories);
     }
-
 }
