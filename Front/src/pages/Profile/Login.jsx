@@ -1,7 +1,7 @@
-import React, { useContext, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { assets } from '../../assets/Profile/assets';
 import { useNavigate } from 'react-router-dom';
-import { useAppContext } from '../../context/Profile/AppContext'; // Changed to custom hook
+import { useAppContext } from '../../context/Profile/AppContext';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import '../../styles/Profile/Login.css';
@@ -19,26 +19,34 @@ const Login = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState({});
 
+  // Redirect if already logged in
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      navigate('/account-details', { replace: true });
+    }
+  }, [navigate]);
+
   // Validate form inputs
   const validateForm = () => {
     const newErrors = {};
-    
+
     if (!formData.email.trim()) {
       newErrors.email = 'Email is required';
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
       newErrors.email = 'Please enter a valid email';
     }
-    
+
     if (!formData.password) {
       newErrors.password = 'Password is required';
     } else if (formData.password.length < 6) {
       newErrors.password = 'Password must be at least 6 characters';
     }
-    
+
     if (authState === 'register' && !formData.name.trim()) {
       newErrors.name = 'Name is required';
     }
-    
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -49,8 +57,7 @@ const Login = () => {
       ...prev,
       [name]: value
     }));
-    
-    // Clear error when user types
+
     if (errors[name]) {
       setErrors(prev => ({ ...prev, [name]: '' }));
     }
@@ -58,25 +65,22 @@ const Login = () => {
 
   const handleAuthSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!validateForm()) return;
-    
+
     setIsSubmitting(true);
-    
+
     try {
       const endpoint = authState === 'register' ? 'register' : 'login';
-      const payload = authState === 'register' ? formData : {
-        email: formData.email,
-        password: formData.password
-      };
+      const payload = authState === 'register'
+        ? formData
+        : { email: formData.email, password: formData.password };
 
       const response = await axios.post(
         `${backendUrl}/api/auth/${endpoint}`,
         payload,
         {
-          headers: {
-            'Content-Type': 'application/json'
-          },
+          headers: { 'Content-Type': 'application/json' },
           withCredentials: true
         }
       );
@@ -85,20 +89,18 @@ const Login = () => {
         // Store token and update auth state
         localStorage.setItem('token', response.data.token);
         axios.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`;
-        
+
         await getUserData();
         setIsLoggedIn(true);
-        
-        toast.success(authState === 'register' ? 
-          'Registration successful!' : 'Login successful!');
-        navigate('/', { replace: true });
+
+        toast.success(authState === 'register' ? 'Registration successful!' : 'Login successful!');
+        navigate('/account-details', { replace: true });
       } else {
         toast.error(response.data?.message || 'Authentication failed');
       }
     } catch (error) {
       console.error('Authentication error:', error);
-      
-      // Handle different error types
+
       if (error.response?.data?.errors) {
         setErrors(error.response.data.errors);
       } else if (error.response?.data?.message) {
@@ -114,12 +116,13 @@ const Login = () => {
   };
 
   const toggleAuthState = () => {
-    setAuthState(prev => prev === 'login' ? 'register' : 'login');
+    setAuthState(prev => (prev === 'login' ? 'register' : 'login'));
     setErrors({});
   };
 
   return (
     <div className="login-page">
+
 
   <div className="login-container">
     {authState === 'register' && (
@@ -192,6 +195,36 @@ const Login = () => {
             className="forgot-password"
           >
             Forgot password?
+
+
+              </p>
+            )}
+
+            <button
+              type="submit"
+              className="login-button"
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? (
+                <span className="spinner">Processing...</span>
+              ) : (
+                authState === 'register' ? 'Sign Up' : 'Sign In'
+              )}
+            </button>
+          </form>
+
+          <p className="switch-text">
+            {authState === 'register'
+              ? 'Already have an account? '
+              : "Don't have an account? "}
+            <span
+              onClick={toggleAuthState}
+              className="switch-link"
+              style={{ cursor: 'pointer' }}
+            >
+              {authState === 'register' ? 'Sign in' : 'Sign up'}
+            </span>
+
           </p>
         )}
 

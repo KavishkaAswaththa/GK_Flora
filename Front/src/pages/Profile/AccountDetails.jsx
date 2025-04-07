@@ -47,6 +47,8 @@ const AccountDetails = () => {
         }
       });
 
+console.log(token)
+
       const userData = {
         ...response.data,
         firstName: response.data.name?.split(' ')[0] || '',

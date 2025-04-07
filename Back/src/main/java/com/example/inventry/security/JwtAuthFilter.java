@@ -31,46 +31,51 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     }
 
     @Override
-    protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain)
-            throws ServletException, IOException {
-        try {
-            final String authHeader = request.getHeader("Authorization");
-            
-            // Skip authentication for public endpoints
-            if (request.getRequestURI().startsWith("/api/auth/")) {
+    protected void doFilterInternal(
+            @NonNull HttpServletRequest request,
+            @NonNull HttpServletResponse response,
+            @NonNull FilterChain filterChain) throws ServletException, IOException {
+
+        final String path = request.getRequestURI();
+        final String method = request.getMethod();
+
+        // Public paths (no token required)
+        if ((path.startsWith("/api/inventory") && method.equals("GET")) ||
+                path.startsWith("/api/auth/") ||
+                path.startsWith("/api/v1/delivery") ||
+                path.startsWith("/api/bank-slips")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+        final String authHeader = request.getHeader("Authorization");
+
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            sendErrorResponse(response, "No token provided", HttpStatus.UNAUTHORIZED);
+            return;
+        }
+
+        final String jwt = authHeader.substring(7);
+        final String userEmail = jwtService.extractUsername(jwt);
+
+        if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+            UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
+
+            if (jwtService.validateToken(jwt, userDetails)) {
+                SecurityContextHolder.getContext().setAuthentication(jwtService.getAuthentication(jwt, userDetails));
                 filterChain.doFilter(request, response);
                 return;
             }
-
-            if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-                sendErrorResponse(response, "No token provided", HttpStatus.UNAUTHORIZED);
-                return;
-            }
-
-            final String jwt = authHeader.substring(7);
-            final String userEmail = jwtService.extractUsername(jwt);
-
-            if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
-                
-                if (jwtService.validateToken(jwt, userDetails)) {
-                    SecurityContextHolder.getContext().setAuthentication(jwtService.getAuthentication(jwt, userDetails));
-                    filterChain.doFilter(request, response);
-                    return;
-                }
-            }
-
-            sendErrorResponse(response, "Invalid token", HttpStatus.UNAUTHORIZED);
-        } catch (Exception e) {
-            sendErrorResponse(response, "Authentication failed: " + e.getMessage(), HttpStatus.UNAUTHORIZED);
         }
+
+        sendErrorResponse(response, "Invalid token", HttpStatus.UNAUTHORIZED);
     }
 
     private void sendErrorResponse(HttpServletResponse response, String message, HttpStatus status) throws IOException {
         response.setStatus(status.value());
         response.setContentType("application/json");
         response.getWriter().write(objectMapper.writeValueAsString(
-            Map.of("success", false, "message", message)
+                Map.of("success", false, "message", message)
         ));
     }
 }
