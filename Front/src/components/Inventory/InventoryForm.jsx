@@ -22,8 +22,9 @@ const InventoryForm = ({ onSuccess }) => {
   });
 
   const [imagePreviews, setImagePreviews] = useState([]);
-  const [searchId, setSearchId] = useState("");
   const [isUpdate, setIsUpdate] = useState(false);
+
+  const bloomTags = ["Occasion", "Birthday", "Graduation", "Romance", "W", "E", "R", "T", "Y"];
 
   useEffect(() => {
     if (id) {
@@ -68,6 +69,15 @@ const InventoryForm = ({ onSuccess }) => {
 
     const previews = files.map((file) => URL.createObjectURL(file));
     setImagePreviews(previews);
+  };
+
+  const handleTagClick = (tag) => {
+    const current = formData.bloomContains.split(",").filter(Boolean);
+    const updated = current.includes(tag)
+      ? current.filter((t) => t !== tag)
+      : [...current, tag];
+
+    setFormData({ ...formData, bloomContains: updated.join(",") });
   };
 
   const handleSubmit = async (e) => {
@@ -123,7 +133,13 @@ const InventoryForm = ({ onSuccess }) => {
         </div>
         <div>
           <label>Category:</label>
-          <input type="text" name="category" value={formData.category} onChange={handleInputChange} required />
+          <select name="category" value={formData.category} onChange={handleInputChange} required>
+            <option value="">-- Select Category --</option>
+            <option value="Occasion">Occasion</option>
+            <option value="Birthday">Birthday</option>
+            <option value="Graduation">Graduation</option>
+            <option value="Romance">Romance</option>
+          </select>
         </div>
         <div>
           <label>Description:</label>
@@ -139,7 +155,19 @@ const InventoryForm = ({ onSuccess }) => {
         </div>
         <div>
           <label>Bloom Contains:</label>
-          <input type="text" name="bloomContains" value={formData.bloomContains} onChange={handleInputChange} required />
+          <div className="tag-selector">
+            {bloomTags.map((tag) => (
+              <button
+                type="button"
+                key={tag}
+                className={`tag-button ${formData.bloomContains.includes(tag) ? "selected" : ""}`}
+                onClick={() => handleTagClick(tag)}
+              >
+                {tag}
+              </button>
+            ))}
+          </div>
+          <small>Click to select multiple tags</small>
         </div>
         <div>
           <label>Images:</label>
