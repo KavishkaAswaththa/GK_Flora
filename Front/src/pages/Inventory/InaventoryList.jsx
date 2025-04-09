@@ -2,9 +2,6 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import styles from "../../styles/Inventory/InventoryList.module.css"; // Scoped styles
 import banner from "../../images/banner.jpg";
-import faqImage from "../../images/faq.png";
-import chatImage from "../../images/chat.png";
-import contactImage from "../../images/contact.png";
 
 const InventoryList = () => {
   const [items, setItems] = useState([]);
@@ -41,22 +38,6 @@ const InventoryList = () => {
 
       <h1 className={styles["inventory-list__title"]}>Flower Bouquets</h1>
 
-      {/* Delivery Links */}
-      <Link to="/CustomerDeliveryForm" className={styles["inventory-list__delivery-link"]}>
-        Delivery Details
-      </Link>
-      <br />
-      <Link to="/Delivery" className={styles["inventory-list__delivery-link"]}>
-        Delivery List
-      </Link>
-      <br />
-      <Link to="/AdminDeliveryForm" className={styles["inventory-list__delivery-link"]}>
-        Admin Form
-      </Link>
-      <br />
-      <Link to="/DeliveryPerson" className={styles["inventory-list__delivery-link"]}>
-        Delivery Person
-      </Link>
 
       {/* Inventory Items */}
       <div className={styles["inventory-list__grid"]}>
@@ -68,33 +49,16 @@ const InventoryList = () => {
                 alt={item.name}
                 className={styles["inventory-list__image"]}
               />
+              </div>
               <div className={styles["inventory-list__content"]}>
                 <h2 className={styles["inventory-list__name"]}>{item.name}</h2>
                 <p className={styles["inventory-list__price"]}>
                   <strong>Price:</strong> LKR {item.price}
                 </p>
               </div>
-            </div>
+            
           </Link>
         ))}
-      </div>
-
-      {/* Footer */}
-      <div className={styles["inventory-list__footer"]}>
-        <div className={styles["inventory-list__footer-icons"]}>
-          <Link to="/faq" className={styles["inventory-list__footer-link"]}>
-            <img src={faqImage} alt="FAQ" className={styles["inventory-list__footer-img"]} />
-            <span className={styles["inventory-list__footer-text"]}>FAQ</span>
-          </Link>
-          <Link to="/chat" className={styles["inventory-list__footer-link"]}>
-            <img src={chatImage} alt="Chat" className={styles["inventory-list__footer-img"]} />
-            <span className={styles["inventory-list__footer-text"]}>Chat</span>
-          </Link>
-          <Link to="/contact" className={styles["inventory-list__footer-link"]}>
-            <img src={contactImage} alt="Contact" className={styles["inventory-list__footer-img"]} />
-            <span className={styles["inventory-list__footer-text"]}>Contact</span>
-          </Link>
-        </div>
       </div>
     </div>
   );

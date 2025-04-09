@@ -1,58 +1,68 @@
+/* InventoryForm.css */
+
 .inventory-form {
-  max-width: 700px;
-  margin: 20px auto;
-  padding: 20px;
-  background-color: white;
-  border-radius: 15px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  max-width: 800px;
+  margin: 40px auto;
+  padding: 30px;
+  background: #fffbea;
+  border-radius: 20px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-.inventory-form div {
-  margin-bottom: 15px;
+.inventory-form form > div {
+  margin-bottom: 20px;
 }
 
 .inventory-form label {
   display: block;
-  font-weight: bold;
-  margin-bottom: 5px;
-  color: #333;
+  margin-bottom: 6px;
+  font-weight: 600;
+  color: #444;
 }
 
-.inventory-form input,
-.inventory-form textarea {
+.inventory-form input[type="text"],
+.inventory-form input[type="number"],
+.inventory-form textarea,
+.inventory-form select {
   width: 100%;
-  padding: 10px;
-  font-size: 1em;
-  border: 1px solid #939393;
-  border-radius: 15px;
-  resize: none;
-  background-color: white;
-  color: black;
+  padding: 10px 12px;
+  border: 2px solid #ffd60a;
+  border-radius: 8px;
+  background-color: #fffdf1;
+  font-size: 1rem;
+  transition: 0.3s ease;
+}
+
+.inventory-form input[type="text"]:focus,
+.inventory-form input[type="number"]:focus,
+.inventory-form textarea:focus,
+.inventory-form select:focus {
+  border-color: #ffb800;
+  outline: none;
+  background-color: #fff8d6;
+  box-shadow: 0 0 0 3px rgba(255, 184, 0, 0.2);
 }
 
 .inventory-form textarea {
-  height: 100px;
-  font-family: Arial, sans-serif;
+  min-height: 80px;
+  resize: vertical;
 }
 
-.inventory-form button {
-  display: inline-block;
-  padding: 10px 20px;
-  font-size: 1em;
-  background-color: #28a745;
-  color: white;
-  border: none;
-  border-radius: 15px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
+.inventory-form input[type="file"] {
+  margin-top: 8px;
 }
 
-.inventory-form button:hover {
-  background-color: #218838;
+.inventory-form small {
+  display: block;
+  margin-top: 5px;
+  font-size: 0.85rem;
+  color: #666;
 }
 
 .inventory-form .image-previews {
   display: flex;
+  flex-wrap: wrap;
   gap: 10px;
   margin-top: 10px;
 }
@@ -61,6 +71,71 @@
   width: 100px;
   height: 100px;
   object-fit: cover;
-  border: 1px solid #ddd;
-  border-radius: 5px;
+  border-radius: 10px;
+  border: 2px solid #ffd60a;
+  transition: transform 0.3s ease;
 }
+
+.inventory-form .image-previews img:hover {
+  transform: scale(1.1);
+}
+
+.inventory-form button[type="submit"] {
+  background-color: #ffd60a;
+  color: #333;
+  padding: 12px 25px;
+  font-size: 1rem;
+  font-weight: bold;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.inventory-form button[type="submit"]:hover {
+  background-color: #ffcc00;
+  transform: scale(1.05);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .inventory-form {
+    padding: 20px;
+  }
+
+  .inventory-form .image-previews img {
+    width: 80px;
+    height: 80px;
+  }
+}
+
+
+/* Bloom Contains Tags */
+.tag-selector {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 6px;
+}
+
+.tag-button {
+  padding: 8px 16px;
+  border: 2px solid #ffd60a;
+  border-radius: 20px;
+  background-color: #fffdf1;
+  color: #333;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s, transform 0.2s;
+}
+
+.tag-button.selected {
+  background-color: #ffd60a;
+  color: #000;
+  transform: scale(1.05);
+}
+
+.tag-button:hover {
+  background-color: #ffeb83;
+}
+ 
