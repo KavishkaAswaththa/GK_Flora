@@ -34,13 +34,14 @@ const MyOrdersPage = () => {
           <div className="status-tab">
             <div className="status-icon unpaid">
               <img src="src/images/delivery/unpaid.png" alt="Unpaid" />
-              <span className="badge">1</span>
+              
             </div>
             <p>Unpaid</p>
           </div>
           <div className="status-tab">
             <div className="status-icon to-be-shipped">
               <img src="src/images/delivery/to-be-shipped.png" alt="To be Shipped" />
+              <span className="badge">1</span>
             </div>
             <p>To be Shipped</p>
           </div>

@@ -23,6 +23,7 @@ import FlowerDeliveryPage from './pages/Delivery/FlowerDeliveryPage';
 import AdminDeliveryForm from "./pages/Delivery/AdminDeliveryForm";
 import AdminDeliveryTable from "./pages/Delivery/AdminDeliveryTable";
 
+
 //Profile
 import Login from './pages/Profile/Login';
 import ResetPassword from './pages/Profile/ResetPassword';
@@ -75,6 +76,9 @@ const App = () => {
         <Route path="/delivery" element={<FlowerDeliveryPage />} />
         <Route path="/admin" element={<AdminDeliveryForm />} />
         <Route path="/admintable" element={<AdminDeliveryTable />} />
+        <Route path="/admintable" element={<AdminDeliveryTable />} />
+       
+        
 
         
         <Route path='/login' element={<Login/>}/>
