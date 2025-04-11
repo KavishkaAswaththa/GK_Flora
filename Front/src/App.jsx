@@ -8,6 +8,8 @@ import "./styles/App.css";
 import Navbar from "./components/Navbar";
 
 
+import Home from "./pages/Home";
+
 //Inventory
 import AdminDashboard from "./pages/Inventory/AdminDashboard";
 import InventoryForm from "./components/Inventory/InventoryForm";
@@ -52,7 +54,9 @@ const App = () => {
       <Routes>
 
         
-        <Route path="/" element={<InventoryList />} />
+        <Route path="/" element={<Home />} />
+
+        <Route path="/inventory" element={<InventoryList />} />
         <Route path="/admindashboard" element={<AdminDashboard />} />
         <Route path="/form" element={<InventoryFormWrapper />} />
         <Route path="/inventory/edit/:id" element={<InventoryForm />} />

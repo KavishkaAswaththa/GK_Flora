@@ -5,17 +5,19 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.stereotype.Component;
 import org.springframework.lang.NonNull;
 import org.springframework.http.HttpStatus;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.Map;
+import java.util.*;
 
 @Component
 public class JwtAuthFilter extends OncePerRequestFilter {
@@ -23,6 +25,11 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     private final JwtService jwtService;
     private final UserDetailsService userDetailsService;
     private final ObjectMapper objectMapper;
+
+    private static final Set<String> ADMIN_EMAILS = Set.of(
+            "gamindumpasan1997@gmail.com",
+            "kavindiyapa1999@gmail.com"
+    );
 
     public JwtAuthFilter(JwtService jwtService, UserDetailsService userDetailsService) {
         this.jwtService = jwtService;
@@ -45,7 +52,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                     path.startsWith("/api/auth/") ||
                     path.startsWith("/api/v1/delivery") ||
                     path.startsWith("/api/bank-slips")) {
-
                 filterChain.doFilter(request, response);
                 return;
             }
@@ -61,10 +67,18 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             final String userEmail = jwtService.extractUsername(jwt);
 
             if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
+                UserDetails userDetails = userDetailsService.loadUserByUsername(userEmail);
 
                 if (jwtService.validateToken(jwt, userDetails)) {
-                    SecurityContextHolder.getContext().setAuthentication(jwtService.getAuthentication(jwt, userDetails));
+                    // Assign roles
+                    List<SimpleGrantedAuthority> authorities = new ArrayList<>();
+                    if (ADMIN_EMAILS.contains(userEmail)) {
+                        authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
+                    }
+                    authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
+
+                    var auth = new UsernamePasswordAuthenticationToken(userDetails, null, authorities);
+                    SecurityContextHolder.getContext().setAuthentication(auth);
                     filterChain.doFilter(request, response);
                     return;
                 }

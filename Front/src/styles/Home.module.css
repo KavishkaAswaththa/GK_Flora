@@ -1,0 +1,124 @@
+.home {
+    font-family: "Segoe UI", sans-serif;
+    background-color: #fff8e1;
+    color: #333;
+  }
+  
+  /* Banner Section */
+  .banner {
+    position: relative;
+    width: 100%;
+    height: 400px;
+    overflow: hidden;
+    border-radius: 0 0 32px 32px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+  
+  .bannerImage {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: brightness(85%);
+  }
+  
+  .bannerText {
+    position: absolute;
+    top: 50%;
+    left: 10%;
+    transform: translateY(-50%);
+    color: #fff;
+    max-width: 600px;
+  }
+  
+  .bannerText h1 {
+    font-size: 3rem;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+  }
+  
+  .bannerText p {
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+  }
+  
+  .bannerButton {
+    background-color: #fdd835;
+    color: #333;
+    padding: 12px 24px;
+    font-weight: 600;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: 0.3s;
+  }
+  
+  .bannerButton:hover {
+    background-color: #fbc02d;
+  }
+  
+  /* About Section */
+  .about {
+    text-align: center;
+    padding: 50px 20px;
+    background-color: #fffde7;
+  }
+  
+  .about h2 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    color: #fbc02d;
+  }
+  
+  .about p {
+    font-size: 1.1rem;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  
+  /* Featured Section */
+  .featured {
+    padding: 50px 20px;
+    text-align: center;
+  }
+  
+  .featured h2 {
+    font-size: 2rem;
+    color: #fdd835;
+    margin-bottom: 1.5rem;
+  }
+  
+  /* Call to Action */
+  .cta {
+    background-color: #fffde7;
+    padding: 40px 20px;
+    text-align: center;
+  }
+  
+  .cta h2 {
+    margin-bottom: 20px;
+    font-size: 1.8rem;
+  }
+  
+  .ctaButton {
+    padding: 12px 28px;
+    background-color: #fdd835;
+    color: #000;
+    text-decoration: none;
+    font-weight: bold;
+    border-radius: 10px;
+    transition: 0.3s ease;
+  }
+  
+  .ctaButton:hover {
+    background-color: #fbc02d;
+  }
+  
+  /* Footer */
+  .footer {
+    background-color: #fdd835;
+    padding: 15px;
+    text-align: center;
+    font-size: 0.9rem;
+    color: #333;
+    border-top: 1px solid #fbc02d;
+  }
+  

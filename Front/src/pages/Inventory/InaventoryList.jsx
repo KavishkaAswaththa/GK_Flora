@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import styles from "../../styles/Inventory/InventoryList.module.css"; // Scoped styles
-import banner from "../../images/banner.jpg";
 
 const InventoryList = () => {
   const [items, setItems] = useState([]);
@@ -31,32 +30,28 @@ const InventoryList = () => {
 
   return (
     <div className={styles["inventory-list"]}>
-      {/* Banner */}
-      <div className={styles["inventory-list__banner"]}>
-        <img src={banner} alt="Banner" className={styles["inventory-list__banner-image"]} />
-      </div>
+      <h1 className={styles["inventory-list__title"]}>All Bouquets</h1>
 
-      <h1 className={styles["inventory-list__title"]}>Flower Bouquets</h1>
-
-
-      {/* Inventory Items */}
       <div className={styles["inventory-list__grid"]}>
         {items.map((item) => (
-          <Link to={`/inventory/${item.id}`} key={item.id} className={styles["inventory-list__card-link"]}>
+          <Link
+            to={`/inventory/${item.id}`}
+            key={item.id}
+            className={styles["inventory-list__card-link"]}
+          >
             <div className={styles["inventory-list__card"]}>
               <img
                 src={`data:image/jpeg;base64,${item.image}`}
                 alt={item.name}
                 className={styles["inventory-list__image"]}
               />
-              </div>
               <div className={styles["inventory-list__content"]}>
                 <h2 className={styles["inventory-list__name"]}>{item.name}</h2>
                 <p className={styles["inventory-list__price"]}>
                   <strong>Price:</strong> LKR {item.price}
                 </p>
               </div>
-            
+            </div>
           </Link>
         ))}
       </div>
