@@ -4,12 +4,14 @@ import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 
 @Service
 public class EmailService {
@@ -65,6 +67,22 @@ public class EmailService {
         } catch (Exception e) {
             logger.error("Failed to send slip to admin: {}. Error: {}", adminEmail, e.getMessage());
             throw new RuntimeException("Failed to send slip: " + e.getMessage());
+        }
+    }
+
+    // Low stock alert to admins
+    public void sendLowStockAlert(String itemName, int qty, List<String> adminEmails) {
+        for (String email : adminEmails) {
+            try {
+                SimpleMailMessage message = new SimpleMailMessage();
+                message.setTo(email);
+                message.setSubject("⚠️ Low Stock Alert: " + itemName);
+                message.setText("The item \"" + itemName + "\" is low in stock. Current quantity: " + qty);
+                mailSender.send(message);
+                logger.info("Low stock alert sent to admin: {}", email);
+            } catch (Exception e) {
+                logger.error("Failed to send low stock alert to: {}. Error: {}", email, e.getMessage());
+            }
         }
     }
 }

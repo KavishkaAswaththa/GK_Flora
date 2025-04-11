@@ -27,7 +27,7 @@ const Login = () => {
     }
   }, [navigate]);
 
-  // Validate form inputs
+  // Form validation
   const validateForm = () => {
     const newErrors = {};
 
@@ -86,7 +86,6 @@ const Login = () => {
       );
 
       if (response.data?.token) {
-        // Store token and update auth state
         localStorage.setItem('token', response.data.token);
         axios.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`;
 
@@ -122,81 +121,77 @@ const Login = () => {
 
   return (
     <div className="login-page">
-
-
-  <div className="login-container">
-    {authState === 'register' && (
-      <div className="login-image-container">
-        <img src={assets.background} alt="Visual" />
-      </div>
-    )}
-
-    <div className="login-box">
-      <h2 className="login-title">
-        {authState === 'register' ? 'Create Account' : 'Welcome GK Flora'}
-      </h2>
-
-      <p className="login-subtitle">
-        {authState === 'register'
-          ? 'Join our community today'
-          : 'Sign in to continue your journey'}
-      </p>
-
-      <form onSubmit={handleAuthSubmit} noValidate>
+      <div className="login-container">
         {authState === 'register' && (
-          <div className="input-container">
-            <img src={assets.person_icon} alt="Name" />
-            <input
-              name="name"
-              onChange={handleInputChange}
-              value={formData.name}
-              type="text"
-              placeholder="Full Name"
-              className={errors.name ? 'input-error' : ''}
-              disabled={isSubmitting}
-            />
-            {errors.name && <span className="error-message">{errors.name}</span>}
+          <div className="login-image-container">
+            <img src={assets.background} alt="Visual" />
           </div>
         )}
 
-        <div className="input-container">
-          <img src={assets.mail_icon} alt="Email" />
-          <input
-            name="email"
-            onChange={handleInputChange}
-            value={formData.email}
-            type="email"
-            placeholder="Email Address"
-            className={errors.email ? 'input-error' : ''}
-            disabled={isSubmitting}
-            autoComplete="username"
-          />
-          {errors.email && <span className="error-message">{errors.email}</span>}
-        </div>
+        <div className="login-box">
+          <h2 className="login-title">
+            {authState === 'register' ? 'Create Account' : 'Welcome GK Flora'}
+          </h2>
 
-        <div className="input-container">
-          <img src={assets.lock_icon} alt="Password" />
-          <input
-            name="password"
-            onChange={handleInputChange}
-            value={formData.password}
-            type="password"
-            placeholder="Password"
-            className={errors.password ? 'input-error' : ''}
-            disabled={isSubmitting}
-            autoComplete={authState === 'register' ? 'new-password' : 'current-password'}
-          />
-          {errors.password && <span className="error-message">{errors.password}</span>}
-        </div>
+          <p className="login-subtitle">
+            {authState === 'register'
+              ? 'Join our community today'
+              : 'Sign in to continue your journey'}
+          </p>
 
-        {authState === 'login' && (
-          <p
-            onClick={() => navigate('/reset-password')}
-            className="forgot-password"
-          >
-            Forgot password?
+          <form onSubmit={handleAuthSubmit} noValidate>
+            {authState === 'register' && (
+              <div className="input-container">
+                <img src={assets.person_icon} alt="Name" />
+                <input
+                  name="name"
+                  onChange={handleInputChange}
+                  value={formData.name}
+                  type="text"
+                  placeholder="Full Name"
+                  className={errors.name ? 'input-error' : ''}
+                  disabled={isSubmitting}
+                />
+                {errors.name && <span className="error-message">{errors.name}</span>}
+              </div>
+            )}
 
+            <div className="input-container">
+              <img src={assets.mail_icon} alt="Email" />
+              <input
+                name="email"
+                onChange={handleInputChange}
+                value={formData.email}
+                type="email"
+                placeholder="Email Address"
+                className={errors.email ? 'input-error' : ''}
+                disabled={isSubmitting}
+                autoComplete="username"
+              />
+              {errors.email && <span className="error-message">{errors.email}</span>}
+            </div>
 
+            <div className="input-container">
+              <img src={assets.lock_icon} alt="Password" />
+              <input
+                name="password"
+                onChange={handleInputChange}
+                value={formData.password}
+                type="password"
+                placeholder="Password"
+                className={errors.password ? 'input-error' : ''}
+                disabled={isSubmitting}
+                autoComplete={authState === 'register' ? 'new-password' : 'current-password'}
+              />
+              {errors.password && <span className="error-message">{errors.password}</span>}
+            </div>
+
+            {authState === 'login' && (
+              <p
+                onClick={() => navigate('/reset-password')}
+                className="forgot-password"
+              >
+                Forgot password?
               </p>
             )}
 
@@ -224,43 +219,16 @@ const Login = () => {
             >
               {authState === 'register' ? 'Sign in' : 'Sign up'}
             </span>
-
           </p>
+        </div>
+
+        {authState === 'login' && (
+          <div className="login-image-container">
+            <img src={assets.background} alt="Visual" />
+          </div>
         )}
-
-        <button
-          type="submit"
-          className="login-button"
-          disabled={isSubmitting}
-        >
-          {isSubmitting ? (
-            <span className="spinner">Processing...</span>
-          ) : (
-            authState === 'register' ? 'Sign Up' : 'Sign In'
-          )}
-        </button>
-      </form>
-
-      <p className="switch-text">
-        {authState === 'register'
-          ? 'Already have an account? '
-          : "Don't have an account? "}
-        <span
-          onClick={toggleAuthState}
-          className="switch-link"
-        >
-          {authState === 'register' ? 'Sign in' : 'Sign up'}
-        </span>
-      </p>
-    </div>
-
-    {authState === 'login' && (
-      <div className="login-image-container">
-        <img src={assets.background} alt="Visual" />
       </div>
-    )}
-  </div>
-</div>
+    </div>
   );
 };
 
