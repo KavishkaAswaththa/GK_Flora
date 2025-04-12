@@ -39,7 +39,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         final String path = request.getRequestURI();
         final String method = request.getMethod();
 
-        // Public paths (no token required)
+        // Skip JWT validation for public endpoints
         if ((path.startsWith("/api/inventory") && method.equals("GET")) ||
                 path.startsWith("/api/auth/") ||
                 path.startsWith("/api/v1/delivery") ||
@@ -62,14 +62,18 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
 
             if (jwtService.validateToken(jwt, userDetails)) {
-                SecurityContextHolder.getContext().setAuthentication(jwtService.getAuthentication(jwt, userDetails));
-                filterChain.doFilter(request, response);
+                SecurityContextHolder.getContext().setAuthentication(
+                        jwtService.getAuthentication(jwt, userDetails)
+                );
+            } else {
+                sendErrorResponse(response, "Invalid token", HttpStatus.UNAUTHORIZED);
                 return;
             }
         }
 
-        sendErrorResponse(response, "Invalid token", HttpStatus.UNAUTHORIZED);
+        filterChain.doFilter(request, response); // ✅ Always continue the chain if no explicit error
     }
+
 
     private void sendErrorResponse(HttpServletResponse response, String message, HttpStatus status) throws IOException {
         response.setStatus(status.value());

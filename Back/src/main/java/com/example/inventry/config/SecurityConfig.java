@@ -42,9 +42,10 @@ public class SecurityConfig {
                                 "/api/inventory/**",
                                 "/api/inventory/search/all",
                                 "/api/auth/**",
-                                "/api/v1/delivery/**",     // Allow all delivery endpoints
-                                "/api/bank-slips/**"       // Allow all bank slip endpoints
+                                "/api/v1/delivery/**",
+                                "/api/bank-slips/**"
                         ).permitAll()
+
 
                         // All other endpoints require authentication
                         .anyRequest().authenticated()

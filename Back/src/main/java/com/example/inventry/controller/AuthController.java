@@ -93,7 +93,7 @@ public class AuthController {
         }
     }
 
-    // ================= USER ENDPOINT =================
+    // ================= USER ENDPOINTS =================
 
     @GetMapping("/users/me")
     public ResponseEntity<?> getCurrentUser(@RequestHeader("Authorization") String token) {
@@ -106,13 +106,40 @@ public class AuthController {
                     "id", user.getId(),
                     "name", user.getName(),
                     "email", user.getEmail(),
-                    "isAccountVerified", user.getIsAccountVerified()
+                    "isAccountVerified", user.getIsAccountVerified(),
+                    "mobileNo", user.getMobileNo(),
+                    "birthday", user.getBirthday(),
+                    "avatarType", user.getAvatarType(),
+                    "address", user.getAddress()
             ));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(Map.of(
                     "success", false,
                     "message", "Invalid token or user not found"
             ));
+        }
+    }
+
+    @PutMapping("/users/update")
+    public ResponseEntity<?> updateUserProfile(@RequestHeader("Authorization") String token,
+                                               @RequestBody User updatedUser) {
+        try {
+            String email = jwtService.extractUsername(token.substring(7));
+            User existingUser = userRepository.findByEmail(email)
+                    .orElseThrow(() -> new RuntimeException("User not found"));
+
+            existingUser.setName(updatedUser.getName());
+            existingUser.setMobileNo(updatedUser.getMobileNo());
+            existingUser.setBirthday(updatedUser.getBirthday());
+            existingUser.setAvatarType(updatedUser.getAvatarType());
+            existingUser.setAddress(updatedUser.getAddress());
+
+            userRepository.save(existingUser);
+
+            return ResponseEntity.ok(new ApiResponse(true, "User profile updated successfully"));
+        } catch (Exception e) {
+            logger.error("User update failed: {}", e.getMessage());
+            return ResponseEntity.badRequest().body(new ApiResponse(false, e.getMessage()));
         }
     }
 
