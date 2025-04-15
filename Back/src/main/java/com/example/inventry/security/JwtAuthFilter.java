@@ -46,17 +46,17 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         final String path = request.getRequestURI();
         final String method = request.getMethod();
 
+
         try {
             // Public endpoints (no authentication needed)
             if ((path.startsWith("/api/inventory") && method.equals("GET")) ||
                     path.startsWith("/api/auth/") ||
                     path.startsWith("/api/v1/delivery") ||
-                    path.startsWith("/api/bank-slips") ||
-                    (path.equals("/api/flowers/all") && method.equals("GET")) ||
-                    (path.equals("/api/wrappingPapers") && method.equals("GET"))) {
+                    path.startsWith("/api/bank-slips")) {
                 filterChain.doFilter(request, response);
                 return;
             }
+
 
             final String authHeader = request.getHeader("Authorization");
 
@@ -71,39 +71,32 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                 UserDetails userDetails = userDetailsService.loadUserByUsername(userEmail);
 
+
                 if (jwtService.validateToken(jwt, userDetails)) {
                     // Assign roles
                     List<SimpleGrantedAuthority> authorities = new ArrayList<>();
-                    boolean isAdmin = ADMIN_EMAILS.contains(userEmail);
-
-                    if (isAdmin) {
+                    if (ADMIN_EMAILS.contains(userEmail)) {
                         authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
                     }
                     authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
-
-                    // Restrict flower and wrapping paper modification endpoints to admins only
-                    if (
-                            (path.startsWith("/api/flowers") || path.startsWith("/api/wrappingPapers")) &&
-                                    (method.equals("POST") || method.equals("PUT") || method.equals("DELETE")) &&
-                                    !isAdmin
-                    ) {
-                        sendErrorResponse(response, "Forbidden: Admin access required", HttpStatus.FORBIDDEN);
-                        return;
-                    }
 
                     var auth = new UsernamePasswordAuthenticationToken(userDetails, null, authorities);
                     SecurityContextHolder.getContext().setAuthentication(auth);
                     filterChain.doFilter(request, response);
                     return;
                 }
+
             }
+
 
             sendErrorResponse(response, "Invalid token", HttpStatus.UNAUTHORIZED);
 
         } catch (Exception e) {
             sendErrorResponse(response, "Authentication failed: " + e.getMessage(), HttpStatus.UNAUTHORIZED);
         }
+
     }
+
 
     private void sendErrorResponse(HttpServletResponse response, String message, HttpStatus status) throws IOException {
         response.setStatus(status.value());

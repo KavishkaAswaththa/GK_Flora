@@ -3,38 +3,39 @@ package com.example.inventry.entity;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.List;
-
 @Document(collection = "flowers")
 public class Flower {
     @Id
     private String id;
     private String name;
-    private List<String> imageIds;
+    private String imageUrl;
 
     public Flower() {}
 
-    public String getId() {
-        return id;
+    public Flower(String name, String imageUrl) {
+        this.name = name;
+        this.imageUrl = imageUrl;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    // ✅ Getters
+    public String getId() {
+        return id;
     }
 
     public String getName() {
         return name;
     }
 
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    // ✅ Setters (Added to fix errors)
     public void setName(String name) {
         this.name = name;
     }
 
-    public List<String> getImageIds() {
-        return imageIds;
-    }
-
-    public void setImageIds(List<String> imageIds) {
-        this.imageIds = imageIds;
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 }

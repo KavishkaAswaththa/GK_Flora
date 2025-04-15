@@ -37,10 +37,12 @@ import AccountDetails from './pages/Profile/AccountDetails';
 //Loyalty-points
 import Loyalty from './pages/loyalty-point/Loyalty.jsx';
 import Loyalty1 from './pages/loyalty-point/Loyalty1.jsx';
+import Loyalty2 from './pages/loyalty-point/Loyalty2.jsx';
 
 
 //Review
 import ReviewForm from './pages/Review/ReviewForm.jsx';
+
 
 //Review1
 import Review1 from './pages/Review1/Review2.jsx';
@@ -48,6 +50,7 @@ import Review1 from './pages/Review1/Review2.jsx';
 
 //Customization
 import FlowerCustomization from './pages/Customization/FlowerCustomization.jsx';
+
 
 
 
@@ -107,9 +110,8 @@ const App = () => {
         
         <Route path='/loyalty' element={<Loyalty/>}/>
         <Route path='/loyalty1' element={<Loyalty1/>}/>
+        <Route path='/loyalty2' element={<Loyalty2/>}/>
 
-        {/*Customization*/}
-        <Route path='/FlowerCustomization' element={<FlowerCustomization/>}/>
 
         
       </Routes>
