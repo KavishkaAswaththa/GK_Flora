@@ -37,6 +37,7 @@ import AccountDetails from './pages/Profile/AccountDetails';
 //Loyalty-points
 import Loyalty from './pages/loyalty-point/Loyalty.jsx';
 import Loyalty1 from './pages/loyalty-point/Loyalty1.jsx';
+import Loyalty2 from './pages/loyalty-point/Loyalty2.jsx';
 
 
 //Review
@@ -98,6 +99,8 @@ const App = () => {
         
         <Route path='/loyalty' element={<Loyalty/>}/>
         <Route path='/loyalty1' element={<Loyalty1/>}/>
+        <Route path='/loyalty2' element={<Loyalty2/>}/>
+
 
         
       </Routes>
