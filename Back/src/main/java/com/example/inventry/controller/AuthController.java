@@ -1,33 +1,32 @@
 package com.example.inventry.controller;
 
 import com.example.inventry.entity.*;
-import com.example.inventry.repo.UserRepository;
 import com.example.inventry.service.AuthService;
-import com.example.inventry.service.JwtService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;  // Add this import
+import org.springframework.web.bind.annotation.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.Map;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/auth")
 @CrossOrigin(origins = "http://localhost:5173")
 @RequiredArgsConstructor
 public class AuthController {
-
     private static final Logger logger = LoggerFactory.getLogger(AuthController.class);
     private final AuthService authService;
-    private final JwtService jwtService;
-    private final UserRepository userRepository;
 
+<<<<<<< Updated upstream
+    @PostMapping("/register")
+=======
     // ================= AUTH ENDPOINTS =================
 
     @PostMapping("/auth/register")
+    @PreAuthorize("hasRole('ADMIN')")  // Only admins can register users
+>>>>>>> Stashed changes
     public ResponseEntity<?> register(@RequestBody RegisterRequest request) {
         try {
             AuthResponse response = authService.register(request);
@@ -38,7 +37,7 @@ public class AuthController {
         }
     }
 
-    @PostMapping("/auth/login")
+    @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest request) {
         try {
             AuthResponse response = authService.login(request);
@@ -49,7 +48,7 @@ public class AuthController {
         }
     }
 
-    @PostMapping("/auth/logout")
+    @PostMapping("/logout")
     public ResponseEntity<?> logout(HttpServletRequest request, HttpServletResponse response) {
         try {
             authService.logout(request, response);
@@ -60,7 +59,7 @@ public class AuthController {
         }
     }
 
-    @GetMapping("/auth/validate")
+    @GetMapping("/validate")
     public ResponseEntity<?> validateToken(@RequestHeader("Authorization") String token) {
         try {
             boolean isValid = authService.isAuthenticated(extractToken(token));
@@ -71,7 +70,7 @@ public class AuthController {
         }
     }
 
-    @PostMapping("/auth/send-reset-otp")
+    @PostMapping("/send-reset-otp")
     public ResponseEntity<?> sendResetOtp(@RequestBody ResetOtpRequest request) {
         try {
             String result = authService.sendResetOtp(request.getEmail());
@@ -82,7 +81,7 @@ public class AuthController {
         }
     }
 
-    @PostMapping("/auth/reset-password")
+    @PostMapping("/reset-password")
     public ResponseEntity<?> resetPassword(@RequestBody ResetPasswordRequest request) {
         try {
             String result = authService.resetPassword(request.getOtp(), request.getNewPassword());
@@ -93,9 +92,12 @@ public class AuthController {
         }
     }
 
+<<<<<<< Updated upstream
+=======
     // ================= USER ENDPOINTS =================
-/*
+
     @GetMapping("/users/me")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")  // Users and admins can access
     public ResponseEntity<?> getCurrentUser(@RequestHeader("Authorization") String token) {
         try {
             String email = jwtService.extractUsername(token.substring(7));
@@ -121,6 +123,7 @@ public class AuthController {
     }
 
     @PutMapping("/users/update")
+    @PreAuthorize("hasRole('ADMIN')")  // Only admins can update user profiles
     public ResponseEntity<?> updateUserProfile(@RequestHeader("Authorization") String token,
                                                @RequestBody User updatedUser) {
         try {
@@ -142,9 +145,10 @@ public class AuthController {
             return ResponseEntity.badRequest().body(new ApiResponse(false, e.getMessage()));
         }
     }
-*/
+
     // ================= PRIVATE METHODS =================
 
+>>>>>>> Stashed changes
     private String extractToken(String authHeader) {
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             throw new IllegalArgumentException("Invalid authorization header");
