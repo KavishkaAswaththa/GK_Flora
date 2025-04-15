@@ -46,6 +46,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         final String path = request.getRequestURI();
         final String method = request.getMethod();
 
+
         try {
             // Public endpoints (no authentication needed)
             if ((path.startsWith("/api/inventory") && method.equals("GET")) ||
@@ -55,6 +56,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 filterChain.doFilter(request, response);
                 return;
             }
+
 
             final String authHeader = request.getHeader("Authorization");
 
@@ -69,6 +71,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                 UserDetails userDetails = userDetailsService.loadUserByUsername(userEmail);
 
+
                 if (jwtService.validateToken(jwt, userDetails)) {
                     // Assign roles
                     List<SimpleGrantedAuthority> authorities = new ArrayList<>();
@@ -82,14 +85,18 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                     filterChain.doFilter(request, response);
                     return;
                 }
+
             }
+
 
             sendErrorResponse(response, "Invalid token", HttpStatus.UNAUTHORIZED);
 
         } catch (Exception e) {
             sendErrorResponse(response, "Authentication failed: " + e.getMessage(), HttpStatus.UNAUTHORIZED);
         }
+
     }
+
 
     private void sendErrorResponse(HttpServletResponse response, String message, HttpStatus status) throws IOException {
         response.setStatus(status.value());
