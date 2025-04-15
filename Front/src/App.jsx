@@ -41,6 +41,9 @@ import Loyalty1 from './pages/loyalty-point/Loyalty1.jsx';
 //Review
 import ReviewForm from './pages/Review/ReviewForm.jsx';
 
+//Customization
+import FlowerCustomization from './pages/Customization/FlowerCustomization.jsx';
+
 
 
 const App = () => {
@@ -94,6 +97,9 @@ const App = () => {
         
         <Route path='/loyalty' element={<Loyalty/>}/>
         <Route path='/loyalty1' element={<Loyalty1/>}/>
+
+        {/*Customization*/}
+        <Route path='/FlowerCustomization' element={<FlowerCustomization/>}/>
 
         
       </Routes>
