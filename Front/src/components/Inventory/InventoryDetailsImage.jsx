@@ -131,7 +131,12 @@ const InventoryDetailsImage = () => {
 
           <div className="inventory-button-container">
             <button>ADD TO CART</button>
-            <button className="inventory-secondary-button">BUY IT NOW</button>
+            <button
+              className="inventory-secondary-button"
+              onClick={() => navigate("/login")}
+            >
+              BUY IT NOW
+            </button>
           </div>
         </div>
       </div>

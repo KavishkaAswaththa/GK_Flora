@@ -27,7 +27,7 @@ const Login = () => {
     }
   }, [navigate]);
 
-  // Validate form inputs
+  // Form validation
   const validateForm = () => {
     const newErrors = {};
 
@@ -86,7 +86,6 @@ const Login = () => {
       );
 
       if (response.data?.token) {
-        // Store token and update auth state
         localStorage.setItem('token', response.data.token);
         axios.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`;
 
@@ -128,6 +127,12 @@ const Login = () => {
   return (
     <div className="login-page">
       <div className="login-container">
+        {authState === 'register' && (
+          <div className="login-image-container">
+            <img src={assets.background} alt="Visual" />
+          </div>
+        )}
+
         <div className="login-box">
           <h2 className="login-title">
             {authState === 'register' ? 'Create Account' : 'Welcome GK Flora'}
@@ -142,14 +147,13 @@ const Login = () => {
           <form onSubmit={handleAuthSubmit} noValidate>
             {authState === 'register' && (
               <div className="input-container">
-                <img src={assets.person_icon} alt="Name" aria-hidden="true" />
+                <img src={assets.person_icon} alt="Name" />
                 <input
                   name="name"
                   onChange={handleInputChange}
                   value={formData.name}
                   type="text"
                   placeholder="Full Name"
-                  required
                   className={errors.name ? 'input-error' : ''}
                   disabled={isSubmitting}
                 />
@@ -158,14 +162,13 @@ const Login = () => {
             )}
 
             <div className="input-container">
-              <img src={assets.mail_icon} alt="Email" aria-hidden="true" />
+              <img src={assets.mail_icon} alt="Email" />
               <input
                 name="email"
                 onChange={handleInputChange}
                 value={formData.email}
                 type="email"
                 placeholder="Email Address"
-                required
                 className={errors.email ? 'input-error' : ''}
                 disabled={isSubmitting}
                 autoComplete="username"
@@ -174,14 +177,13 @@ const Login = () => {
             </div>
 
             <div className="input-container">
-              <img src={assets.lock_icon} alt="Password" aria-hidden="true" />
+              <img src={assets.lock_icon} alt="Password" />
               <input
                 name="password"
                 onChange={handleInputChange}
                 value={formData.password}
                 type="password"
                 placeholder="Password"
-                required
                 className={errors.password ? 'input-error' : ''}
                 disabled={isSubmitting}
                 autoComplete={authState === 'register' ? 'new-password' : 'current-password'}
@@ -193,7 +195,6 @@ const Login = () => {
               <p
                 onClick={() => navigate('/reset-password')}
                 className="forgot-password"
-                style={{ cursor: 'pointer' }}
               >
                 Forgot password?
               </p>
@@ -225,6 +226,12 @@ const Login = () => {
             </span>
           </p>
         </div>
+
+        {authState === 'login' && (
+          <div className="login-image-container">
+            <img src={assets.background} alt="Visual" />
+          </div>
+        )}
       </div>
     </div>
   );

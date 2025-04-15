@@ -7,6 +7,7 @@ import hand_wave from './hand_wave.png'
 import header_img from './header_img.png'
 import male from './male.jpg'
 import female from './female.jpeg'
+import background from './background.png'
 
 export const assets = {
     arrow_icon,
@@ -17,5 +18,6 @@ export const assets = {
     hand_wave,
     header_img,
     male,
-    female
+    female,
+    background
 }
