@@ -42,6 +42,10 @@ import Loyalty1 from './pages/loyalty-point/Loyalty1.jsx';
 //Review
 import ReviewForm from './pages/Review/ReviewForm.jsx';
 
+//Review1
+import Review1 from './pages/Review1/Review2.jsx';
+
+
 //Customization
 import FlowerCustomization from './pages/Customization/FlowerCustomization.jsx';
 
@@ -72,8 +76,10 @@ const App = () => {
         
         <Route path="/cart" element={<h1>Cart Page</h1>} />
 
-
+{/*review*/}
         <Route path="/reviewForm" element={<ReviewForm />} />
+        <Route path="/review1" element={<Review1 />} />
+
 
         {/*delivery*/} 
         <Route path="/deliveryform" element={<DeliveryForm />} />
