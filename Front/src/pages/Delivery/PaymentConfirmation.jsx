@@ -51,7 +51,7 @@ const PaymentConfirmation = () => {
                         <div className="confirmation-message">
                             <p>Your payment has been processed successfully.</p>
                             <p>A confirmation email has been sent to your registered email address.</p>
-                            <p>Your order number is: <strong>#{Math.floor(100000 + Math.random() * 900000)}</strong></p>
+                          
                         </div>
                     </>
                 )}

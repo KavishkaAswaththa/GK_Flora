@@ -8,6 +8,8 @@ import "./styles/App.css";
 import Navbar from "./components/Navbar";
 
 
+import Home from "./pages/Home";
+
 //Inventory
 import AdminDashboard from "./pages/Inventory/AdminDashboard";
 import InventoryForm from "./components/Inventory/InventoryForm";
@@ -24,14 +26,22 @@ import AdminDeliveryForm from "./pages/Delivery/AdminDeliveryForm";
 import AdminDeliveryTable from "./pages/Delivery/AdminDeliveryTable";
 import CityManager from "./pages/Delivery/CityManager.jsx";
 
+
 //Profile
 import Login from './pages/Profile/Login';
 import ResetPassword from './pages/Profile/ResetPassword';
 import AccountDetails from './pages/Profile/AccountDetails';
 
 
+
+//Loyalty-points
+import Loyalty from './pages/loyalty-point/Loyalty.jsx';
+import Loyalty1 from './pages/loyalty-point/Loyalty1.jsx';
+
+
 //Review
 import ReviewForm from './pages/Review/ReviewForm.jsx';
+
 
 
 const App = () => {
@@ -45,7 +55,9 @@ const App = () => {
       <Routes>
 
         
-        <Route path="/" element={<InventoryList />} />
+        <Route path="/" element={<Home />} />
+
+        <Route path="/inventory" element={<InventoryList />} />
         <Route path="/admindashboard" element={<AdminDashboard />} />
         <Route path="/form" element={<InventoryFormWrapper />} />
         <Route path="/inventory/edit/:id" element={<InventoryForm />} />
@@ -69,7 +81,11 @@ const App = () => {
         <Route path="/delivery" element={<FlowerDeliveryPage />} />
         <Route path="/admin" element={<AdminDeliveryForm />} />
         <Route path="/admintable" element={<AdminDeliveryTable />} />
+
         <Route path="/city" element={<CityManager />} />
+
+
+        <Route path="/admintable" element={<AdminDeliveryTable />} />
 
 
         
@@ -77,6 +93,11 @@ const App = () => {
         <Route path='/reset-password' element={<ResetPassword/>}/>
         <Route path='/account-details' element={<AccountDetails/>}/>
 
+
+
+        
+        <Route path='/loyalty' element={<Loyalty/>}/>
+        <Route path='/loyalty1' element={<Loyalty1/>}/>
 
         
       </Routes>

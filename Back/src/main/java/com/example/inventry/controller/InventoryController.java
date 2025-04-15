@@ -6,11 +6,12 @@ import com.example.inventry.service.InventoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.security.Principal;
 import java.util.*;
 
 @RestController
@@ -24,7 +25,6 @@ public class InventoryController {
     @Autowired
     private ImageService imageService;
 
-    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/save")
     public ResponseEntity<String> saveInventoryWithImages(
             @RequestParam("files") MultipartFile[] files,
@@ -33,8 +33,11 @@ public class InventoryController {
             @RequestParam("description") String description,
             @RequestParam("price") Double price,
             @RequestParam("qty") int qty,
-            @RequestParam("bloomContains") String bloomContains) {
+            @RequestParam("bloomContains") String bloomContains,
+            Principal principal) {
         try {
+            String email = principal.getName();
+
             if (files.length < 1 || files.length > 6) {
                 return ResponseEntity.badRequest().body("Please upload between 1 and 6 images.");
             }
@@ -50,7 +53,11 @@ public class InventoryController {
             inventory.setBloomContains(bloomContains.trim());
             inventory.setImageIds(imageIds);
 
-            inventoryService.save(inventory);
+            boolean saved = inventoryService.save(inventory, email);
+
+            if (!saved) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Access denied: Not an admin.");
+            }
 
             return ResponseEntity.ok("Inventory saved successfully with ID: " + inventory.get_id());
         } catch (IOException e) {
@@ -58,7 +65,6 @@ public class InventoryController {
         }
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @GetMapping("/{id}")
     public ResponseEntity<Map<String, Object>> getInventoryDetails(@PathVariable String id) {
         try {
@@ -93,7 +99,6 @@ public class InventoryController {
         }
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @GetMapping("/search/all")
     public ResponseEntity<List<Map<String, Object>>> getAllItems() {
         try {
@@ -127,7 +132,6 @@ public class InventoryController {
         }
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/update")
     public ResponseEntity<String> updateInventoryWithImages(
             @RequestParam("id") String id,
@@ -137,8 +141,10 @@ public class InventoryController {
             @RequestParam("description") String description,
             @RequestParam("price") Double price,
             @RequestParam("qty") int qty,
-            @RequestParam("bloomContains") String bloomContains) {
+            @RequestParam("bloomContains") String bloomContains,
+            Principal principal) {
         try {
+            String email = principal.getName();
             Inventory existingInventory = inventoryService.getById(id);
             if (existingInventory == null) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Inventory item with ID " + id + " not found.");
@@ -160,32 +166,42 @@ public class InventoryController {
                 existingInventory.setImageIds(newImageIds);
             }
 
-            inventoryService.save(existingInventory);
+            boolean updated = inventoryService.save(existingInventory, email);
+            if (!updated) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Access denied: Not an admin.");
+            }
+
             return ResponseEntity.ok("Inventory updated successfully with ID: " + existingInventory.get_id());
         } catch (IOException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to update inventory!");
         }
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteInventory(@PathVariable String id) {
+    public ResponseEntity<String> deleteInventory(@PathVariable String id, Principal principal) {
         try {
-            boolean deleted = inventoryService.deleteById(id);
+            String email = principal.getName();
+            boolean deleted = inventoryService.deleteById(id, email);
             if (deleted) {
                 return ResponseEntity.ok("Inventory with ID " + id + " deleted successfully.");
             } else {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Inventory with ID " + id + " not found.");
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Access denied or item not found.");
             }
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to delete inventory!");
         }
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @GetMapping
     public ResponseEntity<List<Inventory>> getAllInventories() {
         List<Inventory> inventories = inventoryService.getAllInventories();
         return ResponseEntity.ok(inventories);
     }
+
+    @GetMapping("/trigger-low-stock-email")
+    public ResponseEntity<String> triggerLowStockEmail() {
+        inventoryService.checkLowStockInventory();
+        return ResponseEntity.ok("Low stock email check triggered successfully.");
+    }
+
 }

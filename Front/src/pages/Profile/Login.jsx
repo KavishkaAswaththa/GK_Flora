@@ -26,6 +26,8 @@ const Login = () => {
     }
   }, [navigate]);
 
+  // Form validation
+
   const validateForm = () => {
     const newErrors = {};
 
@@ -91,9 +93,13 @@ const Login = () => {
         await getUserData();
         setIsLoggedIn(true);
 
-        toast.success(
-          authState === 'register' ? 'Registration successful!' : 'Login successful!'
-        );
+
+
+        toast.success(authState === 'register' ? 'Registration successful!' : 'Login successful!');
+        
+        toast.success(authState === 'register' ? 
+          'Registration successful!' : 'Login successful!');
+
         navigate('/account-details', { replace: true });
       } else {
         toast.error(response.data?.message || 'Authentication failed');
@@ -188,7 +194,9 @@ const Login = () => {
             </div>
 
             {authState === 'login' && (
+
               <p onClick={() => navigate('/reset-password')} className="forgot-password">
+
                 Forgot password?
               </p>
             )}

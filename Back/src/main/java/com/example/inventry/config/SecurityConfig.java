@@ -42,9 +42,13 @@ public class SecurityConfig {
                                 "/api/inventory/**",
                                 "/api/inventory/search/all",
                                 "/api/auth/**",
+
                                 "/api/v1/delivery/**",     // Allow all delivery endpoints
-                                "/api/bank-slips/**"       // Allow all bank slip endpoints
+                                "/api/bank-slips/**",      // Allow all bank slip endpoints
+                                "/email/**"                // Allow email-related endpoints
+
                         ).permitAll()
+
 
                         // All other endpoints require authentication
                         .anyRequest().authenticated()
@@ -59,14 +63,14 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:5173"));
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:5173")); // Your frontend origin
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "Accept"));
         configuration.setExposedHeaders(Arrays.asList("Authorization"));
         configuration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/api/**", configuration);
+        source.registerCorsConfiguration("/**", configuration); // Apply to all routes
         return source;
     }
 
