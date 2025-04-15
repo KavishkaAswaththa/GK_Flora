@@ -8,6 +8,8 @@ import "./styles/App.css";
 import Navbar from "./components/Navbar";
 
 
+import Home from "./pages/Home";
+
 //Inventory
 import AdminDashboard from "./pages/Inventory/AdminDashboard";
 import InventoryForm from "./components/Inventory/InventoryForm";
@@ -22,6 +24,7 @@ import MyOrdersPage from "./pages/Delivery/MyOrdersPage";
 import FlowerDeliveryPage from './pages/Delivery/FlowerDeliveryPage';
 import AdminDeliveryForm from "./pages/Delivery/AdminDeliveryForm";
 import AdminDeliveryTable from "./pages/Delivery/AdminDeliveryTable";
+import CityManager from "./pages/Delivery/CityManager.jsx";
 
 
 //Profile
@@ -53,7 +56,9 @@ const App = () => {
       <Routes>
 
         
-        <Route path="/" element={<InventoryList />} />
+        <Route path="/" element={<Home />} />
+
+        <Route path="/inventory" element={<InventoryList />} />
         <Route path="/admindashboard" element={<AdminDashboard />} />
         <Route path="/form" element={<InventoryFormWrapper />} />
         <Route path="/inventory/edit/:id" element={<InventoryForm />} />
@@ -77,9 +82,12 @@ const App = () => {
         <Route path="/delivery" element={<FlowerDeliveryPage />} />
         <Route path="/admin" element={<AdminDeliveryForm />} />
         <Route path="/admintable" element={<AdminDeliveryTable />} />
+
+        <Route path="/city" element={<CityManager />} />
+
+
         <Route path="/admintable" element={<AdminDeliveryTable />} />
-       
-        
+
 
         
         <Route path='/login' element={<Login/>}/>
