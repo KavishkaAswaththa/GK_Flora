@@ -9,6 +9,7 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -22,6 +23,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import java.util.Arrays;
 
 @Configuration
+@EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
 
@@ -40,18 +42,15 @@ public class SecurityConfig {
                                 "/api/inventory/**",
                                 "/api/inventory/search/all",
                                 "/api/auth/**",
+
                                 "/api/v1/delivery/**",     // Allow all delivery endpoints
                                 "/api/bank-slips/**",      // Allow all bank slip endpoints
                                 "/email/**"                // Allow email-related endpoints
+
                         ).permitAll()
 
-<<<<<<< Updated upstream
+
                         // All other endpoints require authentication
-=======
-                        // Restricted access based on roles
-                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/api/user/**").hasRole("USER")
->>>>>>> Stashed changes
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
