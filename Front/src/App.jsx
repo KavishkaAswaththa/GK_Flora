@@ -24,6 +24,7 @@ import MyOrdersPage from "./pages/Delivery/MyOrdersPage";
 import FlowerDeliveryPage from './pages/Delivery/FlowerDeliveryPage';
 import AdminDeliveryForm from "./pages/Delivery/AdminDeliveryForm";
 import AdminDeliveryTable from "./pages/Delivery/AdminDeliveryTable";
+import CityManager from "./pages/Delivery/CityManager.jsx";
 
 
 //Profile
@@ -80,9 +81,12 @@ const App = () => {
         <Route path="/delivery" element={<FlowerDeliveryPage />} />
         <Route path="/admin" element={<AdminDeliveryForm />} />
         <Route path="/admintable" element={<AdminDeliveryTable />} />
+
+        <Route path="/city" element={<CityManager />} />
+
+
         <Route path="/admintable" element={<AdminDeliveryTable />} />
-       
-        
+
 
         
         <Route path='/login' element={<Login/>}/>
