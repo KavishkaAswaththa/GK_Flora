@@ -1,12 +1,6 @@
 import React from 'react';
 import '../../styles/loyalty-point/loyalty2.css';
 import { ShoppingCart, Users, Trophy, Ticket, Cake, Calendar } from 'lucide-react';
-import anniversary from "../images/anniversery.png";
-import fan from "../images/fan images.png";
-import birthday from "../images/images.png";
-import levelup from "../images/levelup.png";
-import shopping from "../images/shopping.png";
-import winnner from "../images/winner.png";
 
 function Loyalty2() {
   return (
