@@ -1,8 +1,8 @@
 package com.example.inventry.entity;
 
+import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
-import lombok.*;
 
 @Document(collection = "users")
 @Getter
@@ -18,8 +18,17 @@ public class User {
     private String name;
     private String email;
     private String password;
+
     @Builder.Default
     private Boolean isAccountVerified = false;
+
     private String resetOtp;
     private Long resetOtpExpireAt;
+
+    // Additional profile fields
+    private String mobileNo;
+    private String birthday;
+    private String avatarType; // e.g., "male", "female"
+
+    private Address address; // Embedded Address class
 }
