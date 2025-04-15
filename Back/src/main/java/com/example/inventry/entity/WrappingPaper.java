@@ -3,16 +3,21 @@ package com.example.inventry.entity;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.List;
+
 @Document(collection = "wrappingPapers")
 public class WrappingPaper {
+
     @Id
     private String id;
-    private String imageUrl;
 
-    public WrappingPaper() {}
+    private List<String> imageIds;
 
-    public WrappingPaper(String imageUrl) {
-        this.imageUrl = imageUrl;
+    public WrappingPaper() {
+    }
+
+    public WrappingPaper(List<String> imageIds) {
+        this.imageIds = imageIds;
     }
 
     // ✅ Getters
@@ -20,12 +25,12 @@ public class WrappingPaper {
         return id;
     }
 
-    public String getImageUrl() {
-        return imageUrl;
+    public List<String> getImageIds() {
+        return imageIds;
     }
 
-    // ✅ Setter for imageUrl
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
+    // ✅ Setters
+    public void setImageIds(List<String> imageIds) {
+        this.imageIds = imageIds;
     }
 }

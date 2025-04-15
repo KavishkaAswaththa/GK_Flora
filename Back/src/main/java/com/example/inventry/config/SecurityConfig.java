@@ -42,13 +42,12 @@ public class SecurityConfig {
                                 "/api/inventory/**",
                                 "/api/inventory/search/all",
                                 "/api/auth/**",
-
                                 "/api/v1/delivery/**",     // Allow all delivery endpoints
                                 "/api/bank-slips/**",      // Allow all bank slip endpoints
-                                "/email/**"                // Allow email-related endpoints
-
+                                "/email/**",               // Allow email-related endpoints
+                                "/api/flowers/all",        // Allow public access to flowers
+                                "/api/wrappingPapers"      // Allow public access to wrapping papers
                         ).permitAll()
-
 
                         // All other endpoints require authentication
                         .anyRequest().authenticated()
@@ -67,7 +66,7 @@ public class SecurityConfig {
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "Accept"));
         configuration.setExposedHeaders(Arrays.asList("Authorization"));
-        configuration.setAllowCredentials(true);
+        configuration.setAllowCredentials(true);  // This is critical for allowing credentials
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration); // Apply to all routes
