@@ -94,7 +94,7 @@ public class AuthController {
     }
 
     // ================= USER ENDPOINTS =================
-
+/*
     @GetMapping("/users/me")
     public ResponseEntity<?> getCurrentUser(@RequestHeader("Authorization") String token) {
         try {
@@ -142,7 +142,7 @@ public class AuthController {
             return ResponseEntity.badRequest().body(new ApiResponse(false, e.getMessage()));
         }
     }
-
+*/
     // ================= PRIVATE METHODS =================
 
     private String extractToken(String authHeader) {
