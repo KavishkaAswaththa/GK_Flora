@@ -49,7 +49,6 @@ import Review1 from './pages/Review1/Review2.jsx';
 
 
 //Customization
-import FlowerCustomization from './pages/Customization/FlowerCustomization.jsx';
 
 
 
