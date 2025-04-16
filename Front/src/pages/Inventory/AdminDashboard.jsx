@@ -3,22 +3,57 @@ import axios from 'axios';
 import { useNavigate } from "react-router-dom";
 import styles from '../../styles/Inventory/AdminDashboard.module.css';
 
-function AdminDashboard({ onEdit }) {
+import TopbarControls from '../../components/Inventory/TopActions';
+import BloomTagModal from '../../components/Inventory/BloomTagModal';
+import InventoryTable from '../../components/Inventory/InventoryTable';
+import PaginationControls from '../../components/Inventory/PaginationControls';
+
+function AdminDashboard() {
   const navigate = useNavigate();
+
   const [items, setItems] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [sortConfig, setSortConfig] = useState({ key: 'name', direction: 'asc' });
   const [currentPage, setCurrentPage] = useState(1);
+  const [selectedItems, setSelectedItems] = useState([]);
   const itemsPerPage = 5;
+
+  const [bloomTags, setBloomTags] = useState([]);
+  const [newBloomTag, setNewBloomTag] = useState("");
+  const [isBloomTagModalOpen, setIsBloomTagModalOpen] = useState(false);
 
   useEffect(() => {
     fetchItems();
+    fetchBloomTags();
   }, []);
 
   const fetchItems = () => {
     axios.get('http://localhost:8080/api/inventory/search/all')
       .then(response => setItems(response.data))
       .catch(error => console.error('Error fetching data:', error));
+  };
+
+  const fetchBloomTags = () => {
+    axios.get("http://localhost:8080/api/bloom-tags")
+      .then(res => setBloomTags(res.data))
+      .catch(err => console.error("Failed to load bloom tags", err));
+  };
+
+  const handleSort = (key) => {
+    let direction = 'asc';
+    if (sortConfig.key === key && sortConfig.direction === 'asc') {
+      direction = 'desc';
+    }
+    setSortConfig({ key, direction });
+  };
+
+  const updateQty = (id, newQty) => {
+    axios.put(`http://localhost:8080/api/inventory/updateQty/${id}`, { qty: newQty })
+      .then(() => fetchItems())
+      .catch(error => {
+        console.error('Error updating quantity:', error);
+        alert('Failed to update quantity!');
+      });
   };
 
   const handleDelete = (id) => {
@@ -36,21 +71,39 @@ function AdminDashboard({ onEdit }) {
       });
   };
 
-  const updateQty = (id, newQty) => {
-    axios.put(`http://localhost:8080/api/inventory/updateQty/${id}`, { qty: newQty })
-      .then(() => fetchItems())
+  const handleDeleteSelected = () => {
+    if (selectedItems.length === 0) {
+      alert("No items selected!");
+      return;
+    }
+
+    const confirmDelete = window.confirm(`Are you sure you want to delete ${selectedItems.length} items?`);
+    if (!confirmDelete) return;
+
+    axios.all(selectedItems.map(id =>
+      axios.delete(`http://localhost:8080/api/inventory/${id}`)
+    ))
+      .then(() => {
+        alert("Selected items deleted!");
+        setSelectedItems([]);
+        fetchItems();
+      })
       .catch(error => {
-        console.error('Error updating quantity:', error);
-        alert('Failed to update quantity!');
+        console.error('Error deleting selected items:', error);
+        alert("Failed to delete some items.");
       });
   };
 
-  const handleSort = (key) => {
-    let direction = 'asc';
-    if (sortConfig.key === key && sortConfig.direction === 'asc') {
-      direction = 'desc';
-    }
-    setSortConfig({ key, direction });
+  const toggleItemSelection = (id) => {
+    setSelectedItems(prev =>
+      prev.includes(id) ? prev.filter(itemId => itemId !== id) : [...prev, id]
+    );
+  };
+
+  const toggleSelectAll = () => {
+    const allIds = paginatedItems.map(item => item.id);
+    const allSelected = allIds.every(id => selectedItems.includes(id));
+    setSelectedItems(allSelected ? [] : [...new Set([...selectedItems, ...allIds])]);
   };
 
   const getSortedItems = () => {
@@ -87,102 +140,78 @@ function AdminDashboard({ onEdit }) {
     }
   };
 
+  const handleAddBloomTag = () => {
+    if (newBloomTag.trim()) {
+      axios.post("http://localhost:8080/api/bloom-tags", newBloomTag.trim()) // Send string directly, not an object
+        .then(() => {
+          fetchBloomTags(); // Fetch updated list of tags
+          setNewBloomTag(""); // Clear input
+        })
+        .catch(err => {
+          console.error("Error adding bloom tag:", err);
+          alert("Failed to add bloom tag!");
+        });
+    }
+  };
+  
+  
+  const handleDeleteBloomTag = (tag) => {
+    axios.delete(`http://localhost:8080/api/bloom-tags/${tag}`)
+      .then(() => {
+        fetchBloomTags(); // Fetch tags again after deleting one
+      })
+      .catch(err => {
+        console.error("Error deleting bloom tag:", err);
+        alert("Failed to delete bloom tag!");
+      });
+  };
+  
+  
+
   return (
     <div className={styles["admin-dashboard"]}>
       <h2 className={styles["admin-dashboard__title"]}>Admin Dashboard</h2>
 
-      <div className={styles["admin-dashboard__topbar"]}>
-        <input
-          type="text"
-          placeholder="Search by name or category..."
-          value={searchTerm}
-          onChange={(e) => {
-            setSearchTerm(e.target.value);
-            setCurrentPage(1);
-          }}
-          className={styles["admin-dashboard__search"]}
+      <TopbarControls
+        searchTerm={searchTerm}
+        setSearchTerm={setSearchTerm}
+        setCurrentPage={setCurrentPage}
+        navigate={navigate}
+        handleDeleteSelected={handleDeleteSelected}
+        selectedItems={selectedItems}
+        setIsBloomTagModalOpen={setIsBloomTagModalOpen}
+      />
+
+      <InventoryTable
+        paginatedItems={paginatedItems}
+        selectedItems={selectedItems}
+        toggleItemSelection={toggleItemSelection}
+        toggleSelectAll={toggleSelectAll}
+        handleSort={handleSort}
+        updateQty={updateQty}
+        handleDelete={handleDelete}
+        navigate={navigate}
+        sortConfig={sortConfig}
+      />
+
+      <PaginationControls
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={changePage}
+      />
+
+      {isBloomTagModalOpen && (
+        <BloomTagModal
+          bloomTags={bloomTags}
+          setBloomTags={setBloomTags}
+          newBloomTag={newBloomTag}
+          setNewBloomTag={setNewBloomTag}
+          handleAddBloomTag={handleAddBloomTag}
+          handleDeleteBloomTag={handleDeleteBloomTag}
+          isOpen={isBloomTagModalOpen}
+          setIsOpen={setIsBloomTagModalOpen}
         />
-        <button
-          className={styles["admin-dashboard__add-btn"]}
-          onClick={() => navigate('/form')}
-        >
-          + Add New Item
-        </button>
-      </div>
-
-      <table className={styles["admin-dashboard__table"]}>
-        <thead>
-          <tr>
-            <th>Image</th>
-            <th>ID</th>
-            <th onClick={() => handleSort('name')} style={{ cursor: 'pointer' }}>Name</th>
-            <th onClick={() => handleSort('category')} style={{ cursor: 'pointer' }}>Category</th>
-            <th onClick={() => handleSort('price')} style={{ cursor: 'pointer' }}>Price</th>
-            <th onClick={() => handleSort('qty')} style={{ cursor: 'pointer' }}>QTY</th>
-            <th>Bloom Contains</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {paginatedItems.map((item, index) => {
-            const isLowStock = item.qty <= 2;
-
-            return (
-              <tr
-                key={index}
-                className={`${index % 2 === 0 ? styles["admin-dashboard__row--even"] : styles["admin-dashboard__row--odd"]} ${isLowStock ? styles["admin-dashboard__row--low-stock"] : ""}`}
-              >
-                <td>
-                  {item.image ? (
-                    <img src={`data:image/jpeg;base64,${item.image}`} alt="Item" className={styles["admin-dashboard__image"]} />
-                  ) : (
-                    'No Image'
-                  )}
-                </td>
-                <td>{item.id}</td>
-                <td>{item.name}</td>
-                <td>{item.category}</td>
-                <td>${item.price}</td>
-                <td>
-                  <div className={styles["admin-dashboard__qty-control"]}>
-                    <button
-                      className={styles["qty-btn"]}
-                      onClick={() => updateQty(item.id, item.qty - 1)}
-                      disabled={item.qty <= 0}
-                    >
-                      -
-                    </button>
-                    <span className={styles["qty-value"]}>{item.qty}</span>
-                    <button
-                      className={styles["qty-btn"]}
-                      onClick={() => updateQty(item.id, item.qty + 1)}
-                    >
-                      +
-                    </button>
-                  </div>
-                </td>
-                <td>{item.bloomContains}</td>
-                <td className={styles["admin-dashboard__actions"]}>
-                  <button className={styles["admin-dashboard__edit-btn"]} onClick={() => navigate(`/inventory/edit/${item.id}`)}>Edit</button>
-                  <button className={styles["admin-dashboard__delete-btn"]} onClick={() => handleDelete(item.id)}>Delete</button>
-                </td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
-
-      <div className={styles["admin-dashboard__pagination"]}>
-        <button
-          disabled={currentPage === 1}
-          onClick={() => changePage('prev')}
-        >⟨ Prev</button>
-        <span>Page {currentPage} of {totalPages}</span>
-        <button
-          disabled={currentPage === totalPages}
-          onClick={() => changePage('next')}
-        >Next ⟩</button>
-      </div>
+      )}
     </div>
   );
 }
