@@ -19,6 +19,7 @@ const Login = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState({});
 
+  // Redirect if already logged in
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (token) {
@@ -26,7 +27,7 @@ const Login = () => {
     }
   }, [navigate]);
 
-
+  // Form validation
   const validateForm = () => {
     const newErrors = {};
 
@@ -52,7 +53,10 @@ const Login = () => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
 
     if (errors[name]) {
       setErrors(prev => ({ ...prev, [name]: '' }));
@@ -68,10 +72,9 @@ const Login = () => {
 
     try {
       const endpoint = authState === 'register' ? 'register' : 'login';
-      const payload =
-        authState === 'register'
-          ? formData
-          : { email: formData.email, password: formData.password };
+      const payload = authState === 'register'
+        ? formData
+        : { email: formData.email, password: formData.password };
 
       const response = await axios.post(
         `${backendUrl}/api/auth/${endpoint}`,
@@ -89,19 +92,14 @@ const Login = () => {
         await getUserData();
         setIsLoggedIn(true);
 
-
-
         toast.success(authState === 'register' ? 'Registration successful!' : 'Login successful!');
-        
-        toast.success(authState === 'register' ? 
-          'Registration successful!' : 'Login successful!');
-
         navigate('/account-details', { replace: true });
       } else {
         toast.error(response.data?.message || 'Authentication failed');
       }
     } catch (error) {
       console.error('Authentication error:', error);
+
       if (error.response?.data?.errors) {
         setErrors(error.response.data.errors);
       } else if (error.response?.data?.message) {
@@ -189,21 +187,24 @@ const Login = () => {
             </div>
 
             {authState === 'login' && (
-
-              <p onClick={() => navigate('/reset-password')} className="forgot-password">
-
+              <p
+                onClick={() => navigate('/reset-password')}
+                className="forgot-password"
+              >
                 Forgot password?
               </p>
             )}
-
 
             <button
               type="submit"
               className="login-button"
               disabled={isSubmitting}
             >
-              {isSubmitting ? 'Processing...' : authState === 'register' ? 'Sign Up' : 'Sign In'}
-
+              {isSubmitting ? (
+                <span className="spinner">Processing...</span>
+              ) : (
+                authState === 'register' ? 'Sign Up' : 'Sign In'
+              )}
             </button>
           </form>
 
@@ -211,7 +212,11 @@ const Login = () => {
             {authState === 'register'
               ? 'Already have an account? '
               : "Don't have an account? "}
-            <span onClick={toggleAuthState} className="switch-link">
+            <span
+              onClick={toggleAuthState}
+              className="switch-link"
+              style={{ cursor: 'pointer' }}
+            >
               {authState === 'register' ? 'Sign in' : 'Sign up'}
             </span>
           </p>

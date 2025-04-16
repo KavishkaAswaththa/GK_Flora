@@ -6,7 +6,7 @@ import '../../styles/Delivery/DeliveryForm.css';
 const DeliveryForm = () => {
     const navigate = useNavigate();
     const { deliveryId } = useParams();
-
+    
     const [formData, setFormData] = useState({
         name: '',
         address: '',
@@ -23,31 +23,21 @@ const DeliveryForm = () => {
     });
 
     const [timeError, setTimeError] = useState('');
-    const [cities, setCities] = useState([]);
-
-    // Fetch available cities from backend
-    const fetchCities = async () => {
-        try {
-            const response = await axios.get('http://localhost:8080/api/v1/delivery/cities');
-            setCities(response.data);
-        } catch (error) {
-            console.error('Failed to load cities:', error);
-            alert('Error fetching cities');
-        }
-    };
 
     useEffect(() => {
-        fetchCities();
-
-        // Set default delivery date/time (2 hours later)
+        // Set default date and time (today + 2 hours)
         const now = new Date();
-        const future = new Date(now.getTime() + 2 * 60 * 60 * 1000);
+        const deliveryTime = new Date(now.getTime() + 2 * 60 * 60 * 1000);
+        const formattedDate = deliveryTime.toISOString().split('T')[0];
+        const formattedTime = `${deliveryTime.getHours().toString().padStart(2, '0')}:${deliveryTime.getMinutes().toString().padStart(2, '0')}`;
+        
         setFormData(prev => ({
             ...prev,
-            deliveryDate: future.toISOString().split('T')[0],
-            deliveryTime: `${future.getHours().toString().padStart(2, '0')}:${future.getMinutes().toString().padStart(2, '0')}`
+            deliveryDate: formattedDate,
+            deliveryTime: formattedTime
         }));
 
+        // Load existing delivery if editing
         if (deliveryId) {
             const fetchDelivery = async () => {
                 try {
@@ -64,62 +54,84 @@ const DeliveryForm = () => {
 
     const validateDeliveryDateTime = (date, time) => {
         const now = new Date();
-        const selected = new Date(`${date}T${time}`);
-        const minAllowed = new Date(now.getTime() + 2 * 60 * 60 * 1000);
-        return selected >= minAllowed;
+        const selectedDateTime = new Date(`${date}T${time}`);
+        const minimumDateTime = new Date(now.getTime() + 2 * 60 * 60 * 1000);
+        
+        return selectedDateTime >= minimumDateTime;
     };
 
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
-        const updated = {
-            ...formData,
+        setFormData(prev => ({
+            ...prev,
             [name]: type === 'checkbox' ? checked : value
-        };
+        }));
 
         if (name === 'sameAsSender' && checked) {
-            updated.senderName = formData.name;
-            updated.phone2 = formData.phone1;
+            setFormData(prev => ({
+                ...prev,
+                senderName: prev.name,
+                phone2: prev.phone1
+            }));
         }
 
+        // Validate delivery time when date or time changes
         if (name === 'deliveryDate' || name === 'deliveryTime') {
             const newDate = name === 'deliveryDate' ? value : formData.deliveryDate;
             const newTime = name === 'deliveryTime' ? value : formData.deliveryTime;
-            const valid = validateDeliveryDateTime(newDate, newTime);
-            setTimeError(valid ? '' : 'Delivery time must be at least 2 hours from now');
+            
+            if (newDate && newTime) {
+                const isValid = validateDeliveryDateTime(newDate, newTime);
+                setTimeError(isValid ? '' : 'Delivery time must be at least 2 hours from now');
+            }
         }
-
-        setFormData(updated);
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
+        
+        // Validate required fields
         if (!formData.name || !formData.address || !formData.phone1) {
             alert('Please fill in all required fields');
             return;
         }
 
+        // Validate delivery time
         const isTimeValid = validateDeliveryDateTime(formData.deliveryDate, formData.deliveryTime);
         if (!isTimeValid) {
             setTimeError('Delivery time must be at least 2 hours from now');
             return;
         }
 
-        const payload = {
-            ...formData,
-            sameAsSender: undefined // exclude
-        };
-
         try {
-            if (deliveryId) {
-                await axios.put(`http://localhost:8080/api/v1/delivery/edit/${deliveryId}`, payload);
-                alert('Delivery updated successfully');
-            } else {
-                await axios.post('http://localhost:8080/api/v1/delivery/save', payload);
-                alert('Delivery submitted successfully');
-            }
+            // Prepare payload matching your backend expectations
+            const payload = {
+                name: formData.name,
+                phone1: formData.phone1,
+                address: formData.address,
+                city: formData.city,
+                deliveryDate: formData.deliveryDate,
+                deliveryTime: formData.deliveryTime,
+                deliveryType: formData.deliveryType,
+                message: formData.message,
+                senderName: formData.senderName,
+                senderEmail: formData.senderEmail,
+                phone2: formData.phone2
+            };
 
+            if (deliveryId) {
+                // Update existing delivery
+                await axios.put(`http://localhost:8080/api/v1/delivery/edit/${deliveryId}`, payload);
+                alert('Delivery details updated successfully');
+            } else {
+                // Create new delivery
+                await axios.post('http://localhost:8080/api/v1/delivery/save', payload);
+                alert('Details submitted successfully');
+            }
+            
+            // Navigate to confirmation page with the form data
             navigate('/order-confirmation', { state: { deliveryDetails: formData } });
+            
         } catch (error) {
             console.error('Submission error:', error);
             alert(`Submission failed: ${error.response?.data?.message || error.message}`);
@@ -129,27 +141,67 @@ const DeliveryForm = () => {
     return (
         <div className="delivery-form-container">
             <h1>{deliveryId ? 'Edit Delivery' : 'Delivery Details'}</h1>
-
+            
             <form onSubmit={handleSubmit}>
-                {/* Recipient Info */}
                 <div className="form-section">
                     <h2>Recipient Information</h2>
                     <div className="form-group">
                         <label>Name *</label>
-                        <input type="text" name="name" value={formData.name} onChange={handleChange} required />
+                        <input
+                            type="text"
+                            name="name"
+                            value={formData.name}
+                            onChange={handleChange}
+                            required
+                        />
                     </div>
                     <div className="form-group">
                         <label>Address *</label>
-                        <textarea name="address" value={formData.address} onChange={handleChange} required />
+                        <textarea
+                            name="address"
+                            value={formData.address}
+                            onChange={handleChange}
+                            required
+                        />
                     </div>
                     <div className="form-row">
                         <div className="form-group">
                             <label>City *</label>
-                            <select name="city" value={formData.city} onChange={handleChange} required>
-                                <option value="">Select City</option>
-                                {cities.map(city => (
-                                    <option key={city.id} value={city.name}>{city.name}</option>
-                                ))}
+                            <select
+                                name="city"
+                                value={formData.city}
+                                onChange={handleChange}
+                                required
+                            >
+                               <option value="">Select City</option>
+                                <option value="Attidiya">Attidiya</option>
+                                <option value="Baththaramulla">Baththaramulla</option>
+                                <option value="Boralesgamuwa">Boralesgamuwa</option>
+                                <option value="Collombo 01-(Fort)">Collombo 01-(Fort)</option>
+                                <option value="Collombo 02-(Union Place)">Collombo 02-(Union Place)</option>
+                                <option value="Collombo 03-(Kollupitiya)">Collombo 03-(Kollupitiya)</option>
+                                <option value="Collombo 04-(Bambalapitiya)">Collombo 04-(Bambalapitiya)</option>
+                                <option value="Collombo 05-(Havelock/Kirulapana)">Collombo 05-(Havelock/Kirulapana)</option>
+                                <option value="Collombo 06-(Wellawatta)">Collombo 06-(Wellawatta)</option>
+                                <option value="Collombo 07-(Cinnamon Gardens)">Collombo 07-(Cinnamon Gardens)</option>
+                                <option value="Collombo 08-(Borella)">Collombo 08-(Borella)</option>
+                                <option value="Collombo 09-(Dematagoda)">Collombo 09-(Dematagoda)</option>
+                                <option value="Collombo 10-(Maradana)">Collombo 10-(Maradana)</option>
+                                <option value="Collombo 11-(Pettah)">Collombo 11-(Pettah)</option>
+                                <option value="Collombo 12-(Hultsdorf)">Collombo 12-(Hultsdorf)</option>
+                                <option value="Collombo 13-(Kotahena)">Collombo 13-(Kotahena)</option>
+                                <option value="Collombo 14-(Grandpass)">Collombo 14-(Grandpass)</option>
+                                <option value="Collombo 15-(Mattakuliya)">Collombo 15-(Mattakuliya)</option>
+                                <option value="Dehiwala">Dehiwala</option>
+                                <option value="Delkanda">Delkanda</option>
+                                <option value="Gandodawila">Gandodawila</option>
+                                <option value="Kalubowila">Kalubowila</option>
+                                <option value="Karagampitiya">Karagampitiya</option>
+                                <option value="Kelaniya">Kelaniya</option>
+                                <option value="Maharagama">Maharagama</option>
+                                <option value="Malabe">Malabe</option>
+                                <option value="Maharagama">Maharagama</option>
+                          
                             </select>
                         </div>
                         <div className="form-group">
@@ -166,7 +218,6 @@ const DeliveryForm = () => {
                     </div>
                 </div>
 
-                {/* Sender Info */}
                 <div className="form-section">
                     <h2>Sender Information</h2>
                     <div className="checkbox-group">
@@ -179,6 +230,7 @@ const DeliveryForm = () => {
                         />
                         <label htmlFor="sameAsSender">Same as Recipient</label>
                     </div>
+                    
                     {!formData.sameAsSender && (
                         <>
                             <div className="form-group">
@@ -215,7 +267,6 @@ const DeliveryForm = () => {
                     )}
                 </div>
 
-                {/* Schedule Info */}
                 <div className="form-section">
                     <h2>Delivery Schedule</h2>
                     <div className="form-row">
@@ -244,7 +295,11 @@ const DeliveryForm = () => {
                     </div>
                     <div className="form-group">
                         <label>Delivery Type</label>
-                        <select name="deliveryType" value={formData.deliveryType} onChange={handleChange}>
+                        <select
+                            name="deliveryType"
+                            value={formData.deliveryType}
+                            onChange={handleChange}
+                        >
                             <option value="select">Select delivery type</option>
                             <option value="express">Get delivered to your door step</option>
                             <option value="priority">Pickup From Your Nearest Branch</option>
@@ -261,7 +316,6 @@ const DeliveryForm = () => {
                     </div>
                 </div>
 
-                {/* Submit */}
                 <div className="form-actions">
                     <button type="submit" className="submit-button">
                         {deliveryId ? 'Update Delivery' : 'Submit Delivery'}
