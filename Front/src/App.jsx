@@ -24,7 +24,6 @@ import MyOrdersPage from "./pages/Delivery/MyOrdersPage";
 import FlowerDeliveryPage from './pages/Delivery/FlowerDeliveryPage';
 import AdminDeliveryForm from "./pages/Delivery/AdminDeliveryForm";
 import AdminDeliveryTable from "./pages/Delivery/AdminDeliveryTable";
-import CityManager from "./pages/Delivery/CityManager.jsx";
 
 
 //Profile
@@ -37,19 +36,10 @@ import AccountDetails from './pages/Profile/AccountDetails';
 //Loyalty-points
 import Loyalty from './pages/loyalty-point/Loyalty.jsx';
 import Loyalty1 from './pages/loyalty-point/Loyalty1.jsx';
-import Loyalty2 from './pages/loyalty-point/Loyalty2.jsx';
 
 
 //Review
 import ReviewForm from './pages/Review/ReviewForm.jsx';
-
-
-//Review1
-import Review1 from './pages/Review1/Review2.jsx';
-
-
-//Customization
-
 
 
 
@@ -78,10 +68,8 @@ const App = () => {
         
         <Route path="/cart" element={<h1>Cart Page</h1>} />
 
-{/*review*/}
-        <Route path="/reviewForm" element={<ReviewForm />} />
-        <Route path="/review1" element={<Review1 />} />
 
+        <Route path="/reviewForm" element={<ReviewForm />} />
 
         {/*delivery*/} 
         <Route path="/deliveryform" element={<DeliveryForm />} />
@@ -92,12 +80,9 @@ const App = () => {
         <Route path="/delivery" element={<FlowerDeliveryPage />} />
         <Route path="/admin" element={<AdminDeliveryForm />} />
         <Route path="/admintable" element={<AdminDeliveryTable />} />
-
-        <Route path="/city" element={<CityManager />} />
-
-
         <Route path="/admintable" element={<AdminDeliveryTable />} />
-
+       
+        
 
         
         <Route path='/login' element={<Login/>}/>
@@ -109,8 +94,6 @@ const App = () => {
         
         <Route path='/loyalty' element={<Loyalty/>}/>
         <Route path='/loyalty1' element={<Loyalty1/>}/>
-        <Route path='/loyalty2' element={<Loyalty2/>}/>
-
 
         
       </Routes>
