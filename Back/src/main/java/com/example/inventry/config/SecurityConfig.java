@@ -42,6 +42,7 @@ public class SecurityConfig {
                                 "/api/inventory/**",
                                 "/api/inventory/search/all",
                                 "/api/auth/**",
+                                "/api/users/**",
                                 "/api/v1/delivery/**",     // Allow all delivery endpoints
                                 "/api/bank-slips/**",      // Allow all bank slip endpoints
                                 "/email/**"                // Allow email-related endpoints
