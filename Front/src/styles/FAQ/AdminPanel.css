@@ -1,195 +1,166 @@
-/* AdminPanel.css */
+.admin-panel * {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 
-/* Reset some default styles */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
-  
-  /* Body styling */
-  body {
-    font-family: 'Roboto', sans-serif;
-    background-color: #f4f6f8;
-    padding: 0;
-    margin: 0;
-    height: 100%;
-  }
-  
-  /* Admin Panel Container */
+.admin-panel {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 30px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  margin-top: 20px;
+  padding-bottom: 40px;
+}
+
+.admin-panel h1 {
+  text-align: center;
+  color: #2c3e50;
+  font-size: 2.5em;
+  margin-bottom: 20px;
+}
+
+.admin-panel h2 {
+  font-size: 1.3em;
+  color: #34495e;
+  margin-bottom: 15px;
+  border-bottom: 2px solid #3498db;
+  padding-bottom: 8px;
+}
+
+.admin-panel input,
+.admin-panel textarea {
+  width: 100%;
+  padding: 12px;
+  margin: 8px 0;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 1.1em;
+  background-color: #f9f9f9;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.admin-panel input:focus,
+.admin-panel textarea:focus {
+  border-color: #3498db;
+  outline: none;
+  box-shadow: 0 0 5px rgba(52, 152, 219, 0.3);
+}
+
+.admin-panel textarea {
+  height: 120px;
+  resize: vertical;
+}
+
+.admin-panel button {
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  margin: 10px 0;
+  font-size: 1.1em;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s ease-in-out;
+  width: auto;
+  display: inline-block;
+}
+
+.admin-panel button:hover {
+  background-color: #45a049;
+  transform: translateY(-2px);
+}
+
+.admin-panel button.cancel {
+  background-color: #f44336;
+}
+
+.admin-panel button.cancel:hover {
+  background-color: #e53935;
+}
+
+.admin-panel button.delete {
+  background-color: #e74c3c;
+}
+
+.admin-panel button.delete:hover {
+  background-color: #c0392b;
+}
+
+.admin-panel button + button {
+  margin-left: 20px;
+}
+
+.admin-panel .category-item {
+  background-color: #fff;
+  padding: 20px;
+  margin-bottom: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.3s ease-in-out;
+}
+
+.admin-panel .category-item:hover {
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+}
+
+.admin-panel .category-item h3 {
+  margin-top: 0;
+  color: #2c3e50;
+  font-size: 1.5em;
+  margin-bottom: 15px;
+}
+
+.admin-panel ul {
+  list-style-type: none;
+  padding-left: 0;
+  margin: 10px 0;
+}
+
+.admin-panel ul li {
+  margin: 8px 0;
+  color: #7f8c8d;
+  font-size: 1.1em;
+}
+
+.admin-panel button.edit {
+  background-color: #f39c12;
+}
+
+.admin-panel button.edit:hover {
+  background-color: #e67e22;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
   .admin-panel {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 30px;
-    background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-    height: 100%;
-    overflow: auto;
-    margin-top: 20px;
-    padding-bottom: 40px;
-  }
-  
-  /* Title and headers */
-  h1 {
-    text-align: center;
-    color: #2c3e50;
-    font-size: 2.5em;
-    margin-bottom: 20px;
-  }
-  
-  h2 {
-    font-size: 1.3em;
-    color: #34495e;
-    margin-bottom: 15px;
-    border-bottom: 2px solid #3498db;
-    padding-bottom: 8px;
-  }
-  
-  /* Input fields and textarea */
-  input, textarea {
-    width: 100%;
-    padding: 12px;
-    margin: 8px 0;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    font-size: 1.1em;
-    background-color: #f9f9f9;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-  }
-  
-  input:focus, textarea:focus {
-    border-color: #3498db;
-    outline: none;
-    box-shadow: 0 0 5px rgba(52, 152, 219, 0.3);
-  }
-  
-  textarea {
-    height: 120px;
-    resize: vertical;
-  }
-  
-  /* Buttons */
-  button {
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    padding: 12px 20px;
-    margin: 10px 0;
-    font-size: 1.1em;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background-color 0.3s, transform 0.2s ease-in-out;
-    width: auto;
-    display: inline-block;
-  }
-  
-  button:hover {
-    background-color: #45a049;
-    transform: translateY(-2px);
-  }
-  
-  button.cancel {
-    background-color: #f44336;
-  }
-  
-  button.cancel:hover {
-    background-color: #e53935;
-  }
-  
-  button.delete {
-    background-color: #e74c3c;
-  }
-  
-  button.delete:hover {
-    background-color: #c0392b;
-  }
-  
-  button + button {
-    margin-left: 20px;
-  }
-  
-  /* Category item styling */
-  .category-item {
-    background-color: #fff;
     padding: 20px;
-    margin-bottom: 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    transition: box-shadow 0.3s ease-in-out;
+    margin-top: 10px;
+    box-shadow: none;
   }
-  
-  .category-item:hover {
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+
+  .admin-panel h1 {
+    font-size: 2em;
+    margin-bottom: 10px;
   }
-  
-  .category-item h3 {
-    margin-top: 0;
-    color: #2c3e50;
-    font-size: 1.5em;
-    margin-bottom: 15px;
-  }
-  
-  /* Category items list */
-  ul {
-    list-style-type: none;
-    padding-left: 0;
-    margin: 10px 0;
-  }
-  
-  ul li {
-    margin: 8px 0;
-    color: #7f8c8d;
+
+  .admin-panel h2 {
     font-size: 1.1em;
   }
-  
-  /* Edit/Delete buttons for categories */
-  button.edit, button.delete {
-    padding: 10px 18px;
-    margin: 5px;
-    font-size: 1em;
-    border-radius: 4px;
-    cursor: pointer;
-  }
-  
-  button.edit {
-    background-color: #f39c12;
-  }
-  
-  button.edit:hover {
-    background-color: #e67e22;
-  }
-  
-  /* Mobile Responsiveness */
-  @media (max-width: 768px) {
-    .admin-panel {
-      padding: 20px;
-      margin-top: 10px;
-      box-shadow: none;
-    }
-  
-    h1 {
-      font-size: 2em;
-      margin-bottom: 10px;
-    }
-  
-    h2 {
-      font-size: 1.1em;
-    }
-  
-    input, textarea {
-      font-size: 1em;
-    }
-  
-    button {
-      width: 100%;
-      margin: 5px 0;
-    }
-  
-    button + button {
-      margin-left: 0;
-    }
-  }
-  
 
-  
+  .admin-panel input,
+  .admin-panel textarea {
+    font-size: 1em;
+  }
+
+  .admin-panel button {
+    width: 100%;
+    margin: 5px 0;
+  }
+
+  .admin-panel button + button {
+    margin-left: 0;
+  }
+}
