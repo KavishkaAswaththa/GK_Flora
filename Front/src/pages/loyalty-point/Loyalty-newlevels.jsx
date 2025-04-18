@@ -1,5 +1,5 @@
 import React from 'react';
-import '../../styles/loyalty-point/Loyalty.css';
+import '../../styles/loyalty-point/Loyalty-newlevels.css';
 import { FaSearch, FaShoppingCart } from 'react-icons/fa';
 
 const MembershipLevels = () => {

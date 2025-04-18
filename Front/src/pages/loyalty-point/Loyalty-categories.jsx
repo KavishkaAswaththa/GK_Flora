@@ -1,6 +1,8 @@
 import React from 'react';
-import '../../styles/loyalty-point/loyalty2.css';
+import '../../styles/loyalty-point/loyalty-categories.css';
 import { ShoppingCart, Users, Trophy, Ticket, Cake, Calendar } from 'lucide-react';
+
+
 
 function Loyalty2() {
   return (

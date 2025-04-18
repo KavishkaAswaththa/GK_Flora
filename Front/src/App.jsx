@@ -32,10 +32,10 @@ import AccountDetails from './pages/Profile/AccountDetails';
 
 
 //Loyalty-points
-import Loyalty from './pages/loyalty-point/Loyalty.jsx';
-import Loyalty1 from './pages/loyalty-point/Loyalty1.jsx';
-import Loyalty2 from './pages/loyalty-point/Loyalty2.jsx';
-
+import Loyaltynewlevels from './pages/loyalty-point/Loyalty-newlevels.jsx';
+import Loyaltycategories from './pages/loyalty-point/loyalty-categories.jsx';
+import Loyaltyuserlevels from './pages/loyalty-point/Loyalty-userlevels.jsx';
+import Loyaltyadmin from "./pages/loyalty-point/Loyalty-admin.jsx";
 
 //Review
 import ReviewForm from './pages/Review/ReviewForm.jsx';
@@ -89,9 +89,11 @@ const App = () => {
 
 
         
-        <Route path='/loyalty' element={<Loyalty/>}/>
-        <Route path='/loyalty1' element={<Loyalty1/>}/>
-        <Route path='/loyalty2' element={<Loyalty2/>}/>
+        <Route path='/Loyalty-newlevels' element={<Loyaltynewlevels/>}/>
+      <Route path='/Loyalty-categories' element={<Loyaltycategories/>}/>
+      <Route path="/Loyalty-admin" element={<Loyaltyadmin />} />
+      <Route path='/Loyalty-user' element={<Loyaltyuserlevels/>}/>
+      
 
 
         

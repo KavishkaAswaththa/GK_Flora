@@ -1,0 +1,42 @@
+
+  .admin-dashboard {
+    height: 100vh; /* Full viewport height */
+    width: 100vw;  /* Full viewport width */
+    padding: 40px 60px;
+    box-sizing: border-box;
+    background-color: #dfeba6;
+    overflow-y: auto;
+  }
+  
+  .admin-dashboard h2 {
+    font-size: 26px;
+    margin-bottom: 25px;
+    color: #400361;
+    text-align: center;
+  }
+ 
+  
+  .user-points-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+  }
+  
+  .user-points-table th,
+  .user-points-table td {
+    border: 1px solid #ddd;
+    padding: 14px;
+    text-align: center;
+    font-size: 15px;
+  }
+  
+  .user-points-table th {
+    background-color: #f3f3f3;
+    font-weight: 600;
+    color: #333;
+  }
+  
+  .user-points-table tbody tr:nth-child(even) {
+    background-color: #fafafa;
+  }
+  
