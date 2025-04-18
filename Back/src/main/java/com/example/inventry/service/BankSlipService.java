@@ -3,11 +3,11 @@ package com.example.inventry.service;
 import com.example.inventry.entity.BankSlip;
 import com.example.inventry.repo.BankSlipRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,7 +25,7 @@ public class BankSlipService {
         bankSlip.setFileData(file.getBytes());
         bankSlip.setOrderId(orderId);
         bankSlip.setUserEmail(userEmail);
-        bankSlip.setUploadDate(new java.util.Date());
+        bankSlip.setUploadDate(new Date());
         bankSlip.setStatus("PENDING");
 
         return bankSlipRepository.save(bankSlip);
@@ -37,9 +37,6 @@ public class BankSlipService {
     }
 
     public List<BankSlip> getBankSlipsByStatus(String status) {
-        if ("all".equalsIgnoreCase(status)) {
-            return bankSlipRepository.findAll();
-        }
         return bankSlipRepository.findByStatus(status.toUpperCase());
     }
 
@@ -48,7 +45,10 @@ public class BankSlipService {
         if (bankSlip != null) {
             bankSlip.setStatus(status.toUpperCase());
             if ("REJECTED".equals(status.toUpperCase()) && rejectReason != null && !rejectReason.isEmpty()) {
-                bankSlip.setRejectReason(rejectReason);
+                bankSlip.setRejectionReason(rejectReason);
+            }
+            if ("VERIFIED".equals(status.toUpperCase())) {
+                bankSlip.setVerificationDate(new Date());
             }
             return bankSlipRepository.save(bankSlip);
         }
@@ -56,17 +56,17 @@ public class BankSlipService {
     }
 
     public BankSlip getBankSlipByOrderId(String orderId) {
-
-        return null;
+        // This method was empty - implement it
+        return (BankSlip) bankSlipRepository.findByOrderId(orderId);
     }
 
     public BankSlip updateBankSlip(BankSlip slip) {
-
-        return slip;
+        // This method was returning the input parameter without saving
+        return bankSlipRepository.save(slip);
     }
 
     public List<BankSlip> getAllBankSlips() {
-
-        return List.of();
+        // This method was returning an empty list
+        return bankSlipRepository.findAll();
     }
 }
