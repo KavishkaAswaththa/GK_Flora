@@ -46,9 +46,11 @@ const PaymentPage = () => {
             const formData = new FormData();
             formData.append('file', bankSlip);
             formData.append('orderId', '12345'); // Replace with actual order ID
+            formData.append('userEmail', 'user@example.com'); // Add userEmail parameter which is required
             
             setUploadStatus('Uploading...');
-            
+
+            // No headers for authentication or tokens - open access
             const response = await fetch('http://localhost:8080/api/bank-slips/upload', {
                 method: 'POST',
                 body: formData,
@@ -59,12 +61,15 @@ const PaymentPage = () => {
                 await sendNotification('Your bank slip has been uploaded successfully. The admin will review it soon. Your payment is pending.');
                 navigate('/payment-confirmation'); // Changed to payment-confirmation
             } else {
+                // Better error handling with status code
                 const errorText = await response.text();
-                setUploadStatus(`Upload failed: ${errorText}`);
+                setUploadStatus(`Upload failed (${response.status}): ${errorText}`);
+                console.error('Upload failed:', response.status, errorText);
             }
         
         } catch (error) {
             setUploadStatus(`Error: ${error.message}`);
+            console.error('Request error:', error);
         }
     };
 
