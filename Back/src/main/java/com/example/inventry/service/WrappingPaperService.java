@@ -2,18 +2,18 @@ package com.example.inventry.service;
 
 import com.example.inventry.entity.WrappingPaper;
 import com.example.inventry.repo.WrappingPaperRepository;
+import org.apache.commons.io.IOUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.nio.file.*;
+import java.util.Base64;
 import java.util.List;
-import java.util.UUID;
 
 @Service
 public class WrappingPaperService {
+
     private final WrappingPaperRepository wrappingPaperRepository;
-    private static final String UPLOAD_DIR = "uploads/wrappingPapers/";
 
     public WrappingPaperService(WrappingPaperRepository wrappingPaperRepository) {
         this.wrappingPaperRepository = wrappingPaperRepository;
@@ -24,22 +24,13 @@ public class WrappingPaperService {
             throw new IllegalArgumentException("Wrapping paper image cannot be empty.");
         }
 
-        // ✅ Generate unique filename
-        String filename = UUID.randomUUID() + "_" + image.getOriginalFilename();
-        Path uploadPath = Paths.get(UPLOAD_DIR);
+        // Convert image to Base64
+        byte[] imageBytes = IOUtils.toByteArray(image.getInputStream());
+        String base64Image = Base64.getEncoder().encodeToString(imageBytes);
 
-        // ✅ Ensure directory exists
-        if (!Files.exists(uploadPath)) {
-            Files.createDirectories(uploadPath);
-        }
-
-        // ✅ Save image to file system
-        Path filePath = uploadPath.resolve(filename);
-        Files.copy(image.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
-
-        // ✅ Save wrapping paper details in database
+        // Create and save WrappingPaper entity
         WrappingPaper wrappingPaper = new WrappingPaper();
-        wrappingPaper.setImageUrl("/uploads/wrappingPapers/" + filename); // Relative path for frontend
+        wrappingPaper.setImageBase64(base64Image);
 
         return wrappingPaperRepository.save(wrappingPaper);
     }

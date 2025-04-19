@@ -5,14 +5,15 @@ import com.example.inventry.repo.FlowerRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.*;
+import java.util.Base64;
 import java.util.List;
 import java.util.UUID;
 
 @Service
 public class FlowerService {
+
     private final FlowerRepository flowerRepository;
     private static final String UPLOAD_DIR = "uploads/flowers/";
 
@@ -28,23 +29,24 @@ public class FlowerService {
             throw new IllegalArgumentException("Flower image cannot be empty.");
         }
 
-        // ✅ Generate unique filename
         String filename = UUID.randomUUID() + "_" + image.getOriginalFilename();
         Path uploadPath = Paths.get(UPLOAD_DIR);
 
-        // ✅ Ensure directory exists
         if (!Files.exists(uploadPath)) {
             Files.createDirectories(uploadPath);
         }
 
-        // ✅ Save image to file system
         Path filePath = uploadPath.resolve(filename);
         Files.copy(image.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
 
-        // ✅ Save flower details in database
+        // Encode image to Base64
+        byte[] imageBytes = Files.readAllBytes(filePath);
+        String imageBase64 = Base64.getEncoder().encodeToString(imageBytes);
+
         Flower flower = new Flower();
         flower.setName(name);
-        flower.setImageUrl("/uploads/flowers/" + filename); // Relative path for frontend
+        flower.setImagePath("/uploads/flowers/" + filename);
+        flower.setImageBase64(imageBase64);
 
         return flowerRepository.save(flower);
     }
