@@ -42,9 +42,15 @@ import Loyalty1 from './pages/loyalty-point/Loyalty1.jsx';
 //Review
 import ReviewForm from './pages/Review/ReviewForm.jsx';
 
+
+//Customization
+import FlowerCustomization from './pages/Customization/FlowerCustomization.jsx';
+
+
 //FAQ
 import AdminPanel from "./pages/FAQ/AdminPanel.jsx";
 import CustomerSupport from "./pages/FAQ/CustomerSupport.jsx";
+
 
 
 const App = () => {
@@ -103,10 +109,13 @@ const App = () => {
         <Route path='/loyalty' element={<Loyalty/>}/>
         <Route path='/loyalty1' element={<Loyalty1/>}/>
 
-      
+        {/*Customization*/}
+        <Route path='/FlowerCustomization' element={<FlowerCustomization/>}/>
+ 
         <Route path="/faqhome" element={<CustomerSupport />} />
         
         <Route path="/faqadmin" element={<AdminPanel />} />
+
         
       </Routes>
     </>

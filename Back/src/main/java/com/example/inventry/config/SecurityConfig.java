@@ -4,6 +4,7 @@ import com.example.inventry.security.JwtAuthFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -38,14 +39,20 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         // Public endpoints (no token required)
                         .requestMatchers(
+                                "/api/flowers",
+                                "/api/flowers/**",
+                                "/api/wrappingPapers",
+                                "/api/wrappingPapers/save",
                                 "/api/inventory",
                                 "/api/inventory/**",
                                 "/api/inventory/search/all",
                                 "/api/auth/**",
+
                                 "/api/users/**",
                                 "/api/v1/delivery/**",     // Allow all delivery endpoints
                                 "/api/bank-slips/**",      // Allow all bank slip endpoints
                                 "/email/**"                // Allow email-related endpoints
+
                         ).permitAll()
 
                         // All other endpoints require authentication
@@ -61,14 +68,14 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:5173")); // Your frontend origin
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:5173"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "Accept"));
         configuration.setExposedHeaders(Arrays.asList("Authorization"));
         configuration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration); // Apply to all routes
+        source.registerCorsConfiguration("/**", configuration);
         return source;
     }
 
