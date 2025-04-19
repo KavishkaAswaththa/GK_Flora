@@ -24,7 +24,8 @@ import MyOrdersPage from "./pages/Delivery/MyOrdersPage";
 import FlowerDeliveryPage from './pages/Delivery/FlowerDeliveryPage';
 import AdminDeliveryForm from "./pages/Delivery/AdminDeliveryForm";
 import AdminDeliveryTable from "./pages/Delivery/AdminDeliveryTable";
-
+import CityManager from "./pages/Delivery/CityManager.jsx";
+import AdminPaymentReview from "./pages/Delivery/AdminPaymentReview.jsx";
 
 //Profile
 import Login from './pages/Profile/Login';
@@ -41,8 +42,14 @@ import Loyalty1 from './pages/loyalty-point/Loyalty1.jsx';
 //Review
 import ReviewForm from './pages/Review/ReviewForm.jsx';
 
+
 //Customization
 import FlowerCustomization from './pages/Customization/FlowerCustomization.jsx';
+
+
+//FAQ
+import AdminPanel from "./pages/FAQ/AdminPanel.jsx";
+import CustomerSupport from "./pages/FAQ/CustomerSupport.jsx";
 
 
 
@@ -84,6 +91,10 @@ const App = () => {
         <Route path="/admin" element={<AdminDeliveryForm />} />
         <Route path="/admintable" element={<AdminDeliveryTable />} />
         <Route path="/admintable" element={<AdminDeliveryTable />} />
+        <Route path="/city" element={<CityManager/>}/>
+        <Route path="/adminpayment" element={<AdminPaymentReview />} />
+       
+
        
         
 
@@ -100,6 +111,10 @@ const App = () => {
 
         {/*Customization*/}
         <Route path='/FlowerCustomization' element={<FlowerCustomization/>}/>
+ 
+        <Route path="/faqhome" element={<CustomerSupport />} />
+        
+        <Route path="/faqadmin" element={<AdminPanel />} />
 
         
       </Routes>

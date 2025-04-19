@@ -3,6 +3,7 @@ package com.example.inventry.controller;
 import com.example.inventry.service.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -17,6 +18,7 @@ public class EmailController {
     private EmailService emailService;
 
     // Endpoint to send order status to user
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/send-order-status")
     public ResponseEntity<String> sendOrderStatus(
             @RequestParam String userEmail,
@@ -35,6 +37,7 @@ public class EmailController {
     }
 
     // Endpoint to send payment slip to admin
+    @PreAuthorize("hasRole('USER')")
     @PostMapping("/upload-slip")
     public ResponseEntity<String> uploadSlip(
             @RequestParam("slip") MultipartFile slipFile,
@@ -51,6 +54,7 @@ public class EmailController {
     }
 
     // Endpoint for admin to confirm payment to user
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/confirm-payment")
     public ResponseEntity<String> confirmPayment(@RequestParam String userEmail) {
         try {

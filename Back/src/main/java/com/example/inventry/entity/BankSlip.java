@@ -1,6 +1,5 @@
 package com.example.inventry.entity;
 
-// File: BankSlip.java
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import java.util.Date;
@@ -14,17 +13,23 @@ public class BankSlip {
     private String fileType;
     private byte[] fileData;
     private String orderId;
+    private String userEmail;
     private Date uploadDate;
     private String status; // "PENDING", "VERIFIED", "REJECTED"
+    private String rejectionReason;
+    private Date verificationDate;
 
     public BankSlip() {
+        this.uploadDate = new Date();
+        this.status = "PENDING";
     }
 
-    public BankSlip(String fileName, String fileType, byte[] fileData, String orderId) {
+    public BankSlip(String fileName, String fileType, byte[] fileData, String orderId, String userEmail) {
         this.fileName = fileName;
         this.fileType = fileType;
         this.fileData = fileData;
         this.orderId = orderId;
+        this.userEmail = userEmail;
         this.uploadDate = new Date();
         this.status = "PENDING";
     }
@@ -70,6 +75,14 @@ public class BankSlip {
         this.orderId = orderId;
     }
 
+    public String getUserEmail() {
+        return userEmail;
+    }
+
+    public void setUserEmail(String userEmail) {
+        this.userEmail = userEmail;
+    }
+
     public Date getUploadDate() {
         return uploadDate;
     }
@@ -84,5 +97,24 @@ public class BankSlip {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getRejectionReason() {
+        return rejectionReason;
+    }
+
+    public void setRejectionReason(String rejectionReason) {
+        this.rejectionReason = rejectionReason;
+    }
+
+    public Date getVerificationDate() {
+        return verificationDate;
+    }
+
+    public void setVerificationDate(Date verificationDate) {
+        this.verificationDate = verificationDate;
+    }
+
+    public void setRejectReason(String rejectReason) {
     }
 }

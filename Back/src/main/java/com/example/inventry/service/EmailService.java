@@ -85,4 +85,7 @@ public class EmailService {
             }
         }
     }
+
+    public void sendSimpleMessage(String userEmail, String emailSubject, String emailBody) {
+    }
 }
