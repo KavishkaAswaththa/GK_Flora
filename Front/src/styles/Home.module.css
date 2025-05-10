@@ -1,124 +1,328 @@
 .home {
-    font-family: "Segoe UI", sans-serif;
-    background-color: #fff8e1;
-    color: #333;
+  font-family: "Segoe UI", sans-serif;
+  background-color: #fff8e1;
+  color: #333;
+}
+
+/* Banner Section */
+.banner {
+  position: relative;
+  width: 100%;
+  height: 400px;
+  overflow: hidden;
+  border-radius: 0 0 32px 32px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.bannerImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: brightness(85%);
+}
+
+.bannerText {
+  position: absolute;
+  top: 50%;
+  left: 10%;
+  transform: translateY(-50%);
+  color: #fff;
+  max-width: 600px;
+}
+
+.bannerText h1 {
+  font-size: 3rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+.bannerText p {
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+}
+
+.bannerButton {
+  background-color: #fdd835;
+  color: #333;
+  padding: 12px 24px;
+  font-weight: 600;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: 0.3s;
+}
+
+.bannerButton:hover {
+  background-color: #fbc02d;
+}
+
+/* About Section */
+.about {
+  text-align: center;
+  padding: 50px 20px;
+  background-color: #fffde7;
+}
+
+.about h2 {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  color: #fbc02d;
+}
+
+.about p {
+  font-size: 1.1rem;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+/* Featured Section */
+.featured {
+  padding: 50px 20px;
+  text-align: center;
+}
+
+.featured h2 {
+  font-size: 2rem;
+  color: #fdd835;
+  margin-bottom: 1.5rem;
+}
+
+/* Call to Action */
+.cta {
+  background-color: #fffde7;
+  padding: 40px 20px;
+  text-align: center;
+}
+
+.cta h2 {
+  margin-bottom: 20px;
+  font-size: 1.8rem;
+}
+
+.ctaButton {
+  padding: 12px 28px;
+  background-color: #fdd835;
+  color: #000;
+  text-decoration: none;
+  font-weight: bold;
+  border-radius: 10px;
+  transition: 0.3s ease;
+}
+
+.ctaButton:hover {
+  background-color: #fbc02d;
+}
+
+/* Footer */
+.footer {
+  background-color: #fdd835;
+  padding: 15px;
+  text-align: center;
+  font-size: 0.9rem;
+  color: #333;
+  border-top: 1px solid #fbc02d;
+}
+
+/* --- Coupon Section --- */
+.coupon {
+  background: linear-gradient(135deg, #fff8e1 0%, #fdd835 100%);
+  margin: 50px auto;
+  padding: 60px 30px;
+  border-radius: 24px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.15);
+  animation: slideInUp 1.2s ease forwards;
+}
+
+.coupon::before,
+.coupon::after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(60px);
+  opacity: 0.4;
+  z-index: 0;
+}
+
+.coupon::before {
+  width: 250px;
+  height: 250px;
+  background: #fff176;
+  top: -70px;
+  left: -70px;
+  animation: floatOrb 6s ease-in-out infinite alternate;
+}
+
+.coupon::after {
+  width: 180px;
+  height: 180px;
+  background: #ffe082;
+  bottom: -50px;
+  right: -50px;
+  animation: floatOrb 8s ease-in-out infinite alternate-reverse;
+}
+
+.couponContent {
+  position: relative;
+  z-index: 2;
+  max-width: 800px;
+  margin: 0 auto;
+  backdrop-filter: blur(4px);
+}
+
+.coupon h2 {
+  font-size: 2.5rem;
+  color: #bf360c;
+  margin-bottom: 15px;
+  font-weight: bold;
+  animation: floatText 3s ease-in-out infinite;
+}
+
+.coupon p {
+  font-size: 1.25rem;
+  color: #4e342e;
+  margin-bottom: 30px;
+  line-height: 1.6;
+  animation: fadeIn 2s ease forwards;
+}
+
+/* Enhanced Button Animation */
+.couponButton {
+  background: linear-gradient(270deg, #ff7043, #ffb74d);
+  background-size: 200% 200%;
+  color: white;
+  padding: 16px 36px;
+  font-size: 1.1rem;
+  border: none;
+  border-radius: 30px;
+  text-decoration: none;
+  font-weight: 600;
+  box-shadow: 0 8px 20px rgba(255, 87, 34, 0.3);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  position: relative;
+  z-index: 3;
+  animation: pulseGlow 2.5s ease-in-out infinite, bounceIn 1.2s ease;
+  overflow: hidden;
+}
+
+.couponButton::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -75%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(
+    120deg,
+    rgba(255, 255, 255, 0.2),
+    rgba(255, 255, 255, 0.6),
+    rgba(255, 255, 255, 0.2)
+  );
+  transform: skewX(-20deg);
+  transition: all 0.5s ease;
+}
+
+.couponButton:hover::before {
+  left: 125%;
+}
+
+.couponButton:hover {
+  transform: scale(1.08);
+  box-shadow: 0 12px 32px rgba(255, 87, 34, 0.6);
+  animation: gradientShift 4s linear infinite;
+}
+
+.couponButton:active {
+  animation: bounceClick 0.3s ease;
+}
+
+
+
+/* Animations */
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(80px);
   }
-  
-  /* Banner Section */
-  .banner {
-    position: relative;
-    width: 100%;
-    height: 400px;
-    overflow: hidden;
-    border-radius: 0 0 32px 32px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
-  
-  .bannerImage {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    filter: brightness(85%);
+}
+
+@keyframes pulseGlow {
+  0%, 100% {
+    box-shadow: 0 0 15px rgba(255, 112, 67, 0.4);
   }
-  
-  .bannerText {
-    position: absolute;
-    top: 50%;
-    left: 10%;
-    transform: translateY(-50%);
-    color: #fff;
-    max-width: 600px;
+  50% {
+    box-shadow: 0 0 30px rgba(255, 183, 77, 0.8);
   }
-  
-  .bannerText h1 {
-    font-size: 3rem;
-    font-weight: bold;
-    margin-bottom: 0.5rem;
+}
+
+@keyframes floatText {
+  0%, 100% {
+    transform: translateY(0);
   }
-  
-  .bannerText p {
-    font-size: 1.2rem;
-    margin-bottom: 1rem;
+  50% {
+    transform: translateY(-8px);
   }
-  
-  .bannerButton {
-    background-color: #fdd835;
-    color: #333;
-    padding: 12px 24px;
-    font-weight: 600;
-    border-radius: 8px;
-    text-decoration: none;
-    transition: 0.3s;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
   }
-  
-  .bannerButton:hover {
-    background-color: #fbc02d;
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
-  
-  /* About Section */
-  .about {
-    text-align: center;
-    padding: 50px 20px;
-    background-color: #fffde7;
+}
+
+@keyframes floatOrb {
+  0% {
+    transform: translateY(0) translateX(0);
   }
-  
-  .about h2 {
-    font-size: 2rem;
-    margin-bottom: 1rem;
-    color: #fbc02d;
+  100% {
+    transform: translateY(-20px) translateX(20px);
   }
-  
-  .about p {
-    font-size: 1.1rem;
-    max-width: 800px;
-    margin: 0 auto;
+}
+
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
   }
-  
-  /* Featured Section */
-  .featured {
-    padding: 50px 20px;
-    text-align: center;
+  100% {
+    background-position: 100% 50%;
   }
-  
-  .featured h2 {
-    font-size: 2rem;
-    color: #fdd835;
-    margin-bottom: 1.5rem;
+}
+
+@keyframes bounceIn {
+  0% {
+    transform: scale(0.8);
+    opacity: 0;
   }
-  
-  /* Call to Action */
-  .cta {
-    background-color: #fffde7;
-    padding: 40px 20px;
-    text-align: center;
+  60% {
+    transform: scale(1.1);
+    opacity: 1;
   }
-  
-  .cta h2 {
-    margin-bottom: 20px;
-    font-size: 1.8rem;
+  80% {
+    transform: scale(0.97);
   }
-  
-  .ctaButton {
-    padding: 12px 28px;
-    background-color: #fdd835;
-    color: #000;
-    text-decoration: none;
-    font-weight: bold;
-    border-radius: 10px;
-    transition: 0.3s ease;
+  100% {
+    transform: scale(1);
   }
-  
-  .ctaButton:hover {
-    background-color: #fbc02d;
+}
+
+@keyframes bounceClick {
+  0% {
+    transform: scale(1);
   }
-  
-  /* Footer */
-  .footer {
-    background-color: #fdd835;
-    padding: 15px;
-    text-align: center;
-    font-size: 0.9rem;
-    color: #333;
-    border-top: 1px solid #fbc02d;
+  50% {
+    transform: scale(0.92);
   }
-  
+  100% {
+    transform: scale(1);
+  }
+}

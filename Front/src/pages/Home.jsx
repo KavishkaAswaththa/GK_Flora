@@ -17,6 +17,21 @@ const Home = () => {
         </div>
       </section>
 
+      {/* Coupon Section */}
+      <section className={styles.coupon}>
+        <div className={styles.couponContent}>
+          <h2>Welcome to Our New Feature!</h2>
+          <p>
+            You can now create your own flower bouquet just the way you like it.
+            <br />
+            <strong>Click below to experience the magic!</strong>
+          </p>
+          <Link to="/FlowerCustomization" className={styles.couponButton}>
+            Create Your Own Bouquet
+          </Link>
+        </div>
+      </section>
+
       {/* About Section */}
       <section className={styles.about}>
         <h2>Why Choose GKFlora?</h2>
