@@ -35,9 +35,7 @@ const Navbar = () => {
 
       {/* Navigation Links */}
       <div className="nav-links">
-        <Link to="/form" className="nav-item">
-          Add Inventory
-        </Link>
+ 
         <Link to="/status" className="nav-item">
           Order Status
         </Link>

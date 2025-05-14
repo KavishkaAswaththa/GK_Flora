@@ -24,7 +24,7 @@ const InventoryForm = ({ onSuccess }) => {
   const [imagePreviews, setImagePreviews] = useState([]);
   const [isUpdate, setIsUpdate] = useState(false);
 
-  const bloomTags = ["Occasion", "Birthday", "Graduation", "Romance", "W", "E", "R", "T", "Y"];
+  const [bloomTags, setBloomTags] = useState([]);
 
   useEffect(() => {
     if (id) {
@@ -32,6 +32,22 @@ const InventoryForm = ({ onSuccess }) => {
     }
   }, [id]);
 
+  useEffect(() => {
+    if (id) {
+      fetchItemData(id);
+    }
+    fetchBloomTags();
+  }, [id]);
+  
+  const fetchBloomTags = async () => {
+    try {
+      const response = await axios.get("http://localhost:8080/api/bloom-tags");
+      setBloomTags(response.data);
+    } catch (error) {
+      console.error("Failed to fetch bloom tags:", error);
+    }
+  };
+  
   const fetchItemData = async (itemId) => {
     try {
       const response = await axios.get(`http://localhost:8080/api/inventory/${itemId}`);
@@ -154,21 +170,22 @@ const InventoryForm = ({ onSuccess }) => {
           <input type="number" name="qty" value={formData.qty} onChange={handleInputChange} required />
         </div>
         <div>
-          <label>Bloom Contains:</label>
-          <div className="tag-selector">
-            {bloomTags.map((tag) => (
-              <button
-                type="button"
-                key={tag}
-                className={`tag-button ${formData.bloomContains.includes(tag) ? "selected" : ""}`}
-                onClick={() => handleTagClick(tag)}
-              >
-                {tag}
-              </button>
-            ))}
-          </div>
-          <small>Click to select multiple tags</small>
-        </div>
+  <label>Bloom Contains:</label>
+  <div className="tag-selector">
+    {bloomTags.map((tag) => (
+      <button
+        type="button"
+        key={tag}
+        className={`tag-button ${formData.bloomContains.includes(tag) ? "selected" : ""}`}
+        onClick={() => handleTagClick(tag)}
+      >
+        {tag}
+      </button>
+    ))}
+  </div>
+  <small>Click to select multiple tags</small>
+</div>
+
         <div>
           <label>Images:</label>
           <input type="file" multiple accept="image/*" onChange={handleFileChange} />

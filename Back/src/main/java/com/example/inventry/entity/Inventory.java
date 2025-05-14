@@ -3,28 +3,41 @@ package com.example.inventry.entity;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.ArrayList;
 import java.util.List;
 
-@Document(collection = "inventory") // Marks it as a MongoDB document
+@Document(collection = "inventory")
 public class Inventory {
+
     @Id
     private String _id;
+
     private String name;
     private String category;
-    private List<String> imageIds; // Updated to store multiple image IDs
+    private List<String> imageIds;
     private String description;
     private Double price;
     private int qty;
-    private String bloomContains;
 
-    public <E> Inventory(String number, String testBouquet, String flowers, String beautifulBouquet, double v, String s, List<E> imageId1) {
-    }
+    // ✅ Just define it as a List — no annotation needed for MongoDB
+    private List<String> bloomContains = new ArrayList<>();
 
     public Inventory() {
-
     }
 
-    // Getters and Setters
+    public Inventory(String _id, String name, String category, String description, Double price, int qty, List<String> bloomContains, List<String> imageIds) {
+        this._id = _id;
+        this.name = name;
+        this.category = category;
+        this.description = description;
+        this.price = price;
+        this.qty = qty;
+        this.bloomContains = bloomContains;
+        this.imageIds = imageIds;
+    }
+
+    // Getters and setters
+
     public String get_id() {
         return _id;
     }
@@ -81,11 +94,11 @@ public class Inventory {
         this.qty = qty;
     }
 
-    public String getBloomContains() {
+    public List<String> getBloomContains() {
         return bloomContains;
     }
 
-    public void setBloomContains(String bloomContains) {
+    public void setBloomContains(List<String> bloomContains) {
         this.bloomContains = bloomContains;
     }
 }

@@ -1,3 +1,4 @@
+/* Main Dashboard Styles */
 .admin-dashboard {
   padding: 16px;
 }
@@ -9,6 +10,7 @@
   margin-bottom: 16px;
 }
 
+/* Table Styles */
 .admin-dashboard__table {
   width: 100%;
   background-color: #fff3cd;
@@ -23,13 +25,16 @@
   color: white;
   padding: 10px;
   text-align: left;
+  font-weight: bold;
 }
 
 .admin-dashboard__table td {
   padding: 10px;
   border-bottom: 1px solid #ffcc00;
+  font-size: 14px;
 }
 
+/* Row Styling */
 .admin-dashboard__row--even {
   background-color: #fff7d1;
 }
@@ -38,25 +43,31 @@
   background-color: #ffeb99;
 }
 
+/* Image Styling */
 .admin-dashboard__image {
   width: 40px;
   height: 40px;
   border-radius: 50%;
 }
 
-/* Buttons */
+/* Button Styles */
 .admin-dashboard__actions {
   display: flex;
   gap: 8px;
+}
+
+.admin-dashboard__edit-btn, .admin-dashboard__delete-btn, .admin-dashboard__add-btn {
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  text-align: center;
+  font-size: 14px;
 }
 
 .admin-dashboard__edit-btn {
   background-color: #4caf50;
   color: white;
   border: none;
-  padding: 5px 10px;
-  cursor: pointer;
-  border-radius: 5px;
   transition: background-color 0.3s ease;
 }
 
@@ -68,12 +79,199 @@
   background-color: #f44336;
   color: white;
   border: none;
-  padding: 5px 10px;
-  cursor: pointer;
-  border-radius: 5px;
   transition: background-color 0.3s ease;
 }
 
 .admin-dashboard__delete-btn:hover {
   background-color: #d32f2f;
+}
+
+.admin-dashboard__add-btn {
+  background-color: #f1c40f;
+  color: white;
+  border: none;
+  transition: background-color 0.3s ease;
+}
+
+.admin-dashboard__add-btn:hover {
+  background-color: #f39c12;
+}
+
+/* Modal Styling */
+.admin-dashboard__modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.admin-dashboard__modal-content {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  max-width: 500px;
+  width: 100%;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+.admin-dashboard__close-modal-btn {
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  cursor: pointer;
+  font-size: 14px;
+  border-radius: 8px;
+  transition: background-color 0.3s ease;
+}
+
+.admin-dashboard__close-modal-btn:hover {
+  background-color: #c0392b;
+}
+
+/* Bloom Tag Management */
+.admin-dashboard__bloom-tag-controls {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.admin-dashboard__input {
+  padding: 8px;
+  width: 200px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.admin-dashboard__bloom-tag-list {
+  list-style-type: none;
+  padding-left: 0;
+}
+
+.admin-dashboard__bloom-tag-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 6px 0;
+}
+
+.admin-dashboard__delete-btn {
+  background-color: #e63946;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.admin-dashboard__delete-btn:hover {
+  background-color: #c0392b;
+}
+
+/* Utility: Disabled State */
+.admin-dashboard__delete-multi-btn:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+/* Button Style for Manage Bloom Tags */
+.admin-dashboard__add-btn {
+  background-color: #f1c40f;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s ease;
+  margin-left: auto; /* Ensures button is aligned properly */
+}
+
+.admin-dashboard__add-btn:hover {
+  background-color: #f39c12;
+}
+
+/* Modal Overlay Styles */
+.admin-dashboard__modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.admin-dashboard__modal-content {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  max-width: 500px;
+  width: 100%;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Close button inside modal */
+.admin-dashboard__close-modal-btn {
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  cursor: pointer;
+  font-size: 14px;
+  border-radius: 8px;
+  transition: background-color 0.3s ease;
+}
+
+.admin-dashboard__close-modal-btn:hover {
+  background-color: #c0392b;
+}
+
+/* Controls in the modal */
+.admin-dashboard__bloom-tag-controls {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.admin-dashboard__input {
+  padding: 8px;
+  width: 200px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.admin-dashboard__bloom-tag-list {
+  list-style-type: none;
+  padding-left: 0;
+}
+
+.admin-dashboard__bloom-tag-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 6px 0;
+}
+
+.admin-dashboard__delete-btn {
+  background-color: #e63946;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.admin-dashboard__delete-btn:hover {
+  background-color: #c0392b;
 }
