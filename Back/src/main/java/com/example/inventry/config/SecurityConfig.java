@@ -4,6 +4,7 @@ import com.example.inventry.security.JwtAuthFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -43,13 +44,22 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         // Public endpoints (no authentication required)
                         .requestMatchers(
+                                "/api/flowers",
+                                "/api/flowers/**",
+                                "/api/wrappingPapers",
+                                "/api/wrappingPapers/save",
                                 "/api/inventory",
                                 "/api/inventory/**",
                                 "/api/inventory/search/all",
-                                "/api/auth/**",               // Auth endpoints like login, register
-                                "/api/v1/delivery/**",        // All delivery-related endpoints
-                                "/api/bank-slips/**",         // All bank slip-related endpoints
-                                "/email/**"                   // Email-related endpoints
+
+                                "/api/auth/**",
+
+                                "/api/users/**",
+                                "/api/v1/delivery/**",     // Allow all delivery endpoints
+                                "/api/bank-slips/**",      // Allow all bank slip endpoints
+                                "/email/**"                // Allow email-related endpoints
+
+
                         ).permitAll()
 
                         // All other endpoints require authentication
@@ -70,10 +80,11 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
 
+
         // Allow requests from frontend origin (adjust as needed for deployment)
         configuration.setAllowedOrigins(Arrays.asList("http://localhost:5173"));
 
-        // Allow typical HTTP methods
+
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
 
         // Allow these headers in requests

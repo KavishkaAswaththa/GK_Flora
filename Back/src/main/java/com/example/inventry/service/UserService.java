@@ -19,5 +19,15 @@ public class UserService {
     public User saveUser(User user) {
         return userRepository.save(user);
     }
-}
 
+    public Optional<User> updateUserProfile(String email, User updatedData) {
+        return userRepository.findByEmail(email).map(existingUser -> {
+            existingUser.setName(updatedData.getName());
+            existingUser.setMobileNo(updatedData.getMobileNo());
+            existingUser.setBirthday(updatedData.getBirthday());
+            existingUser.setAvatarType(updatedData.getAvatarType());
+            existingUser.setAddress(updatedData.getAddress());
+            return userRepository.save(existingUser);
+        });
+    }
+}

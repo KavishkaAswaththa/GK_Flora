@@ -5,27 +5,27 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = "wrappingPapers")
 public class WrappingPaper {
+
     @Id
     private String id;
-    private String imageUrl;
+
+    private String imageBase64;
 
     public WrappingPaper() {}
 
-    public WrappingPaper(String imageUrl) {
-        this.imageUrl = imageUrl;
+    public WrappingPaper(String imageBase64) {
+        this.imageBase64 = imageBase64;
     }
 
-    // ✅ Getters
     public String getId() {
         return id;
     }
 
-    public String getImageUrl() {
-        return imageUrl;
+    public String getImageBase64() {
+        return imageBase64;
     }
 
-    // ✅ Setter for imageUrl
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
+    public void setImageBase64(String imageBase64) {
+        this.imageBase64 = imageBase64;
     }
 }

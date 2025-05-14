@@ -1,10 +1,10 @@
 package com.example.inventry.controller;
 
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.multipart.MultipartFile;
 import com.example.inventry.entity.Flower;
 import com.example.inventry.service.FlowerService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
@@ -13,6 +13,7 @@ import java.util.List;
 @RequestMapping("/api/flowers")
 @CrossOrigin(origins = "http://localhost:5173")
 public class FlowerController {
+
     private final FlowerService flowerService;
 
     public FlowerController(FlowerService flowerService) {
@@ -23,7 +24,6 @@ public class FlowerController {
     public ResponseEntity<?> addFlower(
             @RequestParam("name") String name,
             @RequestParam("image") MultipartFile image) {
-
         try {
             Flower flower = flowerService.addFlower(name, image);
             return ResponseEntity.ok(flower);
@@ -34,7 +34,7 @@ public class FlowerController {
         }
     }
 
-    @GetMapping
+    @GetMapping("/all")
     public List<Flower> getAllFlowers() {
         return flowerService.getAllFlowers();
     }
