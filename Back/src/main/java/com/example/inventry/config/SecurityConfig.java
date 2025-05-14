@@ -23,21 +23,26 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
 
-@Configuration
-@EnableWebSecurity
-@RequiredArgsConstructor
+@Configuration // Marks this as a configuration class
+@EnableWebSecurity // Enables Spring Security web security support
+@RequiredArgsConstructor // Lombok will generate a constructor for final fields
 public class SecurityConfig {
 
-    private final JwtAuthFilter jwtAuthFilter;
-    private final UserDetailsService userDetailsService;
+    private final JwtAuthFilter jwtAuthFilter; // Custom filter to validate JWT tokens
+    private final UserDetailsService userDetailsService; // Loads user-specific data
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+                // Disable CSRF protection as JWT is used (stateless)
                 .csrf(csrf -> csrf.disable())
+
+                // Enable CORS with custom configuration
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+
+                // Define authorization rules
                 .authorizeHttpRequests(auth -> auth
-                        // Public endpoints (no token required)
+                        // Public endpoints (no authentication required)
                         .requestMatchers(
                                 "/api/flowers",
                                 "/api/flowers/**",
@@ -46,6 +51,7 @@ public class SecurityConfig {
                                 "/api/inventory",
                                 "/api/inventory/**",
                                 "/api/inventory/search/all",
+
                                 "/api/auth/**",
 
                                 "/api/users/**",
@@ -53,47 +59,68 @@ public class SecurityConfig {
                                 "/api/bank-slips/**",      // Allow all bank slip endpoints
                                 "/email/**"                // Allow email-related endpoints
 
+
                         ).permitAll()
 
                         // All other endpoints require authentication
                         .anyRequest().authenticated()
                 )
+
+                // Stateless session policy for REST APIs
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+
+                // Set authentication provider and custom JWT filter
                 .authenticationProvider(authenticationProvider())
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
-        return http.build();
+        return http.build(); // Build the security filter chain
     }
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
+
+
+        // Allow requests from frontend origin (adjust as needed for deployment)
         configuration.setAllowedOrigins(Arrays.asList("http://localhost:5173"));
+
+
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
+
+        // Allow these headers in requests
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "Accept"));
+
+        // Expose the Authorization header so frontend can access it
         configuration.setExposedHeaders(Arrays.asList("Authorization"));
+
+        // Allow sending credentials like cookies (not used with JWT usually, but safe here)
         configuration.setAllowCredentials(true);
 
+        // Apply this CORS configuration to all routes
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
+
         return source;
     }
 
     @Bean
     public AuthenticationProvider authenticationProvider() {
+        // Use DaoAuthenticationProvider with custom user details service and password encoder
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-        authProvider.setUserDetailsService(userDetailsService);
-        authProvider.setPasswordEncoder(passwordEncoder());
+        authProvider.setUserDetailsService(userDetailsService); // User fetching logic
+        authProvider.setPasswordEncoder(passwordEncoder());     // Encode passwords using BCrypt
         return authProvider;
     }
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+        // Expose AuthenticationManager from configuration
         return config.getAuthenticationManager();
     }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
+        // Strong hashing algorithm for passwords
         return new BCryptPasswordEncoder();
     }
 }

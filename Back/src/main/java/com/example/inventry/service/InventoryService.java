@@ -40,6 +40,17 @@ public class InventoryService {
         }
     }
 
+    public boolean updateQty(String id, int newQty, String email) {
+        Inventory inventory = getById(id);
+        if (inventory == null || !isAdmin(email)) {
+            return false;
+        }
+        inventory.setQty(newQty);
+        inventoryRepo.save(inventory);
+        return true;
+    }
+
+
     // Save inventory - only allowed for admins
     public boolean save(Inventory inventory, String userEmail) {
         if (isAdmin(userEmail)) {

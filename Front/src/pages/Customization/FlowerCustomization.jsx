@@ -4,7 +4,7 @@ import "../../styles/Customization/Custom.css";
 
 export default function FlowerCustomization() {
   const [flowers, setFlowers] = useState([]);
-  const [wrappingPapers, setWrappingPapers] = useState([]);
+  const [wrappingPapers, setWrappingPapers] = useState([]); // Always an array
   const [selectedFlowers, setSelectedFlowers] = useState([]);
   const [showFlowerForm, setShowFlowerForm] = useState(false);
   const [showWrappingForm, setShowWrappingForm] = useState(false);
@@ -21,7 +21,7 @@ export default function FlowerCustomization() {
   const fetchFlowers = async () => {
     try {
       const response = await axios.get("http://localhost:8080/api/flowers/all");
-      setFlowers(response.data);
+      setFlowers(Array.isArray(response.data) ? response.data : []);
     } catch (error) {
       console.error("Error fetching flowers:", error.response || error.message);
       setMessage("Error fetching flowers. Please try again.");
@@ -31,7 +31,7 @@ export default function FlowerCustomization() {
   const fetchWrappingPapers = async () => {
     try {
       const response = await axios.get("http://localhost:8080/api/wrappingPapers");
-      setWrappingPapers(response.data);
+      setWrappingPapers(Array.isArray(response.data) ? response.data : []);
     } catch (error) {
       console.error("Error fetching wrapping papers:", error.response || error.message);
       setMessage("Error fetching wrapping papers. Please try again.");
@@ -53,7 +53,7 @@ export default function FlowerCustomization() {
     formData.append("image", flowerImage);
 
     try {
-      const response = await axios.post("http://localhost:8080/api/flowers", formData, {
+      await axios.post("http://localhost:8080/api/flowers", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
       setMessage("Flower added successfully!");
@@ -81,7 +81,7 @@ export default function FlowerCustomization() {
     formData.append("image", wrappingImage);
 
     try {
-      const response = await axios.post("http://localhost:8080/api/wrappingPapers", formData, {
+      await axios.post("http://localhost:8080/api/wrappingPapers", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
       setMessage("Wrapping paper added successfully!");
@@ -142,24 +142,25 @@ export default function FlowerCustomization() {
       <div className="collection-container">
         <h2>Flowers</h2>
         <div className="scroll-container">
-          {flowers.map((flower) => (
-            <div
-              key={flower.id}
-              className="card-container"
-              onClick={() => selectFlower(flower)}
-            >
-              <img
-                src={
-                  flower.imageBase64
-                    ? `data:image/jpeg;base64,${flower.imageBase64}`
-                    : "/path/to/placeholder-image.jpg"
-                }
-                alt={flower.name}
-                className="card-image"
-              />
-              <div className="card-title">{flower.name}</div>
-            </div>
-          ))}
+          {Array.isArray(flowers) &&
+            flowers.map((flower) => (
+              <div
+                key={flower.id}
+                className="card-container"
+                onClick={() => selectFlower(flower)}
+              >
+                <img
+                  src={
+                    flower.imageBase64
+                      ? `data:image/jpeg;base64,${flower.imageBase64}`
+                      : "/path/to/placeholder-image.jpg"
+                  }
+                  alt={flower.name}
+                  className="card-image"
+                />
+                <div className="card-title">{flower.name}</div>
+              </div>
+            ))}
         </div>
 
         <h2>Selected Flowers (5×5 Grid)</h2>
@@ -180,19 +181,20 @@ export default function FlowerCustomization() {
 
         <h2>Wrapping Papers</h2>
         <div className="scroll-container">
-          {wrappingPapers.map((paper) => (
-            <div key={paper.id} className="card-container">
-              <img
-                src={
-                  paper.imageBase64
-                    ? `data:image/jpeg;base64,${paper.imageBase64}`
-                    : "/path/to/placeholder-image.jpg"
-                }
-                alt="Wrapping Paper"
-                className="card-image"
-              />
-            </div>
-          ))}
+          {Array.isArray(wrappingPapers) &&
+            wrappingPapers.map((paper) => (
+              <div key={paper.id} className="card-container">
+                <img
+                  src={
+                    paper.imageBase64
+                      ? `data:image/jpeg;base64,${paper.imageBase64}`
+                      : "/path/to/placeholder-image.jpg"
+                  }
+                  alt="Wrapping Paper"
+                  className="card-image"
+                />
+              </div>
+            ))}
         </div>
       </div>
 

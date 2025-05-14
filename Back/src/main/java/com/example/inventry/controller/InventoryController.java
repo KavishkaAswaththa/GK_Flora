@@ -3,6 +3,8 @@ package com.example.inventry.controller;
 import com.example.inventry.entity.Inventory;
 import com.example.inventry.service.ImageService;
 import com.example.inventry.service.InventoryService;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,6 +27,9 @@ public class InventoryController {
     @Autowired
     private ImageService imageService;
 
+    @Autowired
+    private ObjectMapper objectMapper;
+
     @PostMapping("/save")
     public ResponseEntity<String> saveInventoryWithImages(
             @RequestParam("files") MultipartFile[] files,
@@ -33,7 +38,7 @@ public class InventoryController {
             @RequestParam("description") String description,
             @RequestParam("price") Double price,
             @RequestParam("qty") int qty,
-            @RequestParam("bloomContains") String bloomContains,
+            @RequestParam("bloomContains") String bloomContainsJson,
             Principal principal) {
         try {
             String email = principal.getName();
@@ -43,6 +48,7 @@ public class InventoryController {
             }
 
             List<String> imageIds = imageService.uploadImages(files);
+            List<String> bloomTags = objectMapper.readValue(bloomContainsJson, new TypeReference<List<String>>() {});
 
             Inventory inventory = new Inventory();
             inventory.setName(name.trim());
@@ -50,7 +56,7 @@ public class InventoryController {
             inventory.setDescription(description.trim());
             inventory.setPrice(price);
             inventory.setQty(qty);
-            inventory.setBloomContains(bloomContains.trim());
+            inventory.setBloomContains(bloomTags);
             inventory.setImageIds(imageIds);
 
             boolean saved = inventoryService.save(inventory, email);
@@ -62,6 +68,23 @@ public class InventoryController {
             return ResponseEntity.ok("Inventory saved successfully with ID: " + inventory.get_id());
         } catch (IOException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to save inventory.");
+        }
+    }
+
+    @PutMapping("/updateQty/{id}")
+    public ResponseEntity<String> updateQty(@PathVariable String id, @RequestBody Map<String, Integer> payload, Principal principal) {
+        try {
+            String email = principal.getName();
+            int newQty = payload.get("qty");
+            boolean updated = inventoryService.updateQty(id, newQty, email);
+
+            if (!updated) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Access denied or item not found.");
+            }
+
+            return ResponseEntity.ok("Quantity updated successfully.");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to update quantity.");
         }
     }
 
@@ -141,7 +164,7 @@ public class InventoryController {
             @RequestParam("description") String description,
             @RequestParam("price") Double price,
             @RequestParam("qty") int qty,
-            @RequestParam("bloomContains") String bloomContains,
+            @RequestParam("bloomContains") String bloomContainsJson,
             Principal principal) {
         try {
             String email = principal.getName();
@@ -150,12 +173,14 @@ public class InventoryController {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Inventory item with ID " + id + " not found.");
             }
 
-            existingInventory.setName(name);
-            existingInventory.setCategory(category);
-            existingInventory.setDescription(description);
+            existingInventory.setName(name.trim());
+            existingInventory.setCategory(category.trim());
+            existingInventory.setDescription(description.trim());
             existingInventory.setPrice(price);
             existingInventory.setQty(qty);
-            existingInventory.setBloomContains(bloomContains);
+
+            List<String> bloomTags = objectMapper.readValue(bloomContainsJson, new TypeReference<List<String>>() {});
+            existingInventory.setBloomContains(bloomTags);
 
             if (files != null && files.length > 0) {
                 if (files.length < 1 || files.length > 6) {
@@ -203,5 +228,4 @@ public class InventoryController {
         inventoryService.checkLowStockInventory();
         return ResponseEntity.ok("Low stock email check triggered successfully.");
     }
-
 }
