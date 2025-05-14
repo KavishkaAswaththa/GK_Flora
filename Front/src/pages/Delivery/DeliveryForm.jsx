@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import '../../styles/Delivery/DeliveryForm.css';
 
 const DeliveryForm = () => {
     const navigate = useNavigate();
     const { deliveryId } = useParams();
+    const location = useLocation();
+    const editFormData = location.state?.formData; // Get data passed from OrderConfirmation
 
     const [formData, setFormData] = useState({
         name: '',
@@ -39,7 +41,20 @@ const DeliveryForm = () => {
     useEffect(() => {
         fetchCities();
 
-        // Set default delivery date/time (2 hours later)
+        // If we have form data from OrderConfirmation, use that data
+        if (editFormData) {
+            // Determine if sender is same as recipient
+            const sameAsSender = editFormData.name === editFormData.senderName && 
+                                editFormData.phone1 === editFormData.phone2;
+            
+            setFormData({
+                ...editFormData,
+                sameAsSender: sameAsSender
+            });
+            return; // Skip the rest of this effect if we're using data from OrderConfirmation
+        }
+        
+        // If no edit data, set default delivery date/time (2 hours later)
         const now = new Date();
         const future = new Date(now.getTime() + 2 * 60 * 60 * 1000);
         setFormData(prev => ({
@@ -48,11 +63,21 @@ const DeliveryForm = () => {
             deliveryTime: `${future.getHours().toString().padStart(2, '0')}:${future.getMinutes().toString().padStart(2, '0')}`
         }));
 
+        // If we have a deliveryId, fetch that delivery's data
         if (deliveryId) {
             const fetchDelivery = async () => {
                 try {
                     const response = await axios.get(`http://localhost:8080/api/v1/delivery/${deliveryId}`);
-                    setFormData(response.data);
+                    
+                    // Determine if sender is same as recipient
+                    const deliveryData = response.data;
+                    const sameAsSender = deliveryData.name === deliveryData.senderName && 
+                                        deliveryData.phone1 === deliveryData.phone2;
+                    
+                    setFormData({
+                        ...deliveryData,
+                        sameAsSender: sameAsSender
+                    });
                 } catch (error) {
                     console.error('Error loading delivery:', error);
                     alert('Failed to load delivery details');
@@ -60,7 +85,7 @@ const DeliveryForm = () => {
             };
             fetchDelivery();
         }
-    }, [deliveryId]);
+    }, [deliveryId, editFormData]);
 
     const validateDeliveryDateTime = (date, time) => {
         const now = new Date();
