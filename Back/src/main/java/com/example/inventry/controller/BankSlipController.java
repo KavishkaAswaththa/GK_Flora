@@ -11,6 +11,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import com.example.inventry.repo.BankSlipRepository;
 
 import java.io.IOException;
 import java.util.Date;
@@ -23,8 +24,12 @@ import java.util.Map;
 @CrossOrigin(origins = "http://localhost:5173")
 public class BankSlipController {
 
+    private final BankSlipRepository bankSlipRepository;
     @Autowired
     private BankSlipService bankSlipService;
+    public BankSlipController(BankSlipRepository bankSlipRepository) {
+        this.bankSlipRepository = bankSlipRepository;
+    }
 
     @Autowired
     private EmailService emailService;
@@ -39,6 +44,7 @@ public class BankSlipController {
             @RequestParam("userEmail") String userEmail) {
 
         try {
+
             // Validate file type
             String contentType = file.getContentType();
             if (contentType == null || !(contentType.equals("image/png") ||
@@ -54,12 +60,28 @@ public class BankSlipController {
                         .body("File size exceeds 2MB limit");
             }
 
+            // Save the bank slip
             BankSlip savedBankSlip = bankSlipService.saveBankSlip(file, orderId, userEmail);
 
-            // Send confirmation notification
+            // Send notification to user
             notificationService.sendNotification(userEmail,
                     "Your bank slip has been uploaded successfully. The admin will review it soon. Your payment is pending.");
 
+            // Send email to admin with slip as attachment
+            String adminEmail = "gamindumpasan1997@gmail.com";
+            String subject = "New Bank Slip Uploaded by " + userEmail;
+            String message = "A new bank slip has been uploaded for Order ID: " + orderId + "\n"
+                    + "Uploaded by: " + userEmail;
+
+            emailService.sendEmailWithAttachment(
+                    adminEmail,
+                    subject,
+                    message,
+                    file,
+                    userEmail // sent on behalf of user
+            );
+
+            // Prepare response
             Map<String, Object> response = new HashMap<>();
             response.put("id", savedBankSlip.getId());
             response.put("orderId", savedBankSlip.getOrderId());
@@ -74,6 +96,7 @@ public class BankSlipController {
                     .body("Failed to upload file: " + e.getMessage());
         }
     }
+
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getBankSlip(@PathVariable String id) {
@@ -127,17 +150,19 @@ public class BankSlipController {
     }
 
     @GetMapping("/list")
-    public ResponseEntity<List<BankSlip>> getBankSlipsByStatus(@RequestParam(defaultValue = "PENDING") String status) {
-        List<BankSlip> bankSlips;
+    public ResponseEntity<?> getBankSlips(@RequestParam(required = false) String status) {
+        List<BankSlip> slips;
 
-        if ("all".equalsIgnoreCase(status)) {
-            bankSlips = bankSlipService.getAllBankSlips();
+        if (status == null || status.equalsIgnoreCase("ALL")) {
+            slips = bankSlipRepository.findByStatusIn(List.of("PENDING", "VERIFIED", "REJECTED"));
         } else {
-            bankSlips = bankSlipService.getBankSlipsByStatus(status);
+            slips = bankSlipRepository.findByStatus(status.toUpperCase());
         }
 
-        return ResponseEntity.ok(bankSlips);
+        return ResponseEntity.ok(slips);
     }
+
+
 
     @GetMapping("/file/{id}")
     public ResponseEntity<?> getBankSlipFile(@PathVariable String id) {

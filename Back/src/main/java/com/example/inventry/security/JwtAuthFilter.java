@@ -28,7 +28,8 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
     private static final Set<String> ADMIN_EMAILS = Set.of(
             "gamindumpasan1997@gmail.com",
-            "kavindiyapa1999@gmail.com"
+            "kavindiyapa1999@gmail.com",
+            "dinithi0425@gmail.com"
     );
 
     public JwtAuthFilter(JwtService jwtService, UserDetailsService userDetailsService) {
@@ -54,7 +55,9 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                     path.startsWith("/api/bank-slips") ||
                     path.equals("/api/flowers") ||
                     path.equals("/api/flowers/all") ||
-                    path.equals("/api/wrappingPapers")) {
+                    path.equals("/api/wrappingPapers") ||
+                    // Add the email upload-slip endpoint to public access
+                    path.equals("/email/upload-slip")) {
                 filterChain.doFilter(request, response);
                 return;
             }

@@ -16,6 +16,7 @@ import java.util.List;
 @Service
 public class EmailService {
 
+
     private final JavaMailSender mailSender;
     private static final Logger logger = LoggerFactory.getLogger(EmailService.class);
 
@@ -53,15 +54,24 @@ public class EmailService {
         sendEmail(toEmail, subject, body);
     }
 
+    public void sendRejectToUser(String toEmail) {
+        String subject = "Payment Reject";
+        String body = "Dear customer,<br><br>Your payment has been <b>Reject</b>.<br>Try Again";
+        sendEmail(toEmail, subject, body);
+    }
+
     // Send uploaded payment slip to admin
     public void sendSlipToAdmin(String adminEmail, MultipartFile slipFile, String userEmail) throws MessagingException, IOException {
         try {
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true);
+
             helper.setTo(adminEmail);
             helper.setSubject("Payment Slip from " + userEmail);
-            helper.setText("User " + userEmail + " uploaded a payment slip.");
+            helper.setText("User " + userEmail + " uploaded a payment slip. Please find the attachment.");
+            helper.setReplyTo(userEmail); // Add reply-to so admin can reply directly to the user
             helper.addAttachment(slipFile.getOriginalFilename(), slipFile);
+
             mailSender.send(message);
             logger.info("Slip sent to admin: {}", adminEmail);
         } catch (Exception e) {
@@ -69,6 +79,7 @@ public class EmailService {
             throw new RuntimeException("Failed to send slip: " + e.getMessage());
         }
     }
+
 
     // Low stock alert to admins
     public void sendLowStockAlert(String itemName, int qty, List<String> adminEmails) {
@@ -86,6 +97,11 @@ public class EmailService {
         }
     }
 
+
+
     public void sendSimpleMessage(String userEmail, String emailSubject, String emailBody) {
+    }
+
+    public void sendEmailWithAttachment(String adminEmail, String subject, String message, MultipartFile file, String userEmail) {
     }
 }

@@ -61,8 +61,14 @@ public class BankSlipService {
     }
 
     public BankSlip updateBankSlip(BankSlip slip) {
+<<<<<<< Updated upstream
 
         return slip;
+=======
+        return bankSlipRepository.save(slip);
+
+//        return slip;
+>>>>>>> Stashed changes
     }
 
     public List<BankSlip> getAllBankSlips() {
