@@ -17,10 +17,11 @@ const AdminPaymentReview = () => {
         try {
             setLoading(true);
             const response = await fetch(`http://localhost:8080/api/bank-slips/list?status=${statusFilter}`, {
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`
-                }
-            });
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
+            }
+        });
+
             
             if (!response.ok) {
                 throw new Error('Failed to fetch bank slips');
@@ -63,17 +64,10 @@ const AdminPaymentReview = () => {
     const updatePaymentStatus = async (slipId, status, reason = '') => {
         try {
             const response = await fetch(`http://localhost:8080/api/bank-slips/update-status`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`
-                },
-                body: JSON.stringify({
-                    slipId: slipId,
-                    status: status,
-                    reason: reason
-                })
-            });
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('token')}` },
+            body: JSON.stringify({ slipId: slipId, status: status, reason: reason })
+        });
             
             if (!response.ok) {
                 throw new Error(`Failed to ${status.toLowerCase()} payment`);
@@ -93,20 +87,62 @@ const AdminPaymentReview = () => {
         }
     };
 
-    const handleApprove = () => {
-        if (selectedSlip) {
-            updatePaymentStatus(selectedSlip.id, 'VERIFIED');
-        }
-    };
+    const handleApprove = async () => {
+    if (selectedSlip) {
+        await updatePaymentStatus(selectedSlip.id, 'VERIFIED');
 
-    const handleReject = () => {
-        if (selectedSlip) {
-            const reason = prompt('Please enter a reason for rejection:');
-            if (reason) {
-                updatePaymentStatus(selectedSlip.id, 'REJECTED', reason);
+        // ✅ Send confirmation email
+        try {
+            const response = await fetch(`http://localhost:8080/email/confirm-payment`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                },
+                body: new URLSearchParams({ userEmail: selectedSlip.userEmail })
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to send confirmation email');
+            }
+
+            console.log('Confirmation email sent');
+        } catch (error) {
+            console.error('Email Error:', error.message);
+        }
+    }
+};
+
+
+    const handleReject = async () => {
+    if (selectedSlip) {
+        const reason = prompt('Please enter a reason for rejection:');
+        if (reason) {
+            await updatePaymentStatus(selectedSlip.id, 'REJECTED', reason);
+
+            // ✅ Send rejection email
+            try {
+                const response = await fetch(`http://localhost:8080/email/reject-payment`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    },
+                    body: new URLSearchParams({ userEmail: selectedSlip.userEmail })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to send rejection email');
+                }
+
+                console.log('Rejection email sent');
+            } catch (error) {
+                console.error('Email Error:', error.message);
             }
         }
-    };
+    }
+};
+
 
     const formatStatusLabel = (status) => {
         if (!status) return '';

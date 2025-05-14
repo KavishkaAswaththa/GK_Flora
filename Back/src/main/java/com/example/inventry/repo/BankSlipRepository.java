@@ -10,4 +10,6 @@ import java.util.List;
 public interface BankSlipRepository extends MongoRepository<BankSlip, String> {
     List<BankSlip> findByStatus(String status);
     List<BankSlip> findByOrderId(String orderId);
+    List<BankSlip> findByStatusIn(List<String> statuses);
+
 }

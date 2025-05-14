@@ -61,8 +61,18 @@ public class BankSlipService {
     }
 
     public BankSlip updateBankSlip(BankSlip slip) {
-        // This method was returning the input parameter without saving
+
+
+
+        return slip;
+
         return bankSlipRepository.save(slip);
+
+//        return slip;
+
+        // This method was returning the input parameter without saving
+        
+      main
     }
 
     public List<BankSlip> getAllBankSlips() {

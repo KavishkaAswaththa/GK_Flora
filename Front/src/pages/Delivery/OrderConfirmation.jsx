@@ -18,7 +18,8 @@ const OrderConfirmation = () => {
     };
 
     const handleEditDelivery = () => {
-        navigate('/deliveryform', { state: { deliveryDetails } });
+        // Navigate directly to the delivery form with the current details
+        navigate('/deliveryform', { state: { formData: deliveryDetails } });
     };
 
     const handlePlaceOrder = () => {
@@ -43,10 +44,10 @@ const OrderConfirmation = () => {
                     <div className="detail-card">
                         <div className="detail-section">
                             <h3>Recipient</h3>
-                            <p><strong>Name:</strong> {deliveryDetails?.recipientName || 'Not provided'}</p>
+                            <p><strong>Name:</strong> {deliveryDetails?.name || 'Not provided'}</p>
                             <p><strong>Address:</strong> {deliveryDetails?.address || 'Not provided'}</p>
                             <p><strong>City:</strong> {deliveryDetails?.city || 'Not provided'}</p>
-                            <p><strong>Contact:</strong> {deliveryDetails?.contactNumber || 'Not provided'}</p>
+                            <p><strong>Contact:</strong> {deliveryDetails?.phone1 || 'Not provided'}</p>
                         </div>
                         
                         <div className="detail-section">
@@ -55,13 +56,19 @@ const OrderConfirmation = () => {
                             {deliveryDetails?.senderEmail && (
                                 <p><strong>Email:</strong> {deliveryDetails.senderEmail}</p>
                             )}
-                            <p><strong>Phone:</strong> {deliveryDetails?.senderPhone || 'Not provided'}</p>
+                            <p><strong>Phone:</strong> {deliveryDetails?.phone2 || 'Not provided'}</p>
                         </div>
                         
                         <div className="detail-section">
                             <h3>Delivery Schedule</h3>
                             <p><strong>Date:</strong> {deliveryDetails?.deliveryDate || 'Not specified'}</p>
                             <p><strong>Time:</strong> {deliveryDetails?.deliveryTime || 'Not specified'}</p>
+                            {deliveryDetails?.deliveryType && (
+                                <p><strong>Type:</strong> {deliveryDetails.deliveryType}</p>
+                            )}
+                            {deliveryDetails?.message && (
+                                <p><strong>Special Instructions:</strong> {deliveryDetails.message}</p>
+                            )}
                         </div>
                         
                         <button 
@@ -106,8 +113,16 @@ const OrderConfirmation = () => {
                     
                     <div className="delivery-type">
                         <h3>Delivery Type</h3>
-                        <div className="delivery-type">
-                            
+                        <div className="delivery-type-info">
+                            {deliveryDetails?.deliveryType === 'express' && (
+                                <p>Get delivered to your door step</p>
+                            )}
+                            {deliveryDetails?.deliveryType === 'priority' && (
+                                <p>Pickup From Your Nearest Branch</p>
+                            )}
+                            {(!deliveryDetails?.deliveryType || deliveryDetails?.deliveryType === 'select') && (
+                                <p>Standard delivery</p>
+                            )}
                         </div>
                     </div>
                     

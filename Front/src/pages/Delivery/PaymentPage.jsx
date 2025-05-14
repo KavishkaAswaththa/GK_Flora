@@ -1,16 +1,35 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+// import jwtDecode from 'jwt-decode'; // Make sure to install this: npm install jwt-decode
+import { jwtDecode } from 'jwt-decode';
+
 import '../../styles/Delivery/PaymentPage.css';
 
 const PaymentPage = () => {
     const navigate = useNavigate();
     const [bankSlip, setBankSlip] = useState(null);
     const [uploadStatus, setUploadStatus] = useState('');
+    const [userEmail, setUserEmail] = useState('');
+    const [orderId, setOrderId] = useState('123456'); // Replace with dynamic value if needed
+
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        if (token) {
+            try {
+                const decoded = jwtDecode(token);
+                if (decoded.sub) {
+                    setUserEmail(decoded.sub);
+                }
+            } catch (error) {
+                console.error("Failed to decode token:", error);
+            }
+        }
+    }, []);
 
     const handleFileChange = (e) => {
         const file = e.target.files[0];
         if (file) {
-            if (file.size > 2 * 1024 * 1024) { // 2MB limit
+            if (file.size > 2 * 1024 * 1024) {
                 setUploadStatus('File size too large (max 2MB)');
                 return;
             }
@@ -20,14 +39,20 @@ const PaymentPage = () => {
     };
 
     const sendNotification = async (message) => {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            console.error('No authentication token available');
+            return;
+        }
+
         try {
             await fetch('http://localhost:8080/api/notifications/send', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
                 },
                 body: JSON.stringify({
-                    userId: 'yosa', // Replace with actual user ID
                     message: message
                 })
             });
@@ -37,65 +62,74 @@ const PaymentPage = () => {
     };
 
     const handleSubmit = async () => {
-        if (!bankSlip) {
-            setUploadStatus('Please upload a bank slip');
-            return;
-        }
-        
-        try {
-            const formData = new FormData();
-            formData.append('file', bankSlip);
-            formData.append('orderId', '12345'); // Replace with actual order ID
-            formData.append('userEmail', 'user@example.com'); // Add userEmail parameter which is required
-            
-            setUploadStatus('Uploading...');
+    if (!bankSlip) {
+        setUploadStatus('Please upload a bank slip');
+        return;
+    }
 
-            // No headers for authentication or tokens - open access
-            const response = await fetch('http://localhost:8080/api/bank-slips/upload', {
-                method: 'POST',
-                body: formData,
-            });
-            
-            if (response.ok) {
-                setUploadStatus('Upload successful!');
-                await sendNotification('Your bank slip has been uploaded successfully. The admin will review it soon. Your payment is pending.');
-                navigate('/payment-confirmation'); // Changed to payment-confirmation
-            } else {
-                // Better error handling with status code
-                const errorText = await response.text();
-                setUploadStatus(`Upload failed (${response.status}): ${errorText}`);
-                console.error('Upload failed:', response.status, errorText);
-            }
-        
-        } catch (error) {
-            setUploadStatus(`Error: ${error.message}`);
-            console.error('Request error:', error);
+    if (!userEmail) {
+        setUploadStatus('Email not found. Please login again.');
+        return;
+    }
+
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailPattern.test(userEmail)) {
+        setUploadStatus('Invalid email address');
+        return;
+    }
+
+    if (userEmail.toLowerCase() === 'dinithi0425@gmail.com') { // Match backend check
+        setUploadStatus('Invalid email address');
+        return;
+    }
+
+    try {
+        const formData = new FormData();
+        formData.append('slip', bankSlip);
+        formData.append('userEmail', userEmail);
+        formData.append('orderId', orderId); // Added this line
+
+        setUploadStatus('Uploading...');
+
+        const token = localStorage.getItem('token');
+        const response = await fetch('http://localhost:8080/email/upload-slip', {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${token}` // Added authorization header
+            },
+            body: formData,
+        });
+
+        if (response.ok) {
+            setUploadStatus('Upload successful!');
+            await sendNotification('Bank slip uploaded. Payment pending review.');
+            navigate('/payment-confirmation', { state: { orderId } });
+        } else {
+            const errorText = await response.text();
+            setUploadStatus(`Upload failed: ${errorText}`);
         }
-    };
+    } catch (error) {
+        setUploadStatus(`Network error: ${error.message}`);
+    }
+};
+
 
     return (
         <div className="payment-container">
             <div className="header">
-           
-        <div className="logo-container">
-        
-        </div>
-                <div className="user-icon">
-                
-                </div>
+                <div className="logo-container"></div>
+                <div className="user-icon"></div>
             </div>
 
             <div className="payment-content">
                 <div className="payment-details">
                     <h2>Payment Details</h2>
-                    
                     <div className="bank-details">
                         <h3>Bank of Ceylon</h3>
                         <div className="detail-item"><span>Account Number - </span><span>1002547896531</span></div>
                         <div className="detail-item"><span>Beneficiary Name - </span><span>Gamindu Pasan</span></div>
                         <div className="detail-item"><span>Branch - </span><span>Baththaramulla</span></div>
                     </div>
-                    
                     <div className="payment-icon">
                         <img src="src/images/delivery/payment.png" alt="Payment" />
                     </div>
@@ -103,8 +137,18 @@ const PaymentPage = () => {
 
                 <div className="upload-section">
                     <h2>Upload Bank Slip</h2>
-                    <p>Please upload a bank slip or screenshot in case of online payment for the selected items.</p>
-                    
+                    <p>Please upload a bank slip or screenshot in case of online payment.</p>
+
+                    <div className="email-input">
+                        <label htmlFor="email">Your Email Address:</label>
+                        <input
+                            type="email"
+                            id="email"
+                            value={userEmail}
+                            readOnly
+                        />
+                    </div>
+
                     <div className="terms-section">
                         <h4>Terms of Use</h4>
                         <ol>
@@ -113,11 +157,11 @@ const PaymentPage = () => {
                             <li>You can upload bank slips in PNG, JPEG, or PDF format.</li>
                         </ol>
                     </div>
-                    
+
                     <div className="file-upload">
-                        <input 
-                            type="file" 
-                            id="bank-slip" 
+                        <input
+                            type="file"
+                            id="bank-slip"
                             accept=".png,.jpeg,.jpg,.pdf"
                             onChange={handleFileChange}
                         />
