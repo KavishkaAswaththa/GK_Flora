@@ -326,3 +326,266 @@
     transform: scale(1);
   }
 }
+
+.home {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #fffdf4;
+  color: #333;
+}
+
+/* Banner Section */
+.banner {
+  position: relative;
+  height: 70vh;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.bannerImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  position: absolute;
+  top: 0;
+  left: 0;
+  transition: opacity 1s ease-in-out;
+  opacity: 0;
+  z-index: 0;
+}
+
+.bannerImage.active {
+  opacity: 1;
+  z-index: 1;
+}
+
+.bannerText {
+  
+  text-align: center;
+  z-index: 2;
+  background-color: rgba(255, 255, 255, 0.6);
+  padding: 2rem;
+  border-radius: 12px;
+}
+
+.bannerText h1 {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  color: #444;
+}
+
+.bannerText p {
+  font-size: 1.2rem;
+  margin-bottom: 1.5rem;
+  color: #666;
+}
+
+.bannerButton {
+  padding: 0.8rem 1.5rem;
+  background-color: #fdd835;
+  border: none;
+  color: #000;
+  font-weight: bold;
+  text-decoration: none;
+  border-radius: 8px;
+  transition: background-color 0.3s ease;
+}
+
+.bannerButton:hover {
+  background-color: #fbc02d;
+}
+
+/* Manual Controls */
+.controls {
+  position: absolute;
+  width: 100%;
+  top: 50%;
+  display: flex;
+  justify-content: space-between;
+  padding: 0 1rem;
+  z-index: 3;
+  transform: translateY(-50%);
+}
+
+.controlBtn {
+  background-color: rgba(255, 255, 255, 0.6);
+  border: none;
+  font-size: 2rem;
+  cursor: pointer;
+  padding: 0.5rem 1rem;
+  border-radius: 50%;
+  transition: background-color 0.3s ease;
+}
+
+.controlBtn:hover {
+  background-color: rgba(255, 255, 255, 0.9);
+}
+
+.dots {
+  position: absolute;
+  bottom: 15px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  z-index: 3;
+}
+
+.dot {
+  width: 12px;
+  height: 12px;
+  background-color: #ccc;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.dot.active {
+  background-color: #fdd835;
+}
+
+/* Coupon Section */
+.coupon {
+  background-color: #fff8c6;
+  padding: 3rem 1rem;
+  text-align: center;
+}
+
+.couponContent h2 {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+.couponContent p {
+  font-size: 1.1rem;
+  margin-bottom: 1.5rem;
+}
+
+.couponButton {
+  background-color: #ffeb3b;
+  padding: 0.8rem 1.5rem;
+  color: #333;
+  text-decoration: none;
+  font-weight: bold;
+  border-radius: 8px;
+  transition: background-color 0.3s;
+}
+
+.couponButton:hover {
+  background-color: #fdd835;
+}
+
+/* About Section */
+.about {
+  padding: 3rem 1rem;
+  text-align: center;
+}
+
+.about h2 {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+.about p {
+  font-size: 1.1rem;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+/* Featured Section */
+.featured {
+  padding: 3rem 1rem;
+  background-color: #fffde7;
+  text-align: center;
+}
+
+.featured h2 {
+  font-size: 2rem;
+  margin-bottom: 2rem;
+}
+
+/* CTA Section */
+.cta {
+  padding: 3rem 1rem;
+  text-align: center;
+}
+
+.cta h2 {
+  font-size: 2rem;
+  margin-bottom: 1.5rem;
+}
+
+.ctaButton {
+  padding: 0.8rem 1.5rem;
+  background-color: #fdd835;
+  color: #000;
+  font-weight: bold;
+  text-decoration: none;
+  border-radius: 8px;
+  transition: background-color 0.3s ease;
+}
+
+.ctaButton:hover {
+  background-color: #fbc02d;
+}
+
+/* Footer */
+.footer {
+  padding: 1rem;
+  text-align: center;
+  background-color: #f5f5f5;
+  color: #777;
+}
+
+.wishlistCoupon {
+  background-color: #fff8dc;
+  padding: 3rem 1rem;
+  text-align: center;
+  border-top: 4px dashed #ffd700;
+  border-bottom: 4px dashed #ffd700;
+}
+
+.wishlistCouponContent {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+.wishlistCoupon h2 {
+  font-size: 2rem;
+  color: #e09b00;
+  margin-bottom: 1rem;
+}
+
+.wishlistCoupon p {
+  font-size: 1.1rem;
+  color: #333;
+  margin: 0.5rem 0;
+}
+
+.wishlistNote {
+  font-size: 1rem;
+  color: #555;
+  margin-top: 1rem;
+  background: #fff3b0;
+  border-left: 4px solid #e09b00;
+  padding: 1rem;
+  border-radius: 0.5rem;
+}
+
+.wishlistCouponButton {
+  display: inline-block;
+  margin-top: 1.5rem;
+  background-color: #ffd700;
+  color: #000;
+  font-weight: bold;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: background-color 0.3s ease;
+}
+
+.wishlistCouponButton:hover {
+  background-color: #f4c200;
+}

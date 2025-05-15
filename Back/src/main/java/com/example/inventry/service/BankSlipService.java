@@ -64,7 +64,7 @@ public class BankSlipService {
 
 
 
-        return slip;
+        //return slip;
 
         return bankSlipRepository.save(slip);
 
@@ -72,7 +72,7 @@ public class BankSlipService {
 
         // This method was returning the input parameter without saving
         
-      main
+
     }
 
     public List<BankSlip> getAllBankSlips() {
