@@ -3,13 +3,14 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: linear-gradient(90deg, #fff0c1, #fceec7, #fdf1d2);
+  background: linear-gradient(90deg, #fff172, #fcf8c7, #fdf1d2);
   padding: 5px 15px;
   position: sticky;
   top: 0;
   z-index: 1000;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   flex-wrap: wrap;
+  border-radius: 15px;
 }
 
 /* Logo */
