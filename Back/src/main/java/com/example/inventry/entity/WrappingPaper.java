@@ -10,11 +10,13 @@ public class WrappingPaper {
     private String id;
 
     private String imageBase64;
+    private Double price;  // <-- NEW
 
     public WrappingPaper() {}
 
-    public WrappingPaper(String imageBase64) {
+    public WrappingPaper(String imageBase64, Double price) {
         this.imageBase64 = imageBase64;
+        this.price = price;
     }
 
     public String getId() {
@@ -27,5 +29,13 @@ public class WrappingPaper {
 
     public void setImageBase64(String imageBase64) {
         this.imageBase64 = imageBase64;
+    }
+
+    public Double getPrice() {
+        return price;
+    }
+
+    public void setPrice(Double price) {
+        this.price = price;
     }
 }

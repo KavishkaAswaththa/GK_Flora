@@ -23,9 +23,10 @@ public class FlowerController {
     @PostMapping(consumes = "multipart/form-data")
     public ResponseEntity<?> addFlower(
             @RequestParam("name") String name,
+            @RequestParam("price") Double price,
             @RequestParam("image") MultipartFile image) {
         try {
-            Flower flower = flowerService.addFlower(name, image);
+            Flower flower = flowerService.addFlower(name, price, image);
             return ResponseEntity.ok(flower);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());

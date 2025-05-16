@@ -19,9 +19,13 @@ public class WrappingPaperService {
         this.wrappingPaperRepository = wrappingPaperRepository;
     }
 
-    public WrappingPaper addWrappingPaper(MultipartFile image) throws IOException {
+    public WrappingPaper addWrappingPaper(MultipartFile image, Double price) throws IOException {
         if (image == null || image.isEmpty()) {
             throw new IllegalArgumentException("Wrapping paper image cannot be empty.");
+        }
+
+        if (price == null || price < 0) {
+            throw new IllegalArgumentException("Wrapping paper price must be a positive number.");
         }
 
         // Convert image to Base64
@@ -31,6 +35,7 @@ public class WrappingPaperService {
         // Create and save WrappingPaper entity
         WrappingPaper wrappingPaper = new WrappingPaper();
         wrappingPaper.setImageBase64(base64Image);
+        wrappingPaper.setPrice(price);
 
         return wrappingPaperRepository.save(wrappingPaper);
     }

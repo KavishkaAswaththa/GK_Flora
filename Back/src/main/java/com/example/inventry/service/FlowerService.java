@@ -21,9 +21,12 @@ public class FlowerService {
         this.flowerRepository = flowerRepository;
     }
 
-    public Flower addFlower(String name, MultipartFile image) throws IOException {
+    public Flower addFlower(String name, Double price, MultipartFile image) throws IOException {
         if (name == null || name.trim().isEmpty()) {
             throw new IllegalArgumentException("Flower name cannot be empty.");
+        }
+        if (price == null || price <= 0) {
+            throw new IllegalArgumentException("Flower price must be a positive number.");
         }
         if (image == null || image.isEmpty()) {
             throw new IllegalArgumentException("Flower image cannot be empty.");
@@ -45,6 +48,7 @@ public class FlowerService {
 
         Flower flower = new Flower();
         flower.setName(name);
+        flower.setPrice(price);
         flower.setImagePath("/uploads/flowers/" + filename);
         flower.setImageBase64(imageBase64);
 

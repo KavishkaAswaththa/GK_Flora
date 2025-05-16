@@ -9,6 +9,7 @@ public class Flower {
     @Id
     private String id;
     private String name;
+    private double price;
     private String imagePath;
     private String imageBase64; // New field
 
@@ -36,6 +37,15 @@ public class Flower {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    // Getter and Setter for 'price'
+    public double getPrice() {
+        return price;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
     }
 
     // Getter and Setter for 'imagePath'

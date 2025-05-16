@@ -27,13 +27,15 @@ public class WrappingPaperController {
      * @return ResponseEntity with the created wrapping paper or error message
      */
     @PostMapping(consumes = "multipart/form-data")
-    public ResponseEntity<?> addWrappingPaper(@RequestParam("image") MultipartFile image) {
+    public ResponseEntity<?> addWrappingPaper(
+            @RequestParam("image") MultipartFile image,
+            @RequestParam("price") Double price){
         if (image.isEmpty()) {
             return ResponseEntity.badRequest().body("Image file is empty.");
         }
 
         try {
-            WrappingPaper wrappingPaper = wrappingPaperService.addWrappingPaper(image);
+            WrappingPaper wrappingPaper = wrappingPaperService.addWrappingPaper(image, price);
             return ResponseEntity.ok(wrappingPaper);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body("Invalid file type. Please upload a valid image.");
