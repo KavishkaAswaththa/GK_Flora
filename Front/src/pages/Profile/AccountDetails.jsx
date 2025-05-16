@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { assets } from "../../assets/Profile/assets";
+import { Eye, Upload, Camera } from 'lucide-react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import '../../styles/Profile/AccountDetails.css';
@@ -14,6 +15,7 @@ const AccountDetails = () => {
     mobileNo: '',
     birthday: '',
     avatarType: 'female',
+    profileImage: null,
     address: {
       streetAddress: '',
       city: '',
@@ -26,6 +28,7 @@ const AccountDetails = () => {
   const [loading, setLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
   const [addressView, setAddressView] = useState(false);
+  const [profileImagePreview, setProfileImagePreview] = useState(null);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -47,12 +50,11 @@ const AccountDetails = () => {
         }
       });
 
-console.log(token)
-
       const userData = {
         ...response.data,
         firstName: response.data.name?.split(' ')[0] || '',
         lastName: response.data.name?.split(' ').slice(1).join(' ') || '',
+        profileImage: response.data.profileImage || null,
         address: response.data.address || {
           streetAddress: '',
           city: '',
@@ -63,6 +65,9 @@ console.log(token)
       };
       
       setUser(userData);
+      if (userData.profileImage) {
+        setProfileImagePreview(userData.profileImage);
+      }
       setLoading(false);
     } catch (error) {
       console.error('Error fetching user data:', error);
@@ -75,45 +80,77 @@ console.log(token)
     }
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const token = localStorage.getItem('token');
-      if (!token) {
-        navigate('/login');
-        return;
-      }
-
-      const userData = {
-        name: `${user.firstName} ${user.lastName}`.trim(),
-        email: user.email,
-        mobileNo: user.mobileNo,
-        birthday: user.birthday,
-        avatarType: user.avatarType,
-        address: user.address
-      };
-
-      const response = await axios.put('http://localhost:8080/api/users/profile', userData, {
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
-
-      // Update local state with the response data
-      const updatedUser = {
-        ...response.data,
-        firstName: response.data.name?.split(' ')[0] || '',
-        lastName: response.data.name?.split(' ').slice(1).join(' ') || '',
-        address: response.data.address || user.address
-      };
+  const handleProfileImageChange = (e) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
       
-      setUser(updatedUser);
-      setIsEditing(false);
-      setAddressView(false);
-      toast.success('Account details updated successfully!');
-    } catch (error) {
-      console.error('Error updating user data:', error);
-      toast.error(error.response?.data?.message || 'Failed to update account details. Please try again.');
+      // Create a preview
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setProfileImagePreview(reader.result);
+      };
+      reader.readAsDataURL(file);
+      
+      // Update user state with file
+      setUser({...user, profileImage: file});
     }
   };
+
+  const handleSubmit = async (e) => {
+  e.preventDefault();
+  try {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      navigate('/login');
+      return;
+    }
+
+    const userPayload = {
+      name: `${user.firstName} ${user.lastName}`.trim(),
+      email: user.email,
+      mobileNo: user.mobileNo,
+      birthday: user.birthday,
+      avatarType: user.avatarType,
+      address: {
+        streetAddress: user.address.streetAddress || '',
+        city: user.address.city || '',
+        state: user.address.state || '',
+        zipCode: user.address.zipCode || '',
+        country: user.address.country || ''
+      }
+    };
+
+    const formData = new FormData();
+    formData.append("user", new Blob([JSON.stringify(userPayload)], { type: "application/json" }));
+
+    if (user.profileImage && user.profileImage instanceof File) {
+      formData.append("profileImage", user.profileImage);
+    }
+
+    const response = await axios.put('http://localhost:8080/api/users/profile', formData, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'multipart/form-data'
+      }
+    });
+
+    const updatedUser = {
+      ...response.data,
+      firstName: response.data.name?.split(' ')[0] || '',
+      lastName: response.data.name?.split(' ').slice(1).join(' ') || '',
+      address: response.data.address || user.address
+    };
+
+    setUser(updatedUser);
+    setIsEditing(false);
+    setAddressView(false);
+    toast.success('Account details updated successfully!');
+  } catch (error) {
+    console.error('Error updating user data:', error);
+    toast.error(error.response?.data?.message || 'Failed to update account details. Please try again.');
+  }
+};
+
 
   const handleSignOut = () => {
     localStorage.removeItem('token');
@@ -146,9 +183,40 @@ console.log(token)
       <div className="account-details-main">
         <div className="account-details-card">
           <div className="account-details-header">
-            <div>
-              <h1>{user.firstName} {user.lastName}</h1>
-              <p>{user.email}</p>
+            <div className="profile-header-container">
+              <div className="profile-image-container">
+                {profileImagePreview ? (
+                  <img 
+                    src={profileImagePreview} 
+                    alt="Profile" 
+                    className="profile-image" 
+                  />
+                ) : (
+                  <div className="profile-image-placeholder">
+                    {user.firstName.charAt(0)}{user.lastName.charAt(0)}
+                  </div>
+                )}
+                
+                {isEditing && (
+                  <div className="profile-image-upload">
+                    <label htmlFor="profile-image-input" className="profile-image-upload-label">
+                      <Camera size={20} />
+                      <span className="sr-only">Upload Photo</span>
+                    </label>
+                    <input 
+                      id="profile-image-input"
+                      type="file"
+                      accept="image/*"
+                      onChange={handleProfileImageChange}
+                      className="profile-image-input"
+                    />
+                  </div>
+                )}
+              </div>
+              <div className="profile-name-container">
+                <h1>{user.firstName} {user.lastName}</h1>
+                <p>{user.email}</p>
+              </div>
             </div>
             <button 
               className="sign-out-button"
@@ -158,11 +226,13 @@ console.log(token)
           </div>
 
           <div className="account-details-title-section">
-            <h2>Account Details</h2>
-            <p className="account-details-subtitle">Here you can manage your personal details</p>
+            <div className="title-container">
+              <h2>Account Details</h2>
+              <p className="account-details-subtitle">Here you can manage your personal details</p>
+            </div>
             {!isEditing && (
               <button 
-                className="edit-button"
+                className="edit-button-compact"
                 onClick={() => setIsEditing(true)}>
                 Edit Profile
               </button>
@@ -170,29 +240,6 @@ console.log(token)
           </div>
 
           <form onSubmit={handleSubmit}>
-            <fieldset className="avatar-selection">
-              <legend>Gender Selection</legend>
-              <div className="avatar-options">
-                <div className="avatar-option">
-                  <div 
-                    className={`avatar-circle ${user.avatarType === 'male' ? 'selected' : ''}`}
-                    onClick={() => isEditing && setUser({...user, avatarType: 'male'})}
-                  >
-                    <img src={assets.male} alt="Male Avatar" />
-                  </div>
-                  <span>Male</span>
-                </div>
-                <div className="avatar-option">
-                  <div 
-                    className={`avatar-circle ${user.avatarType === 'female' ? 'selected' : ''}`}
-                    onClick={() => isEditing && setUser({...user, avatarType: 'female'})}
-                  >
-                    <img src={assets.female} alt="Female Avatar" />
-                  </div>
-                  <span>Female</span>
-                </div>
-              </div>
-            </fieldset>
 
             <div className="form-grid">
               <div className="form-field">
