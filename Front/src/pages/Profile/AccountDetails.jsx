@@ -1,12 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { assets } from "../../assets/Profile/assets";
-import { Eye, Upload, Camera } from 'lucide-react';
+import { Camera } from 'lucide-react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import '../../styles/Profile/AccountDetails.css';
 
 const AccountDetails = () => {
+  // Define admin emails
+  const ADMIN_EMAILS = [
+    'dinithi0425@gmail.com',
+    'kavindiyapa1999@gmail.com',
+    'gamindumpasan1997@gmail.com'
+  ];
+  
   const navigate = useNavigate();
   const [user, setUser] = useState({
     firstName: '',
@@ -14,8 +20,8 @@ const AccountDetails = () => {
     email: '',
     mobileNo: '',
     birthday: '',
-    avatarType: 'female',
     profileImage: null,
+    isAdmin: false,
     address: {
       streetAddress: '',
       city: '',
@@ -55,6 +61,7 @@ const AccountDetails = () => {
         firstName: response.data.name?.split(' ')[0] || '',
         lastName: response.data.name?.split(' ').slice(1).join(' ') || '',
         profileImage: response.data.profileImage || null,
+        isAdmin: ADMIN_EMAILS.includes(response.data.email), // Check if email is in admin list
         address: response.data.address || {
           streetAddress: '',
           city: '',
@@ -138,6 +145,7 @@ const AccountDetails = () => {
       ...response.data,
       firstName: response.data.name?.split(' ')[0] || '',
       lastName: response.data.name?.split(' ').slice(1).join(' ') || '',
+      isAdmin: ADMIN_EMAILS.includes(response.data.email || user.email),
       address: response.data.address || user.address
     };
 
@@ -176,6 +184,9 @@ const AccountDetails = () => {
             <li className="sidebar-item active">Dashboard</li>
             <li className="sidebar-item" onClick={() => navigate('/order-history')}>Order History</li>
             <li className="sidebar-item" onClick={() => navigate('/loyalty')}>Loyalty Membership</li>
+            {user.isAdmin && (
+              <li className="sidebar-item" onClick={() => navigate('/admindashboard')}>Admin Dashboard</li>
+            )}
           </ul>
         </nav>
       </div>

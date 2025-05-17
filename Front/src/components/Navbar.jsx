@@ -69,8 +69,7 @@ const Navbar = () => {
           <img src={profileIcon} alt="Login" className="icon profile-icon" />
           <div className="dropdown-content right">
             <Link to="/login">Login</Link>
-            <Link to="/register">Register</Link>
-            <Link to="//account-details">My Profile</Link>
+            <Link to="/account-details">My Profile</Link>
           </div>
         </div>
       </div>
