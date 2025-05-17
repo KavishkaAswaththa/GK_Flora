@@ -1,9 +1,9 @@
-import "../../styles/Customization/Custom.css";
+// import "../../styles/Customization/Custom.css";
 
-export default function Button({ children, onClick, className }) {
-  return (
-    <button className={`custom-button ${className}`} onClick={onClick}>
-      {children}
-    </button>
-  );
-}
+// export default function Button({ children, onClick, className }) {
+//   return (
+//     <button className={`custom-button ${className}`} onClick={onClick}>
+//       {children}
+//     </button>
+//   );
+// }

@@ -20,6 +20,13 @@ function TopActions({ handleDeleteSelected, selectedItems, setIsBloomTagModalOpe
       >
         🗑️ Delete Selected
       </button>
+      <button
+        onClick={() => navigate("/AdminFlowerCustomization")}
+        className={styles["admin-dashboard__customization-btn"]}
+      >
+        Customization
+      </button>
+
 
       <button onClick={() => setIsBloomTagModalOpen(true)} className={styles["admin-dashboard__add-btn"]}>
         Manage Bloom Tags
