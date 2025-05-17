@@ -17,21 +17,24 @@ public class BankSlip {
     private Date uploadDate;
     private String status; // "PENDING", "VERIFIED", "REJECTED"
     private String rejectionReason;
+    private Date rejectionDate;
     private Date verificationDate;
+    private String shippingStatus; // "PENDING_SHIPMENT", "PROCESSING", "SHIPPED", "DELIVERED"
+    private Date shippingStatusUpdateDate;
 
     public BankSlip() {
         this.uploadDate = new Date();
         this.status = "PENDING";
+        this.shippingStatus = "PENDING_SHIPMENT";
     }
 
     public BankSlip(String fileName, String fileType, byte[] fileData, String orderId, String userEmail) {
+        this();
         this.fileName = fileName;
         this.fileType = fileType;
         this.fileData = fileData;
         this.orderId = orderId;
         this.userEmail = userEmail;
-        this.uploadDate = new Date();
-        this.status = "PENDING";
     }
 
     // Getters and setters
@@ -105,6 +108,17 @@ public class BankSlip {
 
     public void setRejectionReason(String rejectionReason) {
         this.rejectionReason = rejectionReason;
+        if (rejectionReason != null) {
+            this.rejectionDate = new Date();
+        }
+    }
+
+    public Date getRejectionDate() {
+        return rejectionDate;
+    }
+
+    public void setRejectionDate(Date rejectionDate) {
+        this.rejectionDate = rejectionDate;
     }
 
     public Date getVerificationDate() {
@@ -115,6 +129,45 @@ public class BankSlip {
         this.verificationDate = verificationDate;
     }
 
-    public void setRejectReason(String rejectReason) {
+    public String getShippingStatus() {
+        return shippingStatus;
+    }
+
+    public void setShippingStatus(String shippingStatus) {
+        this.shippingStatus = shippingStatus;
+        this.shippingStatusUpdateDate = new Date();
+    }
+
+    public Date getShippingStatusUpdateDate() {
+        return shippingStatusUpdateDate;
+    }
+
+    public void setShippingStatusUpdateDate(Date shippingStatusUpdateDate) {
+        this.shippingStatusUpdateDate = shippingStatusUpdateDate;
+    }
+
+    // Helper methods
+    public boolean isPending() {
+        return "PENDING".equals(status);
+    }
+
+    public boolean isVerified() {
+        return "VERIFIED".equals(status);
+    }
+
+    public boolean isRejected() {
+        return "REJECTED".equals(status);
+    }
+
+    public boolean isReadyForShipping() {
+        return isVerified() && "PENDING_SHIPMENT".equals(shippingStatus);
+    }
+
+    public boolean isShipped() {
+        return "SHIPPED".equals(shippingStatus);
+    }
+
+    public boolean isDelivered() {
+        return "DELIVERED".equals(shippingStatus);
     }
 }

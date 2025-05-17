@@ -8,6 +8,7 @@ const AdminPaymentReview = () => {
     const [selectedSlip, setSelectedSlip] = useState(null);
     const [viewerOpen, setViewerOpen] = useState(false);
     const [statusFilter, setStatusFilter] = useState('PENDING');
+    const [isUpdating, setIsUpdating] = useState(false);
 
     useEffect(() => {
         fetchBankSlips();
@@ -17,21 +18,16 @@ const AdminPaymentReview = () => {
         try {
             setLoading(true);
             const response = await fetch(`http://localhost:8080/api/bank-slips/list?status=${statusFilter}`, {
-            headers: {
-                'Authorization': `Bearer ${localStorage.getItem('token')}`
-            }
-        });
+                headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+            });
 
-            
-            if (!response.ok) {
-                throw new Error('Failed to fetch bank slips');
-            }
-            
+            if (!response.ok) throw new Error('Failed to fetch bank slips');
+
             const data = await response.json();
             setBankSlips(data);
-            setLoading(false);
         } catch (error) {
             setError(error.message);
+        } finally {
             setLoading(false);
         }
     };
@@ -39,15 +35,11 @@ const AdminPaymentReview = () => {
     const handleViewSlip = async (slipId) => {
         try {
             const response = await fetch(`http://localhost:8080/api/bank-slips/${slipId}`, {
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`
-                }
+                headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
             });
-            
-            if (!response.ok) {
-                throw new Error('Failed to fetch bank slip details');
-            }
-            
+
+            if (!response.ok) throw new Error('Failed to fetch bank slip details');
+
             const slipData = await response.json();
             setSelectedSlip(slipData);
             setViewerOpen(true);
@@ -59,94 +51,162 @@ const AdminPaymentReview = () => {
     const handleCloseViewer = () => {
         setViewerOpen(false);
         setSelectedSlip(null);
+        setError(null);
     };
 
     const updatePaymentStatus = async (slipId, status, reason = '') => {
+        setIsUpdating(true);
         try {
             const response = await fetch(`http://localhost:8080/api/bank-slips/update-status`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('token')}` },
-            body: JSON.stringify({ slipId: slipId, status: status, reason: reason })
-        });
-            
-            if (!response.ok) {
-                throw new Error(`Failed to ${status.toLowerCase()} payment`);
-            }
-            
-            // Update local state
-            setBankSlips(bankSlips.filter(slip => slip.id !== slipId));
-            setViewerOpen(false);
-            
-            // Show success message
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                },
+                body: JSON.stringify({ slipId, status, reason })
+            });
+
+            if (!response.ok) throw new Error(`Failed to ${status.toLowerCase()} payment`);
+
             alert(`Payment ${status.toLowerCase()} successfully`);
-            
-            // Refresh the list
+            setViewerOpen(false);
             fetchBankSlips();
+            
+            // Update order status counts in localStorage for MyOrdersPage
+            updateOrderStatusCountsInLocalStorage(status);
         } catch (error) {
-            setError(error.message);
+            alert(error.message);
+        } finally {
+            setIsUpdating(false);
         }
     };
 
+    const sendEmailNotification = async (url, payload) => {
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
+            },
+            body: new URLSearchParams(payload)
+        });
+
+        if (!response.ok) throw new Error('Failed to send email');
+    };
+
     const handleApprove = async () => {
-    if (selectedSlip) {
+        if (!selectedSlip) return;
+
         await updatePaymentStatus(selectedSlip.id, 'VERIFIED');
 
-        // ✅ Send confirmation email
         try {
-            const response = await fetch(`http://localhost:8080/email/confirm-payment`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`
-                },
-                body: new URLSearchParams({ userEmail: selectedSlip.userEmail })
+            await sendEmailNotification(`http://localhost:8080/email/confirm-payment`, {
+                userEmail: selectedSlip.userEmail
             });
-
-            if (!response.ok) {
-                throw new Error('Failed to send confirmation email');
-            }
-
             console.log('Confirmation email sent');
         } catch (error) {
             console.error('Email Error:', error.message);
         }
-    }
-};
-
+    };
 
     const handleReject = async () => {
-    if (selectedSlip) {
+        if (!selectedSlip) return;
+
         const reason = prompt('Please enter a reason for rejection:');
-        if (reason) {
-            await updatePaymentStatus(selectedSlip.id, 'REJECTED', reason);
+        if (!reason) return;
 
-            // ✅ Send rejection email
-            try {
-                const response = await fetch(`http://localhost:8080/email/reject-payment`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                        'Authorization': `Bearer ${localStorage.getItem('token')}`
-                    },
-                    body: new URLSearchParams({ userEmail: selectedSlip.userEmail })
-                });
+        await updatePaymentStatus(selectedSlip.id, 'REJECTED', reason);
 
-                if (!response.ok) {
-                    throw new Error('Failed to send rejection email');
-                }
-
-                console.log('Rejection email sent');
-            } catch (error) {
-                console.error('Email Error:', error.message);
-            }
+        try {
+            await sendEmailNotification(`http://localhost:8080/email/reject-payment`, {
+                userEmail: selectedSlip.userEmail
+            });
+            console.log('Rejection email sent');
+        } catch (error) {
+            console.error('Email Error:', error.message);
         }
-    }
-};
+    };
 
+    // New function to update order status counts in localStorage
+    const updateOrderStatusCountsInLocalStorage = async (newStatus) => {
+        try {
+            // Fetch updated order counts after status change
+            const response = await fetch(`http://localhost:8080/api/orders/status-counts`, {
+                headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+            });
+            
+            if (!response.ok) throw new Error('Failed to fetch order status counts');
+            
+            const statusCounts = await response.json();
+            
+            // Store updated counts in localStorage
+            localStorage.setItem('orderStatusCounts', JSON.stringify(statusCounts));
+            
+            // Dispatch a custom event to notify MyOrdersPage of the update
+            window.dispatchEvent(new CustomEvent('orderStatusUpdated', { 
+                detail: { statusCounts } 
+            }));
+            
+        } catch (error) {
+            console.error('Failed to update order status counts:', error);
+        }
+    };
+
+    const handleShippingStatusChange = async (newStatus) => {
+        if (!selectedSlip) return;
+        setIsUpdating(true);
+
+        try {
+            const response = await fetch(`http://localhost:8080/api/bank-slips/update-shipping-status`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                },
+                body: JSON.stringify({ slipId: selectedSlip.id, shippingStatus: newStatus })
+            });
+
+            if (!response.ok) throw new Error('Failed to update shipping status');
+
+            await sendEmailNotification(`http://localhost:8080/email/send-shipping-status`, {
+                userEmail: selectedSlip.userEmail,
+                shippingStatus: newStatus
+            });
+
+            alert('Shipping status updated and email sent');
+            
+            // Update order status counts for real-time updates in MyOrdersPage
+            try {
+                // Fetch latest counts
+                const countsResponse = await fetch(`http://localhost:8080/api/orders/status-counts`, {
+                    headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+                });
+                
+                if (!countsResponse.ok) throw new Error('Failed to fetch updated counts');
+                
+                const statusCounts = await countsResponse.json();
+                
+                // Store in localStorage
+                localStorage.setItem('orderStatusCounts', JSON.stringify(statusCounts));
+                
+                // Notify any listening components with a custom event
+                window.dispatchEvent(new CustomEvent('orderStatusUpdated', { 
+                    detail: { statusCounts, updatedStatus: newStatus } 
+                }));
+                
+            } catch (countError) {
+                console.error('Failed to update status counts:', countError);
+            }
+        } catch (error) {
+            alert(error.message);
+        } finally {
+            setIsUpdating(false);
+        }
+    };
 
     const formatStatusLabel = (status) => {
         if (!status) return '';
-        return status.charAt(0) + status.slice(1).toLowerCase();
+        return status.charAt(0).toUpperCase() + status.slice(1).toLowerCase();
     };
 
     return (
@@ -154,18 +214,13 @@ const AdminPaymentReview = () => {
             <div className="admin-header">
                 <h1>Admin Payment Review</h1>
                 <div className="filter-controls">
-                    <label>
-                        Status:
-                        <select 
-                            value={statusFilter} 
-                            onChange={(e) => setStatusFilter(e.target.value)}
-                        >
-                            <option value="PENDING">Pending</option>
-                            <option value="VERIFIED">Verified</option>
-                            <option value="REJECTED">Rejected</option>
-                            <option value="all">All</option>
-                        </select>
-                    </label>
+                    <label>Status:</label>
+                    <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
+                        <option value="PENDING">Pending</option>
+                        <option value="VERIFIED">Verified</option>
+                        <option value="REJECTED">Rejected</option>
+                        <option value="all">All</option>
+                    </select>
                 </div>
             </div>
 
@@ -190,7 +245,7 @@ const AdminPaymentReview = () => {
                             </thead>
                             <tbody>
                                 {bankSlips.map(slip => (
-                                    <tr key={slip.id} className={slip.status.toLowerCase()}>
+                                    <tr key={slip.id}>
                                         <td>{slip.orderId}</td>
                                         <td>{slip.userEmail}</td>
                                         <td>{slip.fileName}</td>
@@ -201,10 +256,7 @@ const AdminPaymentReview = () => {
                                             </span>
                                         </td>
                                         <td>
-                                            <button 
-                                                className="view-button"
-                                                onClick={() => handleViewSlip(slip.id)}
-                                            >
+                                            <button className="view-button" onClick={() => handleViewSlip(slip.id)}>
                                                 View Slip
                                             </button>
                                         </td>
@@ -223,28 +275,13 @@ const AdminPaymentReview = () => {
                             <h2>Bank Slip Details</h2>
                             <button className="close-button" onClick={handleCloseViewer}>×</button>
                         </div>
-                        
+
                         <div className="slip-details">
-                            <div className="detail-item">
-                                <span className="label">Order ID:</span>
-                                <span className="value">{selectedSlip.orderId}</span>
-                            </div>
-                            <div className="detail-item">
-                                <span className="label">User Email:</span>
-                                <span className="value">{selectedSlip.userEmail}</span>
-                            </div>
-                            <div className="detail-item">
-                                <span className="label">File Name:</span>
-                                <span className="value">{selectedSlip.fileName}</span>
-                            </div>
-                            <div className="detail-item">
-                                <span className="label">Upload Date:</span>
-                                <span className="value">
-                                    {new Date(selectedSlip.uploadDate).toLocaleString()}
-                                </span>
-                            </div>
-                            <div className="detail-item">
-                                <span className="label">Status:</span>
+                            <div className="detail-item"><span className="label">Order ID:</span><span className="value">{selectedSlip.orderId}</span></div>
+                            <div className="detail-item"><span className="label">User Email:</span><span className="value">{selectedSlip.userEmail}</span></div>
+                            <div className="detail-item"><span className="label">File Name:</span><span className="value">{selectedSlip.fileName}</span></div>
+                            <div className="detail-item"><span className="label">Upload Date:</span><span className="value">{new Date(selectedSlip.uploadDate).toLocaleString()}</span></div>
+                            <div className="detail-item"><span className="label">Status:</span>
                                 <span className={`status-badge ${selectedSlip.status.toLowerCase()}`}>
                                     {formatStatusLabel(selectedSlip.status)}
                                 </span>
@@ -256,40 +293,35 @@ const AdminPaymentReview = () => {
                                 </div>
                             )}
                         </div>
-                        
+
                         <div className="slip-image-container">
-                            {selectedSlip.fileType && selectedSlip.fileType.includes('image') ? (
-                                <img 
-                                    src={`http://localhost:8080/api/bank-slips/file/${selectedSlip.id}`} 
-                                    alt="Bank Slip" 
-                                    className="slip-image"
-                                />
+                            {selectedSlip.fileType?.includes('image') ? (
+                                <img src={`http://localhost:8080/api/bank-slips/file/${selectedSlip.id}`} alt="Bank Slip" className="slip-image" />
                             ) : (
-                                <div className="pdf-viewer">
-                                    <iframe 
-                                        src={`http://localhost:8080/api/bank-slips/file/${selectedSlip.id}`}
-                                        title="Bank Slip PDF"
-                                        width="100%"
-                                        height="500px"
-                                    ></iframe>
-                                </div>
+                                <iframe
+                                    src={`http://localhost:8080/api/bank-slips/file/${selectedSlip.id}`}
+                                    title="Bank Slip PDF"
+                                    width="100%" height="500px"
+                                />
                             )}
                         </div>
-                        
-                        {selectedSlip.status === "PENDING" && (
+
+                        {selectedSlip.status === 'PENDING' && (
                             <div className="action-buttons">
-                                <button 
-                                    className="approve-button"
-                                    onClick={handleApprove}
-                                >
-                                    Approve Payment
-                                </button>
-                                <button 
-                                    className="reject-button"
-                                    onClick={handleReject}
-                                >
-                                    Reject Payment
-                                </button>
+                                <button className="approve-button" onClick={handleApprove} disabled={isUpdating}>Approve</button>
+                                <button className="reject-button" onClick={handleReject} disabled={isUpdating}>Reject</button>
+                            </div>
+                        )}
+
+                        {selectedSlip.status === 'VERIFIED' && (
+                            <div className="shipping-status">
+                                <label>Shipping Status:</label>
+                                <select onChange={(e) => handleShippingStatusChange(e.target.value)} defaultValue="">
+                                    <option value="" disabled>Select status</option>
+                                    <option value="TO_BE_SHIPPED">To Be Shipped</option>
+                                    <option value="SHIPPED">Shipped</option>
+                                    <option value="COMPLETE">Complete</option>
+                                </select>
                             </div>
                         )}
                     </div>
