@@ -4,120 +4,110 @@ import com.example.inventry.entity.Inventory;
 import com.example.inventry.repo.InventoryRepo;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import org.mockito.*;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 class InventoryServiceTest {
 
+    @Mock
+    private InventoryRepo inventoryRepo;
+
+    @Mock
+    private EmailService emailService;
+
     @InjectMocks
     private InventoryService inventoryService;
 
-    @Mock
-    private InventoryRepo inventoryRepo;
+    private final String adminEmail = "gamindumpasan1997@gmail.com";
+    private Inventory inventory;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
+
+        inventory = new Inventory(
+                "1",
+                "Rose",
+                "Flower",
+                "Red rose",
+                10.0,
+                4,
+                List.of("red", "thorny"),
+                List.of("image1", "image2")
+        );
     }
 
     @Test
-    void testSaveInventory() {
-        // Mock an inventory item
-        Inventory inventory = new Inventory();
-        inventory.set_id("1");
-        inventory.setName("Test Item");
-        inventory.setCategory("Category A");
+    void testSaveByAdminSendsLowStockAlert() {
+        when(inventoryRepo.save(any())).thenReturn(inventory);
 
-        // Call the service method
-        inventoryService.save(inventory);
+        boolean result = inventoryService.save(inventory, adminEmail);
 
-        // Verify that the repository save method is called
-        verify(inventoryRepo, times(1)).save(inventory);
+        assertTrue(result);
+        verify(inventoryRepo).save(inventory);
+        verify(emailService).sendLowStockAlert(inventory.getName(), inventory.getQty(), List.of("gamindumpasan1997@gmail.com", "kavindiyapa1999@gmail.com"));
     }
 
     @Test
-    void testGetAllInventories() {
-        // Mock the repository response
-        Inventory inventory1 = new Inventory();
-        inventory1.set_id("1");
-        inventory1.setName("Item 1");
-
-        Inventory inventory2 = new Inventory();
-        inventory2.set_id("2");
-        inventory2.setName("Item 2");
-
-        when(inventoryRepo.findAll()).thenReturn(Arrays.asList(inventory1, inventory2));
-
-        // Call the service method
-        List<Inventory> result = inventoryService.getAllInventories();
-
-        // Verify results
-        assertNotNull(result);
-        assertEquals(2, result.size());
-        assertEquals("Item 1", result.get(0).getName());
-        assertEquals("Item 2", result.get(1).getName());
+    void testSaveByNonAdminFails() {
+        boolean result = inventoryService.save(inventory, "user@example.com");
+        assertFalse(result);
+        verify(inventoryRepo, never()).save(any());
+        verify(emailService, never()).sendLowStockAlert(anyString(), anyInt(), anyList());
     }
 
     @Test
-    void testGetByIdWhenInventoryExists() {
-        // Mock the repository response
-        Inventory inventory = new Inventory();
-        inventory.set_id("1");
-        inventory.setName("Test Item");
+    void testUpdateQtyByAdmin() {
+        when(inventoryRepo.findById("1")).thenReturn(Optional.of(inventory));
+        when(inventoryRepo.save(any())).thenReturn(inventory);
 
+        boolean updated = inventoryService.updateQty("1", 10, adminEmail);
+        assertTrue(updated);
+        assertEquals(10, inventory.getQty());
+        verify(inventoryRepo).save(inventory);
+    }
+
+    @Test
+    void testUpdateQtyByNonAdminFails() {
         when(inventoryRepo.findById("1")).thenReturn(Optional.of(inventory));
 
-        // Call the service method
-        Inventory result = inventoryService.getById("1");
-
-        // Verify results
-        assertNotNull(result);
-        assertEquals("Test Item", result.getName());
+        boolean updated = inventoryService.updateQty("1", 10, "user@example.com");
+        assertFalse(updated);
+        verify(inventoryRepo, never()).save(any());
     }
 
     @Test
-    void testGetByIdWhenInventoryDoesNotExist() {
-        // Mock the repository response
+    void testGetByIdFound() {
+        when(inventoryRepo.findById("1")).thenReturn(Optional.of(inventory));
+        Inventory found = inventoryService.getById("1");
+        assertNotNull(found);
+        assertEquals("Rose", found.getName());
+    }
+
+    @Test
+    void testGetByIdNotFound() {
         when(inventoryRepo.findById("1")).thenReturn(Optional.empty());
-
-        // Call the service method
-        Inventory result = inventoryService.getById("1");
-
-        // Verify results
-        assertNull(result);
+        Inventory found = inventoryService.getById("1");
+        assertNull(found);
     }
 
     @Test
-    void testDeleteByIdWhenInventoryExists() {
-        // Mock the repository response
+    void testDeleteByIdByAdmin() {
         when(inventoryRepo.existsById("1")).thenReturn(true);
+        doNothing().when(inventoryRepo).deleteById("1");
 
-        // Call the service method
-        boolean result = inventoryService.deleteById("1");
-
-        // Verify interactions and results
-        verify(inventoryRepo, times(1)).deleteById("1");
-        assertTrue(result);
+        boolean deleted = inventoryService.deleteById("1", adminEmail);
+        assertTrue(deleted);
+        verify(inventoryRepo).deleteById("1");
     }
 
     @Test
-    void testDeleteByIdWhenInventoryDoesNotExist() {
-        // Mock the repository response
-        when(inventoryRepo.existsById("1")).thenReturn(false);
-
-        // Call the service method
-        boolean result = inventoryService.deleteById("1");
-
-        // Verify that the repository delete method is not called
+    void testDeleteByIdByNonAdminFails() {
+        boolean deleted = inventoryService.deleteById("1", "user@example.com");
+        assertFalse(deleted);
         verify(inventoryRepo, never()).deleteById(anyString());
-        assertFalse(result);
     }
 }

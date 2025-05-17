@@ -4,86 +4,161 @@ import com.example.inventry.entity.Inventory;
 import com.example.inventry.service.ImageService;
 import com.example.inventry.service.InventoryService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.mockito.*;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.security.Principal;
+import java.util.*;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
-@WebMvcTest(InventoryController.class)
-public class InventoryControllerTest {
+class InventoryControllerTest {
 
-    @Autowired
-    private MockMvc mockMvc;
+    @InjectMocks
+    private InventoryController inventoryController;
 
-    @MockBean
+    @Mock
     private InventoryService inventoryService;
 
-    @MockBean
+    @Mock
     private ImageService imageService;
 
-    @Autowired
+    @Mock
     private ObjectMapper objectMapper;
 
-    @Test
-    public void testSaveInventoryWithImages() throws Exception {
-        MockMultipartFile file = new MockMultipartFile("files", "image.jpg", "image/jpeg", "test image content".getBytes());
+    @Mock
+    private Principal principal;
 
-        Mockito.when(imageService.uploadImages(any())).thenReturn(List.of("imageId1"));
-        Mockito.doNothing().when(inventoryService).save(any(Inventory.class));
+    private final String adminEmail = "gamindumpasan1997@gmail.com";
 
-        mockMvc.perform(multipart("/api/inventory/save")
-                        .file(file)
-                        .param("name", "Test Bouquet")
-                        .param("category", "Flowers")
-                        .param("description", "Beautiful bouquet")
-                        .param("price", "20.5")
-                        .param("bloomContains", "Roses, Lilies"))
-                .andExpect(status().isOk());
+    @BeforeEach
+    void setup() {
+        MockitoAnnotations.openMocks(this);
+        when(principal.getName()).thenReturn(adminEmail);
     }
 
     @Test
-    public void testGetInventoryById() throws Exception {
-        Inventory inventory = new Inventory("1", "Test Bouquet", "Flowers", "Beautiful bouquet", 20.5, "Roses, Lilies", List.of("imageId1"));
-        Mockito.when(inventoryService.getById("1")).thenReturn(inventory);
-        Mockito.when(imageService.getImageById("imageId1")).thenReturn("test image data".getBytes());
+    void testSaveInventoryWithImagesSuccess() throws Exception {
+        MockMultipartFile file1 = new MockMultipartFile("files", "flower.jpg", MediaType.IMAGE_JPEG_VALUE, "dummy data".getBytes());
+        MultipartFile[] files = new MultipartFile[]{file1};
 
-        mockMvc.perform(get("/api/inventory/1"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value("1"))
-                .andExpect(jsonPath("$.name").value("Test Bouquet"));
+        String bloomJson = "[\"red\",\"thorny\"]";
+        List<String> bloomTags = List.of("red", "thorny");
+        List<String> imageIds = List.of("img1");
+
+        when(objectMapper.readValue(bloomJson, new com.fasterxml.jackson.core.type.TypeReference<List<String>>() {}))
+                .thenReturn(bloomTags);
+        when(imageService.uploadImages(files)).thenReturn(imageIds);
+        when(inventoryService.save(any(), eq(adminEmail))).thenReturn(true);
+
+        ResponseEntity<String> response = inventoryController.saveInventoryWithImages(
+                files,
+                "123",
+                "Rose",
+                "Flower",
+                "Red rose flower",
+                10.0,
+                3,
+                bloomJson,
+                principal);
+
+        assertEquals(200, response.getStatusCodeValue());
+        assertTrue(response.getBody().contains("Inventory saved successfully"));
     }
 
     @Test
-    public void testGetAllInventories() throws Exception {
-        Inventory inventory = new Inventory("1", "Test Bouquet", "Flowers", "Beautiful bouquet", 20.5, "Roses, Lilies", List.of("imageId1"));
-        List<Inventory> inventories = List.of(inventory);
-        Mockito.when(inventoryService.getAllInventories()).thenReturn(inventories);
+    void testSaveInventoryWithImagesFileCountInvalid() {
+        MultipartFile[] files = new MultipartFile[]{}; // zero files
 
-        mockMvc.perform(get("/api/inventory"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].id").value("1"))
-                .andExpect(jsonPath("$[0].name").value("Test Bouquet"));
+        ResponseEntity<String> response = inventoryController.saveInventoryWithImages(
+                files,
+                "123",
+                "Rose",
+                "Flower",
+                "Description",
+                10.0,
+                3,
+                "[]",
+                principal);
+
+        assertEquals(400, response.getStatusCodeValue());
+        assertEquals("Please upload between 1 and 6 images.", response.getBody());
     }
 
     @Test
-    public void testDeleteInventory() throws Exception {
-        Mockito.when(inventoryService.deleteById("1")).thenReturn(true);
+    void testUpdateQtySuccess() {
+        Map<String, Integer> payload = Map.of("qty", 10);
 
-        mockMvc.perform(delete("/api/inventory/1"))
-                .andExpect(status().isOk())
-                .andExpect(content().string("Inventory with ID 1 deleted successfully."));
+        when(inventoryService.updateQty("123", 10, adminEmail)).thenReturn(true);
+
+        ResponseEntity<String> response = inventoryController.updateQty("123", payload, principal);
+        assertEquals(200, response.getStatusCodeValue());
+        assertEquals("Quantity updated successfully.", response.getBody());
+    }
+
+    @Test
+    void testUpdateQtyFail() {
+        Map<String, Integer> payload = Map.of("qty", 10);
+
+        when(inventoryService.updateQty("123", 10, adminEmail)).thenReturn(false);
+
+        ResponseEntity<String> response = inventoryController.updateQty("123", payload, principal);
+        assertEquals(403, response.getStatusCodeValue());
+        assertEquals("Access denied or item not found.", response.getBody());
+    }
+
+    @Test
+    void testGetInventoryDetailsFound() throws Exception {
+        Inventory inventory = new Inventory();
+        inventory.set_id("123");
+        inventory.setName("Rose");
+        inventory.setCategory("Flower");
+        inventory.setDescription("Nice rose");
+        inventory.setPrice(12.0);
+        inventory.setQty(7);
+        inventory.setBloomContains(List.of("red", "thorny"));
+        inventory.setImageIds(List.of("img1"));
+
+        when(inventoryService.getById("123")).thenReturn(inventory);
+        when(imageService.getImageById("img1")).thenReturn("data".getBytes());
+
+        ResponseEntity<Map<String, Object>> response = inventoryController.getInventoryDetails("123");
+        assertEquals(200, response.getStatusCodeValue());
+        Map<String, Object> body = response.getBody();
+        assertNotNull(body);
+        assertEquals("123", body.get("id"));
+        assertTrue(body.containsKey("images"));
+    }
+
+    @Test
+    void testGetInventoryDetailsNotFound() {
+        when(inventoryService.getById("123")).thenReturn(null);
+        ResponseEntity<Map<String, Object>> response = inventoryController.getInventoryDetails("123");
+        assertEquals(404, response.getStatusCodeValue());
+    }
+
+    @Test
+    void testDeleteInventorySuccess() {
+        when(inventoryService.deleteById("123", adminEmail)).thenReturn(true);
+
+        ResponseEntity<String> response = inventoryController.deleteInventory("123", principal);
+        assertEquals(200, response.getStatusCodeValue());
+        assertTrue(response.getBody().contains("deleted successfully"));
+    }
+
+    @Test
+    void testDeleteInventoryFail() {
+        when(inventoryService.deleteById("123", adminEmail)).thenReturn(false);
+
+        ResponseEntity<String> response = inventoryController.deleteInventory("123", principal);
+        assertEquals(403, response.getStatusCodeValue());
+        assertTrue(response.getBody().contains("Access denied"));
     }
 }
