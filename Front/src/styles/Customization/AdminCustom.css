@@ -1,0 +1,113 @@
+:root {
+  --yellow-primary: #fdd835;
+  --yellow-dark: #fbc02d;
+  --yellow-light: #fff9c4;
+  --text-dark: #333;
+  --border-color: #ddd;
+}
+
+body {
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background-color: var(--yellow-light);
+}
+
+.admin-page {
+  padding: 40px;
+  background-color: var(--yellow-light);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.admin-title {
+  font-size: 36px;
+  color: var(--yellow-dark);
+  margin-bottom: 30px;
+  font-weight: bold;
+  text-shadow: 1px 1px 0 white;
+}
+
+.message {
+  padding: 10px 20px;
+  margin-bottom: 20px;
+  background-color: var(--yellow-primary);
+  color: var(--text-dark);
+  border-radius: 10px;
+  font-weight: 600;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  transition: opacity 0.3s ease-in-out;
+}
+
+.form-columns {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 40px;
+  width: 100%;
+  max-width: 1000px;
+}
+
+.form-card {
+  background: white;
+  padding: 30px;
+  border-radius: 16px;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 420px;
+  transition: transform 0.3s ease;
+}
+
+.form-card:hover {
+  transform: translateY(-5px);
+}
+
+.form-card h3 {
+  color: var(--yellow-dark);
+  margin-bottom: 20px;
+  font-size: 24px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.form-card form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.form-card input[type="text"],
+.form-card input[type="number"],
+.form-card input[type="file"] {
+  padding: 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  transition: border-color 0.3s;
+}
+
+.form-card input:focus {
+  border-color: var(--yellow-dark);
+  outline: none;
+  box-shadow: 0 0 5px var(--yellow-primary);
+}
+
+.form-card button {
+  background-color: var(--yellow-primary);
+  color: var(--text-dark);
+  padding: 14px;
+  font-weight: 600;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.form-card button:hover {
+  background-color: var(--yellow-dark);
+  transform: scale(1.03);
+}
+
+.form-card button:active {
+  transform: scale(0.97);
+}
