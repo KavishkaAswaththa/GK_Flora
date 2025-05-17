@@ -142,10 +142,10 @@ function AdminDashboard() {
 
   const handleAddBloomTag = () => {
     if (newBloomTag.trim()) {
-      axios.post("http://localhost:8080/api/bloom-tags", newBloomTag.trim()) // Send string directly, not an object
+      axios.post("http://localhost:8080/api/bloom-tags", newBloomTag.trim())
         .then(() => {
-          fetchBloomTags(); // Fetch updated list of tags
-          setNewBloomTag(""); // Clear input
+          fetchBloomTags();
+          setNewBloomTag("");
         })
         .catch(err => {
           console.error("Error adding bloom tag:", err);
@@ -153,20 +153,17 @@ function AdminDashboard() {
         });
     }
   };
-  
-  
+
   const handleDeleteBloomTag = (tag) => {
     axios.delete(`http://localhost:8080/api/bloom-tags/${tag}`)
       .then(() => {
-        fetchBloomTags(); // Fetch tags again after deleting one
+        fetchBloomTags();
       })
       .catch(err => {
         console.error("Error deleting bloom tag:", err);
         alert("Failed to delete bloom tag!");
       });
   };
-  
-  
 
   return (
     <div className={styles["admin-dashboard"]}>
@@ -180,6 +177,7 @@ function AdminDashboard() {
         handleDeleteSelected={handleDeleteSelected}
         selectedItems={selectedItems}
         setIsBloomTagModalOpen={setIsBloomTagModalOpen}
+        styles={styles}
       />
 
       <InventoryTable

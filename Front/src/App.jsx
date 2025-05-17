@@ -44,7 +44,8 @@ import ReviewForm from './pages/Review/ReviewForm.jsx';
 
 
 //Customization
-import FlowerCustomization from './pages/Customization/FlowerCustomization.jsx';
+import AdminFlowerCustomization from './pages/Customization/AdminFlowerCustomization.jsx';
+import UserFlowerCustomization from './pages/Customization/UserFlowerCustomization.jsx';
 
 
 //FAQ
@@ -114,7 +115,8 @@ const App = () => {
         <Route path='/loyalty1' element={<Loyalty1/>}/>
 
         {/*Customization*/}
-        <Route path='/FlowerCustomization' element={<FlowerCustomization/>}/>
+        <Route path='/AdminFlowerCustomization' element={<AdminFlowerCustomization/>}/>
+        <Route path='/UserFlowerCustomization' element={<UserFlowerCustomization/>}/>
  
         <Route path="/faqhome" element={<CustomerSupport />} />
         

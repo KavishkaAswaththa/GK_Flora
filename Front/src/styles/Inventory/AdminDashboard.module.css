@@ -97,6 +97,17 @@
   background-color: #f39c12;
 }
 
+.admin-dashboard__customization-btn {
+  background-color: #f1c40f;
+  color: white;
+  border: none;
+  transition: background-color 0.3s ease;
+}
+.admin-dashboard__customization-btn:hover {
+  background-color: #f39c12;
+}
+
+
 /* Modal Styling */
 .admin-dashboard__modal-overlay {
   position: fixed;
