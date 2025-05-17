@@ -1,41 +1,36 @@
-General Reset
-* {
+.flower-customization * {
   box-sizing: border-box;
-  margin: 0;
-  padding: 0;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-/* Main Container */
-.app-container {
+.flower-customization {
   padding: 30px;
   max-width: 1200px;
   margin: 0 auto;
 }
 
-h1, h2 {
+.flower-customization h1,
+.flower-customization h2 {
   text-align: center;
   margin-bottom: 20px;
   color: #333;
 }
 
-/* Message Style */
-.message {
+.flower-customization .message {
   text-align: center;
   margin: 15px 0;
   color: green;
   font-weight: bold;
 }
 
-/* Button Container */
-.button-container {
+.flower-customization .button-container {
   display: flex;
   justify-content: center;
   gap: 15px;
   margin-bottom: 30px;
 }
 
-button {
+.flower-customization button {
   padding: 10px 20px;
   background-color: #007bff;
   color: white;
@@ -46,12 +41,11 @@ button {
   transition: background 0.3s ease;
 }
 
-button:hover {
+.flower-customization button:hover {
   background-color: #0056b3;
 }
 
-/* Forms */
-.form-container {
+.flower-customization .form-container {
   background-color: #f9f9f9;
   border: 1px solid #ddd;
   padding: 20px;
@@ -62,43 +56,38 @@ button:hover {
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
-.form-container h2 {
-  margin-bottom: 15px;
-}
-
-.form-container form {
+.flower-customization .form-container form {
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
 
-.form-container input[type="text"],
-.form-container input[type="file"] {
+.flower-customization input[type="text"],
+.flower-customization input[type="number"],
+.flower-customization input[type="file"] {
   padding: 10px;
   border-radius: 8px;
   border: 1px solid #ccc;
 }
 
-/* Horizontally Scrollable Card Container */
-.scroll-container {
+.flower-customization .scroll-container {
   display: flex;
   overflow-x: auto;
   padding: 10px 0;
   gap: 15px;
   margin-bottom: 30px;
-  scroll-snap-type: x mandatory;
 }
 
-.scroll-container::-webkit-scrollbar {
+.flower-customization .scroll-container::-webkit-scrollbar {
   height: 8px;
 }
-.scroll-container::-webkit-scrollbar-thumb {
+
+.flower-customization .scroll-container::-webkit-scrollbar-thumb {
   background: #ccc;
   border-radius: 4px;
 }
 
-/* Card Style */
-.card-container {
+.flower-customization .card-container {
   min-width: 120px;
   max-width: 120px;
   height: 150px;
@@ -107,7 +96,6 @@ button:hover {
   border-radius: 12px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   flex-shrink: 0;
-  scroll-snap-align: start;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -117,35 +105,38 @@ button:hover {
   transition: transform 0.2s ease;
 }
 
-.card-container:hover {
+.flower-customization .card-container:hover {
   transform: scale(1.05);
 }
 
-.card-image {
+.flower-customization .card-image {
   width: 100%;
   height: 90px;
   object-fit: cover;
   border-radius: 8px;
 }
 
-.card-title {
-  margin-top: 8px;
+.flower-customization .card-title {
   font-size: 14px;
   text-align: center;
   color: #444;
 }
 
-/* Grid for Selected Flowers */
-.grid-container {
+.flower-customization .card-price {
+  font-size: 13px;
+  color: #666;
+  text-align: center;
+}
+
+.flower-customization .grid-container {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
   justify-items: center;
   align-items: center;
   margin: 20px 0 40px 0;
   gap: 10px;
 }
 
-.grid-image {
+.flower-customization .grid-image {
   width: 80px;
   height: 80px;
   object-fit: cover;
@@ -154,12 +145,19 @@ button:hover {
   transition: transform 0.2s ease;
 }
 
-.grid-image:hover {
+.flower-customization .grid-image:hover {
   transform: scale(1.05);
 }
 
-/* Order Button */
-.order-button {
+.flower-customization select#gridType {
+  padding: 6px 12px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  margin-left: 10px;
+}
+
+.flower-customization .order-button {
   display: block;
   margin: 0 auto;
   padding: 12px 24px;
@@ -172,21 +170,42 @@ button:hover {
   transition: background 0.3s ease;
 }
 
-.order-button:hover {
+.flower-customization .order-button:hover {
   background-color: #0056b3;
 }
 
-/* Responsive Behavior */
 @media (max-width: 768px) {
-  .grid-container {
+  .flower-customization .grid-container {
     grid-template-columns: repeat(3, 1fr);
   }
 
-  .form-container {
+  .flower-customization .form-container {
     width: 90%;
   }
+}
 
-  .scroll-container {
-    flex-wrap: nowrap;
+@media (max-width: 480px) {
+  .flower-customization .grid-container {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .flower-customization .card-container {
+    min-width: 100px;
+    max-width: 100px;
+    height: 130px;
+  }
+
+  .flower-customization .card-image {
+    height: 80px;
+  }
+
+  .flower-customization .grid-image {
+    width: 60px;
+    height: 60px;
+  }
+
+  .flower-customization button {
+    font-size: 13px;
+    padding: 8px 16px;
   }
 }
