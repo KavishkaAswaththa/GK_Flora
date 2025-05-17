@@ -70,7 +70,7 @@ const Navbar = () => {
           <div className="dropdown-content right">
             <Link to="/login">Login</Link>
             <Link to="/register">Register</Link>
-            <Link to="/profile">My Profile</Link>
+            <Link to="//account-details">My Profile</Link>
           </div>
         </div>
       </div>
