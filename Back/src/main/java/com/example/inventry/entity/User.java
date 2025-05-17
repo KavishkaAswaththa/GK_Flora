@@ -15,6 +15,9 @@ public class User {
     @Id
     private String id;
 
+    // Store image bytes directly
+    private byte[] profileImage;
+
     private String name;
     private String email;
     private String password;
