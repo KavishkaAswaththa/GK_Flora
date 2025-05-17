@@ -51,6 +51,10 @@ import FlowerCustomization from './pages/Customization/FlowerCustomization.jsx';
 import AdminPanel from "./pages/FAQ/AdminPanel.jsx";
 import CustomerSupport from "./pages/FAQ/CustomerSupport.jsx";
 
+//Order
+import OrderAdminDashbord from "./pages/Order/OrderAdminDashboard.jsx";
+import Cart from "./pages/Order/Cart.jsx";
+
 
 
 const App = () => {
@@ -116,6 +120,10 @@ const App = () => {
         
         <Route path="/faqadmin" element={<AdminPanel />} />
 
+        {/*Order*/}
+
+        <Route path="/orderAdmin" element={<OrderAdminDashbord/>}/>
+        <Route path="/cart1" element={<Cart/>}/>
         
       </Routes>
     </>
