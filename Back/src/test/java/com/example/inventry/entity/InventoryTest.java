@@ -16,7 +16,7 @@ public class InventoryTest {
         inventory.setCategory("Flowers");
         inventory.setDescription("Beautiful bouquet");
         inventory.setPrice(20.5);
-        inventory.setBloomContains("Roses, Lilies");
+        inventory.setBloomContains(List.of("Roses, Lilies"));
         inventory.setImageIds(imageIds);
 
         assertEquals("1", inventory.get_id());
@@ -36,7 +36,7 @@ public class InventoryTest {
         inventory.setCategory("Flowers");
         inventory.setDescription("Bright yellow sunflowers");
         inventory.setPrice(15.0);
-        inventory.setBloomContains("Sunflowers");
+        inventory.setBloomContains(List.of("Sunflowers"));
         inventory.setImageIds(List.of("img3"));
 
         assertEquals("2", inventory.get_id());

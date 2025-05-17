@@ -1,79 +1,90 @@
 package com.example.inventry.repo;
 
 import com.example.inventry.entity.Inventory;
-import com.example.inventry.service.InventoryService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
+
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
 
-@ExtendWith(MockitoExtension.class)
-public class InventoryRepoTest {
+@DataMongoTest
+class InventoryRepoTest {
 
-    @Mock
+    @Autowired
     private InventoryRepo inventoryRepo;
 
-    @InjectMocks
-    private InventoryService inventoryService;
+    private Inventory inventory;
 
-    @Test
-    public void testSaveInventory() {
-        Inventory inventory = new Inventory();
-        inventory.set_id("1");
-        inventory.setName("Test Item");
+    @BeforeEach
+    void setUp() {
+        inventoryRepo.deleteAll(); // Clear test DB before each test
 
-        when(inventoryRepo.save(inventory)).thenReturn(inventory);
+        inventory = new Inventory(
+                null,
+                "Tulip",
+                "Flower",
+                "Fresh tulip bouquet",
+                20.0,
+                3,
+                List.of("yellow", "spring"),
+                List.of("img1", "img2")
+        );
 
-        Inventory savedInventory = inventoryRepo.save(inventory);
-        assertNotNull(savedInventory);
-        assertEquals("Test Item", savedInventory.getName());
+        inventoryRepo.save(inventory);
     }
 
     @Test
-    public void testFindById() {
-        Inventory inventory = new Inventory();
-        inventory.set_id("1");
-        inventory.setName("Test Item");
+    void testSaveInventory() {
+        Inventory saved = inventoryRepo.save(new Inventory(
+                null,
+                "Lily",
+                "Flower",
+                "White lily",
+                15.0,
+                8,
+                List.of("white"),
+                List.of("img3")
+        ));
 
-        when(inventoryRepo.findById("1")).thenReturn(Optional.of(inventory));
-
-        Optional<Inventory> retrievedInventory = inventoryRepo.findById("1");
-        assertTrue(retrievedInventory.isPresent());
-        assertEquals("Test Item", retrievedInventory.get().getName());
+        assertNotNull(saved.get_id());
+        assertEquals("Lily", saved.getName());
     }
 
     @Test
-    public void testFindAll() {
-        Inventory inventory1 = new Inventory();
-        inventory1.set_id("1");
-        inventory1.setName("Item 1");
-
-        Inventory inventory2 = new Inventory();
-        inventory2.set_id("2");
-        inventory2.setName("Item 2");
-
-        when(inventoryRepo.findAll()).thenReturn(List.of(inventory1, inventory2));
-
-        List<Inventory> inventories = inventoryRepo.findAll();
-        assertEquals(2, inventories.size());
-        assertEquals("Item 1", inventories.get(0).getName());
-        assertEquals("Item 2", inventories.get(1).getName());
+    void testFindById() {
+        Optional<Inventory> found = inventoryRepo.findById(inventory.get_id());
+        assertTrue(found.isPresent());
+        assertEquals("Tulip", found.get().getName());
     }
 
     @Test
-    public void testDeleteById() {
-        doNothing().when(inventoryRepo).deleteById("1");
+    void testFindAll() {
+        List<Inventory> list = inventoryRepo.findAll();
+        assertEquals(1, list.size());
+        assertEquals("Tulip", list.get(0).getName());
+    }
 
-        inventoryRepo.deleteById("1");
+    @Test
+    void testExistsById() {
+        boolean exists = inventoryRepo.existsById(inventory.get_id());
+        assertTrue(exists);
+    }
 
-        verify(inventoryRepo, times(1)).deleteById("1");
+    @Test
+    void testDeleteById() {
+        inventoryRepo.deleteById(inventory.get_id());
+        Optional<Inventory> found = inventoryRepo.findById(inventory.get_id());
+        assertFalse(found.isPresent());
+    }
+
+    @Test
+    void testDeleteAll() {
+        inventoryRepo.deleteAll();
+        List<Inventory> list = inventoryRepo.findAll();
+        assertTrue(list.isEmpty());
     }
 }
