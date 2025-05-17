@@ -1,32 +1,27 @@
 import React, { useEffect, useState } from "react";
-import { useParams, useNavigate, Link } from "react-router-dom"; // Import Link here
+import { useParams, useNavigate, Link } from "react-router-dom";
+import axios from "axios";
 import "../../styles/Inventory/InventoryDetails.css";
-// Import footer images
 import faqImage from "../../images/faq.png";
 import chatImage from "../../images/chat.png";
 import contactImage from "../../images/contact.png";
 
 const InventoryDetailsImage = () => {
-  const { id } = useParams(); // Get the ID from the URL
+  const { id } = useParams();
   const navigate = useNavigate();
-  const [images, setImages] = useState([]); // State to store the images
-  const [metadata, setMetadata] = useState({}); // State to store metadata
-  const [loading, setLoading] = useState(true); // State to handle loading spinner
-  const [error, setError] = useState(""); // State to handle errors
-  const [quantity, setQuantity] = useState(1); // State to store the quantity
-  const [selectedImageIndex, setSelectedImageIndex] = useState(0); // State for the selected image index
+  const [images, setImages] = useState([]);
+  const [metadata, setMetadata] = useState({});
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [quantity, setQuantity] = useState(1);
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
 
   useEffect(() => {
-    // Fetch inventory details by ID
     fetch(`http://localhost:8080/api/inventory/${id}`)
       .then(async (response) => {
-        if (!response.ok) {
-          throw new Error("Failed to fetch data");
-        }
+        if (!response.ok) throw new Error("Failed to fetch data");
 
-        const data = await response.json(); // Parse JSON response
-
-        // Set metadata
+        const data = await response.json();
         setMetadata({
           id: data.id,
           name: data.name,
@@ -36,7 +31,6 @@ const InventoryDetailsImage = () => {
           bloomContains: data.bloomContains,
         });
 
-        // Set images (decoded from base64)
         setImages(
           data.images.map((image) => ({
             id: image.id,
@@ -44,43 +38,55 @@ const InventoryDetailsImage = () => {
           }))
         );
 
-        setLoading(false); // Stop loading spinner
+        setLoading(false);
       })
       .catch((err) => {
-        setError(err.message); // Set error message
-        setLoading(false); // Stop loading spinner
+        setError(err.message);
+        setLoading(false);
       });
   }, [id]);
 
   const handleQuantityChange = (e) => {
-    // Update quantity, making sure it doesn't go below 1
     setQuantity(Math.max(1, parseInt(e.target.value) || 1));
   };
 
   const handleThumbnailClick = (index) => {
-    // Update the selected image index when a thumbnail is clicked
     setSelectedImageIndex(index);
   };
 
-  if (loading) {
-    return <p>Loading...</p>; // Display loading spinner
-  }
+  const handleAddToCart = async () => {
+    try {
+      const cartItem = {
+        name: metadata.name,
+        price: metadata.price,
+        quantity,
+        imageUrl: images[selectedImageIndex]?.src || "", // send base64 as imageUrl
+      };
 
-  if (error) {
+      await axios.post("http://localhost:8080/api/cart/add", cartItem);
+
+      // Navigate to cart page after adding item
+      navigate("/cart1");
+    } catch (error) {
+      console.error("Error adding to cart:", error);
+      alert("Failed to add item to cart");
+    }
+  };
+
+  if (loading) return <p>Loading...</p>;
+  if (error)
     return (
       <div>
         <p>Error: {error}</p>
         <button onClick={() => navigate("/")}>Go Back</button>
       </div>
     );
-  }
 
   return (
     <>
       <div className="inventory-details-container">
         {/* Image Display */}
         <div className="inventory-image-display">
-          {/* Main Image */}
           {images.length > 0 ? (
             <img
               src={images[selectedImageIndex].src}
@@ -91,7 +97,6 @@ const InventoryDetailsImage = () => {
             <p>No images available</p>
           )}
 
-          {/* Thumbnail Images */}
           <div className="inventory-thumbnail-container">
             {images.map((image, index) => (
               <img
@@ -99,12 +104,12 @@ const InventoryDetailsImage = () => {
                 src={image.src}
                 alt={metadata.name || "Inventory Item"}
                 className="inventory-thumbnail"
-                onClick={() => handleThumbnailClick(index)} // Set main image on thumbnail click
+                onClick={() => handleThumbnailClick(index)}
               />
             ))}
           </div>
         </div>
-
+            
         {/* Metadata Display */}
         <div className="inventory-details-content">
           <h1>{metadata.name}</h1>
@@ -119,7 +124,7 @@ const InventoryDetailsImage = () => {
             <strong>Bloom Contains:</strong> {metadata.bloomContains}
           </p>
 
-          {/* Quantity and Button */}
+          {/* Quantity and Buttons */}
           <div className="inventory-quantity-container">
             <input
               type="number"
@@ -130,7 +135,7 @@ const InventoryDetailsImage = () => {
           </div>
 
           <div className="inventory-button-container">
-            <button>ADD TO CART</button>
+            <button onClick={handleAddToCart}>ADD TO CART</button>
             <button
               className="inventory-secondary-button"
               onClick={() => navigate("/login")}

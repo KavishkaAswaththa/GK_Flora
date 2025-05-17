@@ -1,11 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+
+import { useNavigate } from 'react-router-dom';
+
 import "../../styles/Order/Cart.css";
 
 const Cart = () => {
   const [cartItems, setCartItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+
+  const navigate = useNavigate(); // 👈 navigation hook
 
   useEffect(() => {
     fetchCartItems();
@@ -69,6 +75,17 @@ const Cart = () => {
   if (error) return <div className="error">{error}</div>;
 
   const totals = calculateTotals();
+
+
+  // 👇 Handlers for button navigation
+  const handleCheckout = () => {
+    navigate('/deliveryform');
+  };
+
+  const handleContinueShopping = () => {
+    navigate('/');
+  };
+
 
   return (
     <div className="cart-container">
@@ -143,8 +160,15 @@ const Cart = () => {
           </div>
         </div>
 
-        <button className="checkout-button">CHECKOUT</button>
-        <button className="continue-shopping">CONTINUE SHOPPING</button>
+        <button className="checkout-button" onClick={handleCheckout}>
+          CHECKOUT
+        </button>
+        <button className="continue-shopping" onClick={handleContinueShopping}>
+          CONTINUE SHOPPING
+        </button>
+
+       
+
       </div>
     </div>
   );

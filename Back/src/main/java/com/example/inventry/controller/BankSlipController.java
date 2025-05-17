@@ -242,4 +242,41 @@ public class BankSlipController {
                     .body("Failed to update status: " + e.getMessage());
         }
     }
+
+    @PostMapping("/update-shipping-status")
+    public ResponseEntity<?> updateShippingStatus(@RequestBody Map<String, String> request) {
+        String slipId = request.get("slipId");
+        String shippingStatus = request.get("shippingStatus");
+
+        if (slipId == null || shippingStatus == null) {
+            return ResponseEntity.badRequest().body("Slip ID and shipping status are required");
+        }
+
+        try {
+            BankSlip slip = bankSlipService.getBankSlip(slipId);
+            if (slip == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Bank slip not found");
+            }
+
+            slip.setShippingStatus(shippingStatus);
+            BankSlip updatedSlip = bankSlipService.updateBankSlip(slip);
+
+            String subject = "Shipping Status Update";
+            String message = "Dear customer,\n\nYour shipping status has been updated to: " + shippingStatus + ".\n\nThank you for your order.";
+
+            emailService.sendSimpleMessage(updatedSlip.getUserEmail(), subject, message);
+            notificationService.sendNotification(updatedSlip.getUserEmail(), "Shipping status updated: " + shippingStatus);
+
+            return ResponseEntity.ok(Map.of(
+                    "slipId", updatedSlip.getId(),
+                    "shippingStatus", updatedSlip.getShippingStatus(),
+                    "message", "Shipping status updated and notification sent"
+            ));
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Failed to update shipping status: " + e.getMessage());
+        }
+    }
+
 }
