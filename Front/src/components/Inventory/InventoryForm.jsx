@@ -3,7 +3,6 @@ import axios from "axios";
 import "../../styles/Inventory/InventoryForm.css";
 import { useParams } from "react-router-dom";
 
-// Import footer images
 import faqImage from "../../images/faq.png";
 import chatImage from "../../images/chat.png";
 import contactImage from "../../images/contact.png";
@@ -23,14 +22,7 @@ const InventoryForm = ({ onSuccess }) => {
 
   const [imagePreviews, setImagePreviews] = useState([]);
   const [isUpdate, setIsUpdate] = useState(false);
-
   const [bloomTags, setBloomTags] = useState([]);
-
-  useEffect(() => {
-    if (id) {
-      fetchItemData(id);
-    }
-  }, [id]);
 
   useEffect(() => {
     if (id) {
@@ -38,7 +30,7 @@ const InventoryForm = ({ onSuccess }) => {
     }
     fetchBloomTags();
   }, [id]);
-  
+
   const fetchBloomTags = async () => {
     try {
       const response = await axios.get("http://localhost:8080/api/bloom-tags");
@@ -47,7 +39,7 @@ const InventoryForm = ({ onSuccess }) => {
       console.error("Failed to fetch bloom tags:", error);
     }
   };
-  
+
   const fetchItemData = async (itemId) => {
     try {
       const response = await axios.get(`http://localhost:8080/api/inventory/${itemId}`);
@@ -59,7 +51,7 @@ const InventoryForm = ({ onSuccess }) => {
         description: item.description,
         price: item.price,
         qty: item.qty,
-        bloomContains: item.bloomContains,
+        bloomContains: item.bloomContains.join(","),
         files: [],
       });
       setIsUpdate(true);
@@ -99,21 +91,28 @@ const InventoryForm = ({ onSuccess }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    const token = localStorage.getItem("token");
+    if (!token) {
+      alert("Unauthorized: No token found.");
+      return;
+    }
+
     const data = new FormData();
     formData.files.forEach((file) => data.append("files", file));
+    data.append("id", formData.id);
     data.append("name", formData.name);
     data.append("category", formData.category);
     data.append("description", formData.description);
     data.append("price", formData.price);
     data.append("qty", formData.qty);
-    data.append("bloomContains", formData.bloomContains);
+    data.append("bloomContains", JSON.stringify(formData.bloomContains.split(",").filter(Boolean)));
 
     if (isUpdate) {
       data.append("id", formData.id);
     }
 
     const url = isUpdate
-      ? `http://localhost:8080/api/inventory/update`
+      ? "http://localhost:8080/api/inventory/update"
       : "http://localhost:8080/api/inventory/save";
 
     try {
@@ -123,6 +122,7 @@ const InventoryForm = ({ onSuccess }) => {
         data,
         headers: {
           "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${token}`,
         },
       });
 
@@ -170,22 +170,21 @@ const InventoryForm = ({ onSuccess }) => {
           <input type="number" name="qty" value={formData.qty} onChange={handleInputChange} required />
         </div>
         <div>
-  <label>Bloom Contains:</label>
-  <div className="tag-selector">
-    {bloomTags.map((tag) => (
-      <button
-        type="button"
-        key={tag}
-        className={`tag-button ${formData.bloomContains.includes(tag) ? "selected" : ""}`}
-        onClick={() => handleTagClick(tag)}
-      >
-        {tag}
-      </button>
-    ))}
-  </div>
-  <small>Click to select multiple tags</small>
-</div>
-
+          <label>Bloom Contains:</label>
+          <div className="tag-selector">
+            {bloomTags.map((tag) => (
+              <button
+                type="button"
+                key={tag}
+                className={`tag-button ${formData.bloomContains.includes(tag) ? "selected" : ""}`}
+                onClick={() => handleTagClick(tag)}
+              >
+                {tag}
+              </button>
+            ))}
+          </div>
+          <small>Click to select multiple tags</small>
+        </div>
         <div>
           <label>Images:</label>
           <input type="file" multiple accept="image/*" onChange={handleFileChange} />

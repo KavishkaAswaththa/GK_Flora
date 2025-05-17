@@ -9,7 +9,7 @@ import java.util.List;
 @Document(collection = "inventory")
 public class Inventory {
 
-    @Id
+
     private String _id;
 
     private String name;
