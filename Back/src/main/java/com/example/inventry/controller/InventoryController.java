@@ -17,7 +17,7 @@ import java.security.Principal;
 import java.util.*;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:8080")
+@CrossOrigin(origins = "http://localhost:5173")
 @RequestMapping("/api/inventory")
 public class InventoryController {
 
@@ -33,6 +33,7 @@ public class InventoryController {
     @PostMapping("/save")
     public ResponseEntity<String> saveInventoryWithImages(
             @RequestParam("files") MultipartFile[] files,
+            @RequestParam("id") String id,
             @RequestParam("name") String name,
             @RequestParam("category") String category,
             @RequestParam("description") String description,
@@ -52,6 +53,7 @@ public class InventoryController {
 
             Inventory inventory = new Inventory();
             inventory.setName(name.trim());
+            inventory.set_id(id.trim());
             inventory.setCategory(category.trim());
             inventory.setDescription(description.trim());
             inventory.setPrice(price);
