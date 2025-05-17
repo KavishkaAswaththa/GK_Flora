@@ -138,7 +138,7 @@ const InventoryDetailsImage = () => {
             <button onClick={handleAddToCart}>ADD TO CART</button>
             <button
               className="inventory-secondary-button"
-              onClick={() => navigate("/login")}
+              onClick={() => navigate("/deliveryform")}
             >
               BUY IT NOW
             </button>
