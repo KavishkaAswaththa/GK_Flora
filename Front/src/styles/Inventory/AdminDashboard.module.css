@@ -286,3 +286,23 @@
 .admin-dashboard__delete-btn:hover {
   background-color: #c0392b;
 }
+.admin-dashboard__nav-buttons {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.admin-dashboard__nav-button {
+  padding: 8px 16px;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s ease-in-out;
+}
+
+.admin-dashboard__nav-button:hover {
+  background-color: #388e3c;
+}

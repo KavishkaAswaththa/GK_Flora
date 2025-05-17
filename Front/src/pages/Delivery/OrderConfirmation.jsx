@@ -113,7 +113,7 @@ const OrderConfirmation = () => {
               </div>
               <div className="total-row grand-total">
                 <span>Total:</span>
-                <span>Rs. {(calculateTotal() + 200).toFixed(2)}</span>
+                <span>Rs. {(calculateTotal() + 350).toFixed(2)}</span>
               </div>
             </div>
           </div>
