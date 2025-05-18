@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import "../../styles/Customization/Custom.css";
@@ -7,7 +8,10 @@ export default function UserFlowerCustomization() {
   const [flowers, setFlowers] = useState([]);
   const [wrappingPapers, setWrappingPapers] = useState([]);
   const [selectedFlowers, setSelectedFlowers] = useState([]);
+  const [selectedWrappingPaper, setSelectedWrappingPaper] = useState(null);
   const [gridType, setGridType] = useState("5x5");
+
+  const navigate = useNavigate();
 
   const gridOptions = {
     "3x3": 3,
@@ -25,13 +29,7 @@ export default function UserFlowerCustomization() {
   const fetchFlowers = async () => {
     try {
       const res = await axios.get("http://localhost:8080/api/flowers/all");
-      const data = res.data;
-      if (Array.isArray(data)) {
-        setFlowers(data);
-      } else {
-        console.error("Unexpected flowers response format:", data);
-        setFlowers([]);
-      }
+      setFlowers(Array.isArray(res.data) ? res.data : []);
     } catch (err) {
       console.error("Error fetching flowers:", err);
       setFlowers([]);
@@ -41,13 +39,7 @@ export default function UserFlowerCustomization() {
   const fetchWrappingPapers = async () => {
     try {
       const res = await axios.get("http://localhost:8080/api/wrappingPapers");
-      const data = res.data;
-      if (Array.isArray(data)) {
-        setWrappingPapers(data);
-      } else {
-        console.error("Unexpected wrapping paper response format:", data);
-        setWrappingPapers([]);
-      }
+      setWrappingPapers(Array.isArray(res.data) ? res.data : []);
     } catch (err) {
       console.error("Error fetching wrapping papers:", err);
       setWrappingPapers([]);
@@ -66,6 +58,17 @@ export default function UserFlowerCustomization() {
     setSelectedFlowers(reordered);
   };
 
+  const handlePlaceOrder = () => {
+    navigate("/order-confirmation", {
+      state: {
+        orderSummary: {
+          flowers: selectedFlowers,
+          wrappingPaper: selectedWrappingPaper,
+        },
+      },
+    });
+  };
+
   return (
     <div className="flower-customization">
       <h1>Customize Your Bouquet</h1>
@@ -73,9 +76,17 @@ export default function UserFlowerCustomization() {
       <h2>Available Flowers</h2>
       <div className="scroll-container">
         {flowers.map((flower) => (
-          <div key={flower.id} className="card-container" onClick={() => selectFlower(flower)}>
+          <div
+            key={flower.id}
+            className="card-container"
+            onClick={() => selectFlower(flower)}
+          >
             <img
-              src={flower.imageBase64 ? `data:image/jpeg;base64,${flower.imageBase64}` : "/path/to/placeholder.jpg"}
+              src={
+                flower.imageBase64
+                  ? `data:image/jpeg;base64,${flower.imageBase64}`
+                  : "/path/to/placeholder.jpg"
+              }
               alt={flower.name}
               className="card-image"
             />
@@ -128,7 +139,11 @@ export default function UserFlowerCustomization() {
                       }}
                     >
                       <img
-                        src={flower.imageBase64 ? `data:image/jpeg;base64,${flower.imageBase64}` : "/path/to/placeholder.jpg"}
+                        src={
+                          flower.imageBase64
+                            ? `data:image/jpeg;base64,${flower.imageBase64}`
+                            : "/path/to/placeholder.jpg"
+                        }
                         alt={flower.name}
                         className="grid-image"
                       />
@@ -144,20 +159,29 @@ export default function UserFlowerCustomization() {
 
       <h2>Wrapping Papers</h2>
       <div className="scroll-container">
-        {Array.isArray(wrappingPapers) &&
-          wrappingPapers.map((paper) => (
-            <div key={paper.id} className="card-container">
-              <img
-                src={paper.imageBase64 ? `data:image/jpeg;base64,${paper.imageBase64}` : "/path/to/placeholder.jpg"}
-                alt="Wrapping"
-                className="card-image"
-              />
-              <div className="card-price">Rs.{paper.price}</div>
-            </div>
-          ))}
+        {wrappingPapers.map((paper) => (
+          <div
+            key={paper.id}
+            className={`card-container ${selectedWrappingPaper?.id === paper.id ? "selected" : ""}`}
+            onClick={() => setSelectedWrappingPaper(paper)}
+          >
+            <img
+              src={
+                paper.imageBase64
+                  ? `data:image/jpeg;base64,${paper.imageBase64}`
+                  : "/path/to/placeholder.jpg"
+              }
+              alt="Wrapping"
+              className="card-image"
+            />
+            <div className="card-price">Rs.{paper.price}</div>
+          </div>
+        ))}
       </div>
 
-      <button className="order-button">Place Order</button>
+      <button className="order-button" onClick={handlePlaceOrder}>
+        Place Order
+      </button>
     </div>
   );
 }

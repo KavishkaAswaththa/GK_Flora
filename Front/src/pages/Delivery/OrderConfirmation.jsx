@@ -1,50 +1,52 @@
-import React, { useEffect, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
-import axios from 'axios';
-import '../../styles/Delivery/OrderConfirmation.css';
+import React, { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import "../../styles/Delivery/OrderConfirmation.css";
 
 const OrderConfirmation = () => {
   const navigate = useNavigate();
   const { state } = useLocation();
-  const { deliveryDetails } = state || {};
+  const { deliveryDetails, orderSummary } = state || {};
+  const { flowers = [], wrappingPaper = null } = orderSummary || {};
 
   const [cartItems, setCartItems] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetchCartItems();
-  }, []);
-
-  const fetchCartItems = async () => {
-    try {
-      const response = await axios.get('http://localhost:8080/api/cart');
-      setCartItems(response.data || []);
-    } catch (err) {
-      setError('Failed to fetch cart items');
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  };
+    // Group flowers by name
+    const groupedFlowers = flowers.reduce((acc, flower) => {
+      const key = flower.name;
+      if (!acc[key]) {
+        acc[key] = { ...flower, quantity: 1 };
+      } else {
+        acc[key].quantity += 1;
+      }
+      return acc;
+    }, {});
+    const flowerItems = Object.values(groupedFlowers);
+    setCartItems(flowerItems);
+    setLoading(false);
+  }, [flowers]);
 
   const calculateTotal = () => {
-    return cartItems.reduce((total, item) => total + (item.price * item.quantity), 0);
+    const flowerTotal = cartItems.reduce(
+      (total, item) => total + item.price * item.quantity,
+      0
+    );
+    const wrappingTotal = wrappingPaper?.price || 0;
+    return flowerTotal + wrappingTotal;
   };
 
   const handleEditDelivery = () => {
-    navigate('/deliveryform', { state: { formData: deliveryDetails } });
+    navigate("/deliveryform", { state: { formData: deliveryDetails } });
   };
 
   const handlePlaceOrder = () => {
-    // Send delivery details and cart items to the backend (example console log)
-    console.log('Placing order with:', { deliveryDetails, cartItems });
-    alert('Order placed successfully!');
-    navigate('/payment');
+    console.log("Order submitted:", { deliveryDetails, cartItems, wrappingPaper });
+    alert("Order placed successfully!");
+    navigate("/payment");
   };
 
   if (loading) return <div>Loading...</div>;
-  if (error) return <div className="error">{error}</div>;
 
   return (
     <div className="order-confirmation-container">
@@ -90,8 +92,8 @@ const OrderConfirmation = () => {
         <div className="order-summary">
           <h2>Order Summary</h2>
           <div className="summary-card">
-            {cartItems.map(item => (
-              <div key={item.id} className="order-item">
+            {cartItems.map((item) => (
+              <div key={item.id + item.name} className="order-item">
                 <div className="item-info">
                   <span className="item-name">{item.name}</span>
                   <span className="item-price">Rs. {item.price.toFixed(2)}</span>
@@ -101,6 +103,18 @@ const OrderConfirmation = () => {
                 </div>
               </div>
             ))}
+
+            {wrappingPaper && (
+              <div className="order-item">
+                <div className="item-info">
+                  <span className="item-name">Wrapping Paper</span>
+                  <span className="item-price">Rs. {wrappingPaper.price.toFixed(2)}</span>
+                </div>
+                <div className="item-quantity">
+                  <span>Qty: 1</span>
+                </div>
+              </div>
+            )}
 
             <div className="total-section">
               <div className="total-row">
@@ -115,15 +129,6 @@ const OrderConfirmation = () => {
                 <span>Total:</span>
                 <span>Rs. {(calculateTotal() + 350).toFixed(2)}</span>
               </div>
-            </div>
-          </div>
-
-          <div className="delivery-type">
-            <h3>Delivery Type</h3>
-            <div className="delivery-type-info">
-              {deliveryDetails?.deliveryType === 'express' && <p>Get delivered to your door step</p>}
-              {deliveryDetails?.deliveryType === 'priority' && <p>Pickup From Your Nearest Branch</p>}
-              {(!deliveryDetails?.deliveryType || deliveryDetails?.deliveryType === 'select') && <p>Standard delivery</p>}
             </div>
           </div>
 

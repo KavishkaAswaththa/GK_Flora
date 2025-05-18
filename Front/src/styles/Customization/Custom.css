@@ -1,211 +1,224 @@
-.flower-customization * {
-  box-sizing: border-box;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
-
+/* === USER FLOWER CUSTOMIZATION ADVANCED === */
 .flower-customization {
-  padding: 30px;
-  max-width: 1200px;
-  margin: 0 auto;
-}
-
-.flower-customization h1,
-.flower-customization h2 {
-  text-align: center;
-  margin-bottom: 20px;
+  padding: 2rem;
+  background: linear-gradient(135deg, #fff8f0, #fef6e4);
+  font-family: 'Poppins', sans-serif;
   color: #333;
+  min-height: 100vh;
 }
 
-.flower-customization .message {
+.flower-customization h1 {
+  font-size: 2.8rem;
   text-align: center;
-  margin: 15px 0;
-  color: green;
-  font-weight: bold;
+  color: #161414;
+  margin-bottom: 2rem;
+  font-weight: 700;
 }
 
-.flower-customization .button-container {
-  display: flex;
-  justify-content: center;
-  gap: 15px;
-  margin-bottom: 30px;
+.flower-customization h2 {
+  font-size: 1.8rem;
+  margin-top: 3rem;
+  margin-bottom: 1.2rem;
+  color: #222;
+  border-left: 5px solid #ffa630;
+  padding-left: 1rem;
+  font-weight: 600;
 }
 
-.flower-customization button {
-  padding: 10px 20px;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  font-size: 14px;
-  cursor: pointer;
-  transition: background 0.3s ease;
+.flower-customization label {
+  font-weight: 500;
+  margin-right: 0.5rem;
+  font-size: 1rem;
 }
 
-.flower-customization button:hover {
-  background-color: #0056b3;
-}
-
-.flower-customization .form-container {
-  background-color: #f9f9f9;
+.flower-customization select {
+  background: #fff9ec;
   border: 1px solid #ddd;
-  padding: 20px;
-  margin: 20px auto;
-  width: 100%;
-  max-width: 500px;
-  border-radius: 12px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-}
-
-.flower-customization .form-container form {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.flower-customization input[type="text"],
-.flower-customization input[type="number"],
-.flower-customization input[type="file"] {
-  padding: 10px;
+  padding: 0.6rem 1rem;
   border-radius: 8px;
-  border: 1px solid #ccc;
+  font-size: 1rem;
+  transition: border-color 0.3s ease;
 }
 
-.flower-customization .scroll-container {
+.flower-customization select:focus {
+  border-color: #ffa630;
+  outline: none;
+}
+
+/* === Scroll Container === */
+.scroll-container {
   display: flex;
   overflow-x: auto;
-  padding: 10px 0;
-  gap: 15px;
-  margin-bottom: 30px;
+  gap: 1rem;
+  scroll-snap-type: x mandatory;
+  padding: 1rem 0;
+  scrollbar-color: #ffa630 #fff9ec;
+  scrollbar-width: thin;
 }
 
-.flower-customization .scroll-container::-webkit-scrollbar {
-  height: 8px;
+.scroll-container::-webkit-scrollbar {
+  height: 10px;
 }
 
-.flower-customization .scroll-container::-webkit-scrollbar-thumb {
-  background: #ccc;
-  border-radius: 4px;
+.scroll-container::-webkit-scrollbar-thumb {
+  background-color: #ffa630;
+  border-radius: 10px;
 }
 
-.flower-customization .card-container {
-  min-width: 120px;
-  max-width: 120px;
-  height: 150px;
-  background-color: #fff;
-  border: 1px solid #ddd;
-  border-radius: 12px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+.scroll-container::-webkit-scrollbar-track {
+  background-color: #fff5e6;
+}
+
+/* === Card === */
+.card-container {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 198, 109, 0.4);
+  border-radius: 14px;
+  padding: 1rem;
+  width: 160px;
   flex-shrink: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-between;
-  padding: 10px;
+  scroll-snap-align: start;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
   cursor: pointer;
-  transition: transform 0.2s ease;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.flower-customization .card-container:hover {
-  transform: scale(1.05);
+.card-container:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
 }
 
-.flower-customization .card-image {
+.card-image {
   width: 100%;
-  height: 90px;
-  object-fit: cover;
-  border-radius: 8px;
-}
-
-.flower-customization .card-title {
-  font-size: 14px;
-  text-align: center;
-  color: #444;
-}
-
-.flower-customization .card-price {
-  font-size: 13px;
-  color: #666;
-  text-align: center;
-}
-
-.flower-customization .grid-container {
-  display: grid;
-  justify-items: center;
-  align-items: center;
-  margin: 20px 0 40px 0;
-  gap: 10px;
-}
-
-.flower-customization .grid-image {
-  width: 80px;
-  height: 80px;
+  height: 130px;
   object-fit: cover;
   border-radius: 10px;
-  border: 2px solid #eee;
-  transition: transform 0.2s ease;
+  margin-bottom: 0.6rem;
+  border: 1px solid #f0e4ce;
 }
 
-.flower-customization .grid-image:hover {
-  transform: scale(1.05);
+.card-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #dcbb16;
 }
 
-.flower-customization select#gridType {
-  padding: 6px 12px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-  font-size: 14px;
-  margin-left: 10px;
+.card-price {
+  font-size: 0.95rem;
+  color: #555;
+  margin-top: 0.3rem;
 }
 
-.flower-customization .order-button {
+/* === Refined Grid Container === */
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+  gap: 10px;
+  padding: 1rem;
+  background: rgba(255, 247, 226, 0.8);
+  border-radius: 16px;
+  box-shadow: inset 0 0 12px rgba(255, 192, 122, 0.25);
+  border: 1px solid #ffe1b2;
+  margin-top: 1.5rem;
+  transition: all 0.3s ease-in-out;
+}
+
+/* === Smaller Grid Images === */
+.grid-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 10px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.07);
+  cursor: grab;
+}
+
+.grid-image:hover {
+  transform: scale(1.1) rotate(1deg);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.15);
+}
+
+/* === Responsive Grid on Smaller Screens === */
+@media (max-width: 768px) {
+  .grid-container {
+    grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+    gap: 8px;
+  }
+
+  .grid-image {
+    height: 70px;
+  }
+}
+
+
+/* === Button === */
+.order-button {
+  margin: 3rem auto 1rem auto;
   display: block;
-  margin: 0 auto;
-  padding: 12px 24px;
-  background-color: #007bff;
+  padding: 0.9rem 2.2rem;
+  font-size: 1.2rem;
+  font-weight: bold;
   color: white;
   border: none;
-  border-radius: 10px;
-  font-size: 16px;
+  border-radius: 12px;
+  background: linear-gradient(to right, #ff8a00, #e52e71);
   cursor: pointer;
-  transition: background 0.3s ease;
+  box-shadow: 0 6px 15px rgba(229, 46, 113, 0.4);
+  transition: background 0.3s ease, transform 0.2s ease;
 }
 
-.flower-customization .order-button:hover {
-  background-color: #0056b3;
+.order-button:hover {
+  transform: scale(1.05);
+  background: linear-gradient(to right, #e52e71, #ff8a00);
 }
 
+/* === Responsive === */
 @media (max-width: 768px) {
-  .flower-customization .grid-container {
-    grid-template-columns: repeat(3, 1fr);
+  .flower-customization {
+    padding: 1rem;
   }
 
-  .flower-customization .form-container {
-    width: 90%;
+  .card-container {
+    width: 130px;
+  }
+
+  .card-image {
+    height: 100px;
+  }
+
+  .grid-container {
+    gap: 8px;
+    padding: 0.8rem;
+  }
+
+  .order-button {
+    font-size: 1rem;
+    padding: 0.7rem 1.8rem;
   }
 }
 
-@media (max-width: 480px) {
-  .flower-customization .grid-container {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .flower-customization .card-container {
-    min-width: 100px;
-    max-width: 100px;
-    height: 130px;
-  }
-
-  .flower-customization .card-image {
-    height: 80px;
-  }
-
-  .flower-customization .grid-image {
-    width: 60px;
-    height: 60px;
-  }
-
-  .flower-customization button {
-    font-size: 13px;
-    padding: 8px 16px;
-  }
+/* === Selected Wrapping Paper Highlight === */
+.card-container.selected {
+  border: 3px solid #ff8a00;
+  box-shadow: 0 0 12px rgba(255, 138, 0, 0.6);
+  background-color: rgba(255, 243, 220, 0.9);
+  transform: scale(1.03);
+  transition: all 0.3s ease-in-out;
+  position: relative;
 }
+
+/* Highlight selected flower or paper */
+.card-container.selected {
+  border: 3px solid #ff8a00;
+  box-shadow: 0 0 12px rgba(255, 138, 0, 0.6);
+  background-color: rgba(255, 243, 220, 0.9);
+  transform: scale(1.03);
+  transition: all 0.3s ease-in-out;
+  position: relative;
+}
+
+
+
+
