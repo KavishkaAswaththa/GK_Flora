@@ -59,11 +59,30 @@ export default function UserFlowerCustomization() {
   };
 
   const handlePlaceOrder = () => {
-    navigate("/order-confirmation", {
+    const cartItems = selectedFlowers.reduce((acc, flower) => {
+      const found = acc.find((item) => item.id === flower.id);
+      if (found) {
+        found.quantity += 1;
+      } else {
+        acc.push({ ...flower, quantity: 1 });
+      }
+      return acc;
+    }, []);
+
+    const subTotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
+    const wrappingPaperCost = selectedWrappingPaper?.price || 0;
+    const flatDiscount = subTotal > 1000 ? 100 : 0;
+    const total = subTotal + wrappingPaperCost - flatDiscount;
+
+    navigate("/delivery-form", {
       state: {
+        cartItems,
+        selectedWrappingPaper,
         orderSummary: {
-          flowers: selectedFlowers,
-          wrappingPaper: selectedWrappingPaper,
+          subTotal,
+          wrappingPaperCost,
+          flatDiscount,
+          total,
         },
       },
     });
@@ -76,11 +95,7 @@ export default function UserFlowerCustomization() {
       <h2>Available Flowers</h2>
       <div className="scroll-container">
         {flowers.map((flower) => (
-          <div
-            key={flower.id}
-            className="card-container"
-            onClick={() => selectFlower(flower)}
-          >
+          <div key={flower.id} className="card-container" onClick={() => selectFlower(flower)}>
             <img
               src={
                 flower.imageBase64
