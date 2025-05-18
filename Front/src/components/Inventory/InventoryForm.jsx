@@ -107,9 +107,9 @@ const InventoryForm = ({ onSuccess }) => {
     data.append("qty", formData.qty);
     data.append("bloomContains", JSON.stringify(formData.bloomContains.split(",").filter(Boolean)));
 
-    if (isUpdate) {
-      data.append("id", formData.id);
-    }
+
+
+    console.log(id);
 
     const url = isUpdate
       ? "http://localhost:8080/api/inventory/update"
@@ -128,7 +128,7 @@ const InventoryForm = ({ onSuccess }) => {
 
       alert(response.data || `Inventory ${isUpdate ? "updated" : "saved"} successfully!`);
       setIsUpdate(false);
-      onSuccess();
+      //onSuccess();
       setImagePreviews([]);
     } catch (error) {
       console.error(`Failed to ${isUpdate ? "update" : "save"} inventory:`, error);
