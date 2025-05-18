@@ -31,6 +31,7 @@ import AdminPaymentReview from "./pages/Delivery/AdminPaymentReview.jsx";
 import Login from './pages/Profile/Login';
 import ResetPassword from './pages/Profile/ResetPassword';
 import AccountDetails from './pages/Profile/AccountDetails';
+import UserList from "./pages/Profile/UserList.jsx";
 
 
 
@@ -100,13 +101,11 @@ const App = () => {
         <Route path="/adminpayment" element={<AdminPaymentReview />} />
        
 
-       
-        
-
-        
+       {/* PRofile */}
         <Route path='/login' element={<Login/>}/>
         <Route path='/reset-password' element={<ResetPassword/>}/>
         <Route path='/account-details' element={<AccountDetails/>}/>
+        <Route path="/userlist" element={<UserList/>}/>
 
 
 

@@ -54,6 +54,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             // Allow unauthenticated access to specific public endpoints
             if ((path.startsWith("/api/inventory") && method.equals("GET") && method.equals("PUT")) ||
                     path.startsWith("/api/auth/") ||
+                    path.startsWith("/api/users") && method.equals("GET") ||
                     path.startsWith("/api/v1/delivery") ||
                     path.startsWith("/api/bank-slips") ||
                     path.equals("/api/flowers") ||
