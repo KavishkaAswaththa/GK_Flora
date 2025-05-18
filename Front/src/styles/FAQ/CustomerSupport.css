@@ -1,170 +1,171 @@
+@keyframes scrollRow {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
 .customer-support {
-    padding: 3rem;
-    font-family: 'Arial', sans-serif;
-    background-color: #f7f4e9;
+  padding: 4rem 2rem;
+  font-family: 'Segoe UI', sans-serif;
+  background: linear-gradient(to right, #fffbe6, #fff7cc);
+  overflow: hidden;
+  position: relative;
+}
+
+.customer-support-title {
+  font-size: 3rem;
+  text-align: center;
+  color: #222;
+  margin-bottom: 1rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.customer-support-subtitle {
+  font-size: 1.6rem;
+  text-align: center;
+  color: #555;
+  margin-bottom: 3rem;
+  font-weight: 500;
+}
+
+/* Wrapper for scrolling animation */
+.customer-support-grid-wrapper {
+  overflow: hidden;
+  width: 100%;
+  position: relative;
+}
+
+/* Scrolling container */
+.customer-support-grid {
+  display: flex;
+  flex-wrap: nowrap;
+  width: max-content;
+  animation: scrollRow 40s linear infinite;
+  gap: 2rem;
+  padding-bottom: 1rem;
+}
+
+/* Card Styles */
+.customer-support-card {
+  background: #fffdf2;
+  border: 1px solid #f0e68c;
+  border-radius: 16px;
+  padding: 2rem 1.5rem;
+  width: 300px;
+  margin-right: 1rem;
+  text-align: left;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+  transition: transform 0.35s ease, box-shadow 0.35s ease;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.customer-support-card:hover {
+  transform: scale(1.05);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
+
+.customer-support-card-title {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 1rem;
+  border-bottom: 2px solid #f7eaaa;
+  padding-bottom: 0.5rem;
+  text-align: left;
+}
+
+/* List Styles */
+.customer-support-card-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.customer-support-card-item {
+  margin-bottom: 12px;
+  font-size: 1rem;
+  color: #333;
+  background-color: #fdf8d9;
+  padding: 12px 14px;
+  border-radius: 10px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.07);
+  transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease;
+  position: relative;
+}
+
+.customer-support-card-item:hover {
+  color: #d35400;
+  background-color: #fff4cc;
+  transform: translateY(-2px);
+}
+
+/* Expand Indicator */
+.customer-support-card-item::after {
+  content: "➤";
+  position: absolute;
+  right: 15px;
+  font-size: 1.1rem;
+  color: #888;
+  transition: transform 0.3s ease;
+}
+
+.customer-support-card-item.expanded::after {
+  transform: rotate(90deg);
+}
+
+/* Description Box */
+.customer-support-item-description {
+  margin-top: 10px;
+  padding: 14px;
+  font-size: 0.95rem;
+  background-color: #ffffff;
+  border: 1px solid #eee;
+  border-radius: 10px;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.05);
+  color: #444;
+  line-height: 1.5;
+  display: none;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.customer-support-item-description.visible {
+  display: block;
+}
+
+/* Fade-in animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.98);
   }
-  
-  
-  
-  .customer-support-title {
-    font-size: 3rem;
-    text-align: center;
-    color: #333;
-    margin-bottom: 1.5rem;
-    font-weight: 700;
-    text-transform: uppercase;
+  to {
+    opacity: 1;
+    transform: scale(1);
   }
-  
-  .customer-support-subtitle {
-    font-size: 1.6rem;
-    text-align: center;
-    color: #666;
-    margin-bottom: 3rem;
-    font-weight: 400;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .customer-support {
+    padding: 2rem 1rem;
   }
-  
-  
+
   .customer-support-grid {
-    display: flex;
+    animation: none;
     flex-wrap: wrap;
     justify-content: center;
-    gap: 2rem;
   }
-  
-  
+
   .customer-support-card {
-    background-color: #f4e894; 
-    border: 1px solid #ddd;
-    border-radius: 12px;
-    padding: 1.5rem;
-    width: 280px;
-    text-align: left;
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1); /* Softer and bigger shadow */
-    transition: transform 0.3s ease, box-shadow 0.3s ease; 
-    cursor: pointer; 
+    width: 100%;
+    max-width: 340px;
+    margin-right: 0;
+    margin-bottom: 1.5rem;
   }
-  
-  
-  .customer-support-card:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.15); 
-  }
-  
-  
-  .customer-support-card-title {
-    font-size: 1.3rem;
-    font-weight: bold;
-    margin-bottom: 1rem;
-    color: #333;
-    display: flex; 
-    align-items: center; 
-    gap: 0.3rem; 
-    padding-bottom: 0.5rem;
-    border-bottom: 2px solid #f0f0f0;
-  }
-  
-  .customer-support-icon {
-    margin-right: 0; 
-    font-size: 1.6rem; 
-    color: #ff8c00;
-    transition: color 0.3s ease;
-  }
-  
-  
-  
-  .customer-support-icon:hover {
-    color: #ff6a00; 
-  }
-  
-  
-  .customer-support-card-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
-  
-  
-  .customer-support-card-item {
-    margin: 0.8rem 0;
-    font-size: 1rem;
-    color: #555;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    transition: color 0.3s ease; 
-  }
-  
-  
-  .customer-support-card-item:hover {
-    color: #333;
-    font-weight: bold;
-  }
-  
-  @media (max-width: 768px) {
-    .customer-support {
-      padding: 2rem; 
-    }
-  
-    .customer-support-grid {
-      flex-direction: column;
-      align-items: center;
-      gap: 1.5rem;
-    }
-  
-    .customer-support-card {
-      width: 100%;
-      max-width: 350px;
-      padding: 1rem;
-    }
-  }
-  
-  
-  
-  .customer-support-card-item {
-    margin-bottom: 15px; 
-    font-size: 1rem;
-    color: #555;
-    cursor: pointer;
-    transition: color 0.3s ease; 
-    display: block;
-    position: relative; 
-    padding: 10px;
-    border-radius: 8px;
-    background-color: #efecc4;
-    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1); 
-  }
-  
-  .customer-support-card-item:hover {
-    color: #ff8c00; 
-    background-color: #fdf2e9; 
-  }
-  
-  .customer-support-card-item::after {
-    position: absolute;
-    right: 10px;
-    font-size: 1.2rem;
-    color: #333;
-    transition: transform 0.3s ease;
-  }
-  
-  .customer-support-card-item.expanded::after {
-    transform: rotate(90deg);
-  }
-  
-  .customer-support-item-description {
-    margin-top: 10px;
-    padding: 15px;
-    font-size: 0.95rem;
-    background-color: #f9f9f9;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1); 
-    color: #444;
-    line-height: 1.5;
-    display: none; 
-    transition: all 0.3s ease; 
-  }
-  
-  .customer-support-item-description.visible {
-    display: block; 
-  }
+}

@@ -589,3 +589,59 @@
 .wishlistCouponButton:hover {
   background-color: #f4c200;
 }
+
+/* Support Promo Section */
+.supportPromo {
+  padding: 4rem 2rem;
+  background-color: #fff7e6;
+  text-align: center;
+  overflow: hidden;
+  position: relative;
+}
+
+.supportPromoTitle {
+  font-size: 2rem;
+  color: #333;
+  margin-bottom: 1rem;
+  font-weight: 700;
+}
+
+.supportPromoText {
+  font-size: 1.1rem;
+  color: #555;
+  margin-bottom: 2rem;
+}
+
+.supportPromoBox {
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+  padding: 1rem 0;
+}
+
+.customer-support-grid-wrapper {
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+}
+
+.customer-support-grid {
+  display: flex;
+  gap: 1.5rem;
+  animation: scrollTiles 30s linear infinite;
+  padding: 1rem 0;
+}
+
+@keyframes scrollTiles {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+/* Make sure cards don’t shrink */
+.customer-support-card {
+  flex: 0 0 auto;
+}
