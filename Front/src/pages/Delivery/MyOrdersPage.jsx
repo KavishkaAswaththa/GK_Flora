@@ -1,75 +1,138 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 import { Link } from 'react-router-dom';
 import '../../styles/Delivery/MyOrdersPage.css';
 
 const MyOrdersPage = () => {
-  // Sample order data
-  const orders = [
-    {
-      id: '12345',
-      status: 'unpaid',
-      items: [
-        {
-          id: 1,
-          name: 'New Rose flower bunch with excellent rapping',
-          price: 2500.00,
-          quantity: 1,
-          image: 'src/images/delivery/rose.jpg'
+  const [orders, setOrders] = useState([]);
+  const [statusCounts, setStatusCounts] = useState({
+    TO_BE_SHIPPED: 0,
+    SHIPPED: 0,
+    COMPLETE: 0
+  });
+
+  const fetchOrders = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.get('http://localhost:8080/api/orders/my', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setOrders(response.data);
+      
+      // Calculate status counts from fetched orders
+      const counts = {
+        TO_BE_SHIPPED: 0,
+        SHIPPED: 0,
+        COMPLETE: 0
+      };
+      
+      response.data.forEach(order => {
+        if (counts.hasOwnProperty(order.status)) {
+          counts[order.status]++;
         }
-      ],
-      total: 2850.00, // Including delivery fee
-      delivery_fee: 350.00
+      });
+      
+      setStatusCounts(counts);
+    } catch (error) {
+      console.error('Failed to fetch orders:', error);
     }
-  ];
+  };
+
+  useEffect(() => {
+    fetchOrders();
+    
+    // Check if there are updated status counts in localStorage
+    const savedCounts = localStorage.getItem('orderStatusCounts');
+    if (savedCounts) {
+      try {
+        const parsedCounts = JSON.parse(savedCounts);
+        setStatusCounts(prevCounts => ({
+          ...prevCounts,
+          ...parsedCounts
+        }));
+      } catch (err) {
+        console.error('Error parsing saved status counts:', err);
+      }
+    }
+    
+    // Add event listener for real-time updates from AdminPaymentReview page
+    const handleStatusUpdate = (event) => {
+      console.log('Status update received:', event.detail);
+      if (event.detail?.statusCounts) {
+        setStatusCounts(prevCounts => ({
+          ...prevCounts,
+          ...event.detail.statusCounts
+        }));
+        
+        // Refresh orders to show latest statuses
+        fetchOrders();
+      }
+    };
+    
+    window.addEventListener('orderStatusUpdated', handleStatusUpdate);
+    
+    // Clean up event listener on component unmount
+    return () => {
+      window.removeEventListener('orderStatusUpdated', handleStatusUpdate);
+    };
+  }, []);
 
   return (
     <div className="my-orders-container">
-      
       <div className="orders-content">
         <div className="orders-header">
           <h1>My Orders</h1>
         </div>
 
+        {/* Order status banner with updated counts */}
         <div className="order-status-tabs">
-          <div className="status-tab">
-            <div className="status-icon unpaid">
-              <img src="src/images/delivery/unpaid.png" alt="Unpaid" />
-              
+          {['TO_BE_SHIPPED', 'SHIPPED', 'COMPLETE'].map((status) => (
+            <div className="status-tab" key={status}>
+              <div className={`status-icon ${status?.toLowerCase()}`}>
+                <img
+                  src={`src/images/delivery/${status?.toLowerCase().replace(/_/g, '-')}.png`}
+                  alt={status}
+                />
+                <span className="badge">
+                  {statusCounts[status] || 0}
+                </span>
+              </div>
+              <p>{status?.replace(/_/g, ' ')}</p>
             </div>
-            <p>Unpaid</p>
-          </div>
-          <div className="status-tab">
-            <div className="status-icon to-be-shipped">
-              <img src="src/images/delivery/to-be-shipped.png" alt="To be Shipped" />
-              <span className="badge">1</span>
-            </div>
-            <p>To be Shipped</p>
-          </div>
-          <div className="status-tab">
-            <div className="status-icon shipped">
-              <img src="src/images/delivery/shipped-.png" alt="Shipped" />
-            </div>
-            <p>Shipped</p>
-          </div>
-          <div className="status-tab">
-            <div className="status-icon to-be-reviewed">
-              <img src="src/images/delivery/to-be-.png" alt="To be reviewed" />
-            </div>
-            <p>To be reviewed</p>
-          </div>
+          ))}
         </div>
 
+        {/* No orders message */}
+        {orders.length === 0 && (
+          <div className="no-orders">
+            <p>You have no orders yet.</p>
+          </div>
+        )}
+
+        {/* Orders List */}
         {orders.map((order) => (
           <div key={order.id} className="order-container">
+            {/* Order Header */}
             <div className="order-header">
               <div className="order-status">
-                <p>To ship</p>
+                <p>{order.status.replace(/_/g, ' ')}</p>
               </div>
               <div className="order-details-link">
                 <Link to={`/orders/${order.id}`}>Order details &gt;</Link>
               </div>
             </div>
 
+            {/* Order Confirmation Info */}
+            <div className="order-confirmation">
+              <p><strong>Order ID:</strong> {order.id}</p>
+              <p><strong>Order Date:</strong> {new Date(order.createdAt).toLocaleString()}</p>
+              <p><strong>Delivery Address:</strong> {order.deliveryAddress}</p>
+              <p><strong>Payment Status:</strong> {order.paymentStatus}</p>
+            </div>
+
+            {/* Items in the order */}
             <div className="order-items">
               {order.items.map((item) => (
                 <div key={item.id} className="order-item">
@@ -78,8 +141,13 @@ const MyOrdersPage = () => {
                   </div>
                   <div className="item-details">
                     <h3>{item.name}</h3>
-                    <p>x {item.quantity}</p>
+                    <p>Quantity: {item.quantity}</p>
                     <p className="item-price">Rs. {item.price.toFixed(2)}</p>
+                    {item.category && <p>Category: {item.category}</p>}
+                    {item.description && <p>Description: {item.description}</p>}
+                    {item.productId && (
+                      <Link to={`/product/${item.productId}`}>View Product</Link>
+                    )}
                   </div>
                   <div className="item-total">
                     <p className="total-label">Total</p>

@@ -111,9 +111,25 @@ public class EmailController {
         } catch (Exception e) {
             return ResponseEntity.status(500).body("Failed to send confirmation: " + e.getMessage());
         }
+
     }
 
+    @PostMapping("/send-shipping-status")
+    public ResponseEntity<String> sendShippingStatusEmail(
+            @RequestParam("userEmail") String userEmail,
+            @RequestParam("shippingStatus") String shippingStatus
+    ) {
+        try {
+            String subject = "Shipping Status Update";
+            String message = "Dear customer,\n\nYour shipping status has been updated to: "
+                    + shippingStatus + ".\n\nThank you for your order.";
+
+            emailService.sendSimpleMessage(userEmail, subject, message);
+
+            return ResponseEntity.ok("Shipping status email sent to " + userEmail);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Failed to send shipping status email: " + e.getMessage());
+        }
 
 
-
-}
+}}

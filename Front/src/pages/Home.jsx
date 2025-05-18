@@ -73,7 +73,7 @@ const Home = () => {
             <br />
             <strong>Click below to experience the magic!</strong>
           </p>
-          <Link to="/FlowerCustomization" className={styles.couponButton}>
+          <Link to="/UserFlowerCustomization" className={styles.couponButton}>
             Create Your Own Bouquet
           </Link>
         </div>

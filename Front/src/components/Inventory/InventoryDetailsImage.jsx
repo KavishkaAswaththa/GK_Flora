@@ -1,32 +1,25 @@
 import React, { useEffect, useState } from "react";
-import { useParams, useNavigate, Link } from "react-router-dom"; // Import Link here
+import { useParams, useNavigate } from "react-router-dom";
+import axios from "axios";
 import "../../styles/Inventory/InventoryDetails.css";
-// Import footer images
-import faqImage from "../../images/faq.png";
-import chatImage from "../../images/chat.png";
-import contactImage from "../../images/contact.png";
 
 const InventoryDetailsImage = () => {
-  const { id } = useParams(); // Get the ID from the URL
+  const { id } = useParams();
   const navigate = useNavigate();
-  const [images, setImages] = useState([]); // State to store the images
-  const [metadata, setMetadata] = useState({}); // State to store metadata
-  const [loading, setLoading] = useState(true); // State to handle loading spinner
-  const [error, setError] = useState(""); // State to handle errors
-  const [quantity, setQuantity] = useState(1); // State to store the quantity
-  const [selectedImageIndex, setSelectedImageIndex] = useState(0); // State for the selected image index
+  const [images, setImages] = useState([]);
+  const [metadata, setMetadata] = useState({});
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [quantity, setQuantity] = useState(1);
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+  const [total, setTotal] = useState(0);
 
   useEffect(() => {
-    // Fetch inventory details by ID
     fetch(`http://localhost:8080/api/inventory/${id}`)
       .then(async (response) => {
-        if (!response.ok) {
-          throw new Error("Failed to fetch data");
-        }
+        if (!response.ok) throw new Error("Failed to fetch data");
 
-        const data = await response.json(); // Parse JSON response
-
-        // Set metadata
+        const data = await response.json();
         setMetadata({
           id: data.id,
           name: data.name,
@@ -36,7 +29,6 @@ const InventoryDetailsImage = () => {
           bloomContains: data.bloomContains,
         });
 
-        // Set images (decoded from base64)
         setImages(
           data.images.map((image) => ({
             id: image.id,
@@ -44,121 +36,146 @@ const InventoryDetailsImage = () => {
           }))
         );
 
-        setLoading(false); // Stop loading spinner
+        setTotal(data.price * 1);
+        setLoading(false);
       })
       .catch((err) => {
-        setError(err.message); // Set error message
-        setLoading(false); // Stop loading spinner
+        setError(err.message);
+        setLoading(false);
       });
   }, [id]);
 
+  useEffect(() => {
+    if (metadata.price) {
+      setTotal(metadata.price * quantity);
+    }
+  }, [quantity, metadata.price]);
+
   const handleQuantityChange = (e) => {
-    // Update quantity, making sure it doesn't go below 1
-    setQuantity(Math.max(1, parseInt(e.target.value) || 1));
+    const newQuantity = Math.max(1, parseInt(e.target.value) || 1);
+    setQuantity(newQuantity);
   };
 
   const handleThumbnailClick = (index) => {
-    // Update the selected image index when a thumbnail is clicked
     setSelectedImageIndex(index);
   };
 
-  if (loading) {
-    return <p>Loading...</p>; // Display loading spinner
-  }
+  const handleAddToCart = async () => {
+    try {
+      const cartItem = {
+        name: metadata.name,
+        price: metadata.price,
+        quantity,
+        imageUrl: images[selectedImageIndex]?.src || "",
+      };
 
-  if (error) {
+      await axios.post("http://localhost:8080/api/cart/add", cartItem);
+      navigate("/cart1");
+    } catch (error) {
+      console.error("Error adding to cart:", error);
+      alert("Failed to add item to cart");
+    }
+  };
+
+  const handleBuyNow = () => {
+    const item = {
+      id: metadata.id,
+      name: metadata.name,
+      price: metadata.price,
+      quantity: quantity,
+      imageUrl: images[selectedImageIndex]?.src || ""
+    };
+
+    const orderSummary = {
+      subTotal: total,
+      flatDiscount: 0,
+      total: total,
+      itemCount: 1
+    };
+
+    navigate('/deliveryform', {
+      state: {
+        cartItems: [item],
+        orderSummary: orderSummary,
+        source: 'inventory-secondary-button'
+      }
+    });
+  };
+
+  if (loading) return <p>Loading...</p>;
+  if (error)
     return (
       <div>
         <p>Error: {error}</p>
         <button onClick={() => navigate("/")}>Go Back</button>
       </div>
     );
-  }
 
   return (
-    <>
-      <div className="inventory-details-container">
-        {/* Image Display */}
-        <div className="inventory-image-display">
-          {/* Main Image */}
-          {images.length > 0 ? (
+    <div className="inventory-details-container">
+      {/* Image Display */}
+      <div className="inventory-image-display">
+        {images.length > 0 ? (
+          <img
+            src={images[selectedImageIndex].src}
+            alt={metadata.name || "Inventory Item"}
+            className="inventory-main-image"
+          />
+        ) : (
+          <p>No images available</p>
+        )}
+
+        <div className="inventory-thumbnail-container">
+          {images.map((image, index) => (
             <img
-              src={images[selectedImageIndex].src}
+              key={image.id}
+              src={image.src}
               alt={metadata.name || "Inventory Item"}
-              className="inventory-main-image"
+              className="inventory-thumbnail"
+              onClick={() => handleThumbnailClick(index)}
             />
-          ) : (
-            <p>No images available</p>
-          )}
-
-          {/* Thumbnail Images */}
-          <div className="inventory-thumbnail-container">
-            {images.map((image, index) => (
-              <img
-                key={image.id}
-                src={image.src}
-                alt={metadata.name || "Inventory Item"}
-                className="inventory-thumbnail"
-                onClick={() => handleThumbnailClick(index)} // Set main image on thumbnail click
-              />
-            ))}
-          </div>
-        </div>
-
-        {/* Metadata Display */}
-        <div className="inventory-details-content">
-          <h1>{metadata.name}</h1>
-          <p>
-            <strong>Category:</strong> {metadata.category}
-          </p>
-          <p>
-            <strong>Description:</strong> {metadata.description}
-          </p>
-          <p className="inventory-price">LKR {metadata.price}</p>
-          <p>
-            <strong>Bloom Contains:</strong> {metadata.bloomContains}
-          </p>
-
-          {/* Quantity and Button */}
-          <div className="inventory-quantity-container">
-            <input
-              type="number"
-              value={quantity}
-              min="1"
-              onChange={handleQuantityChange}
-            />
-          </div>
-
-          <div className="inventory-button-container">
-            <button>ADD TO CART</button>
-            <button
-              className="inventory-secondary-button"
-              onClick={() => navigate("/login")}
-            >
-              BUY IT NOW
-            </button>
-          </div>
+          ))}
         </div>
       </div>
 
-      {/* Footer */}
-      <div className="inventory-footer">
-        <div className="inventory-footer-icons">
-          <Link to="/faq" className="inventory-footer-icon">
-            <img src={faqImage} alt="FAQ" className="inventory-footer-icon-image" />
-            <span>FAQ</span>
-          </Link>
-          <Link to="/chat" className="inventory-footer-icon">
-            <img src={chatImage} alt="Chat" className="inventory-footer-icon-image" />
-            <span>Chat</span>
-          </Link>
-          <Link to="/contact" className="inventory-footer-icon">
-            <img src={contactImage} alt="Contact" className="inventory-footer-icon-image" />
-            <span>Contact</span>
-          </Link>
+      {/* Metadata Display */}
+      <div className="inventory-details-content">
+        <h1>{metadata.name}</h1>
+        <p>
+          <strong>Category:</strong> {metadata.category}
+        </p>
+        <p>
+          <strong>Description:</strong> {metadata.description}
+        </p>
+        <p className="inventory-price">LKR {metadata.price}</p>
+        <p className="inventory-total">
+          <strong>Total:</strong> LKR {total.toFixed(2)}
+        </p>
+        <p>
+          <strong>Bloom Contains:</strong> {metadata.bloomContains}
+        </p>
+
+        {/* Quantity and Buttons */}
+        <div className="inventory-quantity-container">
+          <input
+            type="number"
+            value={quantity}
+            min="1"
+            onChange={handleQuantityChange}
+          />
+        </div>
+
+        <div className="inventory-button-container">
+          <button onClick={handleAddToCart}>ADD TO CART</button>
+          <button
+            className="inventory-secondary-button"
+            onClick={handleBuyNow}
+          >
+            BUY IT NOW
+          </button>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

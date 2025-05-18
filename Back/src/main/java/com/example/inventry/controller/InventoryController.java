@@ -17,7 +17,7 @@ import java.security.Principal;
 import java.util.*;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:8080")
+@CrossOrigin(origins = "http://localhost:5173")
 @RequestMapping("/api/inventory")
 public class InventoryController {
 
@@ -33,6 +33,7 @@ public class InventoryController {
     @PostMapping("/save")
     public ResponseEntity<String> saveInventoryWithImages(
             @RequestParam("files") MultipartFile[] files,
+            @RequestParam("id") String id,
             @RequestParam("name") String name,
             @RequestParam("category") String category,
             @RequestParam("description") String description,
@@ -52,6 +53,7 @@ public class InventoryController {
 
             Inventory inventory = new Inventory();
             inventory.setName(name.trim());
+            inventory.set_id(id.trim());
             inventory.setCategory(category.trim());
             inventory.setDescription(description.trim());
             inventory.setPrice(price);
@@ -168,9 +170,11 @@ public class InventoryController {
             Principal principal) {
         try {
             String email = principal.getName();
+
             Inventory existingInventory = inventoryService.getById(id);
             if (existingInventory == null) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Inventory item with ID " + id + " not found.");
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body("Inventory item with ID " + id + " not found.");
             }
 
             existingInventory.setName(name.trim());
@@ -184,7 +188,8 @@ public class InventoryController {
 
             if (files != null && files.length > 0) {
                 if (files.length < 1 || files.length > 6) {
-                    return ResponseEntity.badRequest().body("You must upload between 1 and 6 images.");
+                    return ResponseEntity.badRequest()
+                            .body("Please upload between 1 and 6 images.");
                 }
 
                 List<String> newImageIds = imageService.uploadImages(files);
@@ -193,14 +198,18 @@ public class InventoryController {
 
             boolean updated = inventoryService.save(existingInventory, email);
             if (!updated) {
-                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Access denied: Not an admin.");
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body("Access denied: Not an admin.");
             }
 
             return ResponseEntity.ok("Inventory updated successfully with ID: " + existingInventory.get_id());
+
         } catch (IOException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to update inventory!");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Failed to update inventory.");
         }
     }
+
 
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteInventory(@PathVariable String id, Principal principal) {
