@@ -87,7 +87,7 @@ public class SeleniumLoginAndInventoryFlowTest {
 
         // Upload image(s) - make sure the image file path exists on your machine
         WebElement fileInput = driver.findElement(By.cssSelector("input[type='file']"));
-        fileInput.sendKeys("C:\\Users\\akdas\\Downloads\\a.jpg"); // Replace with a valid file path
+        fileInput.sendKeys("C:\\Users\\akdas\\OneDrive\\Documents\\GitHub\\GK_Flora\\Test-image.jpg"); // Replace with a valid file path
 
         // Submit form
         WebElement submitButton = driver.findElement(By.cssSelector("button[type='submit']"));
