@@ -25,18 +25,32 @@ export default function UserFlowerCustomization() {
   const fetchFlowers = async () => {
     try {
       const res = await axios.get("http://localhost:8080/api/flowers/all");
-      setFlowers(res.data);
+      const data = res.data;
+      if (Array.isArray(data)) {
+        setFlowers(data);
+      } else {
+        console.error("Unexpected flowers response format:", data);
+        setFlowers([]);
+      }
     } catch (err) {
       console.error("Error fetching flowers:", err);
+      setFlowers([]);
     }
   };
 
   const fetchWrappingPapers = async () => {
     try {
       const res = await axios.get("http://localhost:8080/api/wrappingPapers");
-      setWrappingPapers(res.data);
+      const data = res.data;
+      if (Array.isArray(data)) {
+        setWrappingPapers(data);
+      } else {
+        console.error("Unexpected wrapping paper response format:", data);
+        setWrappingPapers([]);
+      }
     } catch (err) {
       console.error("Error fetching wrapping papers:", err);
+      setWrappingPapers([]);
     }
   };
 
@@ -75,7 +89,9 @@ export default function UserFlowerCustomization() {
       <label htmlFor="gridType">Grid Layout: </label>
       <select id="gridType" value={gridType} onChange={(e) => setGridType(e.target.value)}>
         {Object.keys(gridOptions).map((key) => (
-          <option key={key} value={key}>{key.replace("x", " × ")}</option>
+          <option key={key} value={key}>
+            {key.replace("x", " × ")}
+          </option>
         ))}
       </select>
 
@@ -94,7 +110,11 @@ export default function UserFlowerCustomization() {
               }}
             >
               {selectedFlowers.slice(0, gridOptions[gridType] ** 2).map((flower, index) => (
-                <Draggable key={`flower-${index}-${flower.id}`} draggableId={`flower-${index}-${flower.id}`} index={index}>
+                <Draggable
+                  key={`flower-${index}-${flower.id}`}
+                  draggableId={`flower-${index}-${flower.id}`}
+                  index={index}
+                >
                   {(provided) => (
                     <div
                       ref={provided.innerRef}
@@ -124,16 +144,17 @@ export default function UserFlowerCustomization() {
 
       <h2>Wrapping Papers</h2>
       <div className="scroll-container">
-        {wrappingPapers.map((paper) => (
-          <div key={paper.id} className="card-container">
-            <img
-              src={paper.imageBase64 ? `data:image/jpeg;base64,${paper.imageBase64}` : "/path/to/placeholder.jpg"}
-              alt="Wrapping"
-              className="card-image"
-            />
-            <div className="card-price">Rs.{paper.price}</div>
-          </div>
-        ))}
+        {Array.isArray(wrappingPapers) &&
+          wrappingPapers.map((paper) => (
+            <div key={paper.id} className="card-container">
+              <img
+                src={paper.imageBase64 ? `data:image/jpeg;base64,${paper.imageBase64}` : "/path/to/placeholder.jpg"}
+                alt="Wrapping"
+                className="card-image"
+              />
+              <div className="card-price">Rs.{paper.price}</div>
+            </div>
+          ))}
       </div>
 
       <button className="order-button">Place Order</button>

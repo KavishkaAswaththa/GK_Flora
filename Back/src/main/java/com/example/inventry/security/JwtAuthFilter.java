@@ -60,8 +60,8 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                     path.equals("/api/flowers") ||
                     path.equals("/api/flowers/all") ||
                     path.equals("/api/wrappingPapers") ||
-                    // Add the email upload-slip endpoint to public access
-                    path.equals("/email/upload-slip")) {
+                    path.equals("/email/upload-slip") ||
+                    (path.equals("/api/flowers/update") && method.equals("PUT"))) {
                 filterChain.doFilter(request, response);
                 return;
             }
