@@ -74,7 +74,6 @@ const Navbar = () => {
         <div className="cart-wrapper">
           <Link to="/cart">
             <img src={cartIcon} alt="Cart" className="icon cart-icon" />
-            <span className="cart-badge">2</span>
           </Link>
         </div>
 
