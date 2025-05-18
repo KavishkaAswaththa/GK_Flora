@@ -28,7 +28,7 @@
 
 .flower-delivery-details {
   background-color: #e8fad7;
-  padding: 15px;
+  padding: 25px;
   border-radius: 10px;
   margin-bottom: 20px;
   width: 70%;
@@ -76,7 +76,7 @@
 }
 
 .flower-delivery-illustration {
-  width: 50%;
+  width: 80%;
   display: flex;
   align-items: center;
   justify-content: center;

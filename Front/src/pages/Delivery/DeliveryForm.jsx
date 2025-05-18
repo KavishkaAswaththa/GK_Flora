@@ -15,7 +15,9 @@ const DeliveryForm = () => {
         subTotal: 0,
         flatDiscount: 0,
         total: 0,
-        itemCount: 0
+        itemCount: 0,
+        flowers: [],
+        wrappingPaper: null
     });
 
     // Form state
@@ -196,7 +198,11 @@ const DeliveryForm = () => {
                 state: { 
                     deliveryDetails: formData,
                     cartItems,
-                    orderSummary 
+                    orderSummary: {
+                        ...orderSummary,
+                        flowers: cartItems,
+                        wrappingPaper: orderSummary.wrappingPaper || null
+                    }
                 } 
             });
         } catch (error) {
@@ -231,6 +237,18 @@ const DeliveryForm = () => {
                                 </div>
                             </div>
                         ))}
+
+                        {orderSummary.wrappingPaper && (
+                            <div className="order-item">
+                                <div className="item-info">
+                                    <span className="item-name">Wrapping Paper</span>
+                                    <span className="item-price">Rs. {orderSummary.wrappingPaper.price.toFixed(2)}</span>
+                                </div>
+                                <div className="item-quantity">
+                                    <span>Qty: 1</span>
+                                </div>
+                            </div>
+                        )}
 
                         <div className="total-section">
                             <div className="total-row">
@@ -339,7 +357,6 @@ const DeliveryForm = () => {
                                         value={formData.city} 
                                         onChange={handleChange} 
                                         required
-                                      
                                     >
                                         <option value="">Select City</option>
                                         {cities.map(city => (

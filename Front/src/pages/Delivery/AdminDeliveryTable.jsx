@@ -3,8 +3,9 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "../../styles/Delivery/AdminDeliveryTable.css";
 
-function DeliveryTable() {
+function DeliveryTable({ mode = "admin", onSelect }) {
     const [users, setUsers] = useState([]);
+    const [selectedPerson, setSelectedPerson] = useState(null);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -32,9 +33,34 @@ function DeliveryTable() {
         });
     }
 
+    function handleSelect(delivery) {
+        setSelectedPerson(delivery._id);
+        if (onSelect) {
+            onSelect(delivery);
+        }
+        // Navigate to delivery page with the selected delivery person's data
+        navigate("/delivery", {
+            state: {
+                deliveryPerson: delivery
+            }
+        });
+    }
+
+    function handleAddDeliveryPerson() {
+        navigate("/admin"); // Navigate to the form to add a new delivery person
+    }
+
     return (
         <div className="container">
-            <h1>Delivery Table</h1>
+            <h1>{mode === "admin" ? "Delivery Table" : "Select Delivery Person"}</h1>
+            {mode === "admin" && (
+                <button 
+                    onClick={handleAddDeliveryPerson}
+                    className="add-delivery-person-btn"
+                >
+                    Add New Delivery Person
+                </button>
+            )}
             <table className="delivery-table" border="1">
                 <thead>
                     <tr>
@@ -45,12 +71,27 @@ function DeliveryTable() {
                 </thead>
                 <tbody>
                     {users.map((delivery) => (
-                        <tr key={delivery._id}>
+                        <tr 
+                            key={delivery._id}
+                            className={selectedPerson === delivery._id ? "selected-row" : ""}
+                        >
                             <td>{delivery.delivername}</td>
                             <td>{delivery.deliverphone}</td>
                             <td>
-                                <button onClick={() => editDelivery(delivery)}>Edit</button>
-                                <button onClick={() => deleteDelivery(delivery._id)}>Delete</button>
+                                {mode === "admin" ? (
+                                    <>
+                                        <button onClick={() => editDelivery(delivery)}>Edit</button>
+                                        <button onClick={() => deleteDelivery(delivery._id)}>Delete</button>
+                                        <button onClick={() => handleSelect(delivery._id)}>Select</button>
+                                    </>
+                                ) : (
+                                    <button 
+                                        onClick={() => handleSelect(delivery)}
+                                        className={selectedPerson === delivery._id ? "selected-btn" : ""}
+                                    >
+                                        Select
+                                    </button>
+                                )}
                             </td>
                         </tr>
                     ))}

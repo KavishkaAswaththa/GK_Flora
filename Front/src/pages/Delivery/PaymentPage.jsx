@@ -172,10 +172,11 @@ const PaymentPage = () => {
                 </div>
             </div>
 
-            <div className="action-buttons">
-                <button className="back-button" onClick={() => navigate(-1)}>Back</button>
-                <button className="continue-button" onClick={handleSubmit}>Continue</button>
-            </div>
+                    <div className="action-buttons">
+            <button className="back-button" onClick={() => navigate('/deliveryform')}>Back</button>
+            <button className="continue-button" onClick={handleSubmit}>Continue</button>
+        </div>
+
         </div>
     );
 };
