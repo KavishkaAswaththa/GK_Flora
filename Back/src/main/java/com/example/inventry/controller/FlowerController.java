@@ -39,4 +39,30 @@ public class FlowerController {
     public List<Flower> getAllFlowers() {
         return flowerService.getAllFlowers();
     }
+
+    @PutMapping(value = "/{id}", consumes = "multipart/form-data")
+    public ResponseEntity<?> updateFlower(
+            @PathVariable String id,
+            @RequestParam("name") String name,
+            @RequestParam("price") Double price,
+            @RequestParam(value = "image", required = false) MultipartFile image) {
+        try {
+            Flower updatedFlower = flowerService.updateFlower(id, name, price, image);
+            return ResponseEntity.ok(updatedFlower);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (IOException e) {
+            return ResponseEntity.status(500).body("Error updating flower image.");
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteFlower(@PathVariable String id) {
+        try {
+            flowerService.deleteFlower(id);
+            return ResponseEntity.ok("Flower deleted successfully.");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 }

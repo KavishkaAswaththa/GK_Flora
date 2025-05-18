@@ -11,7 +11,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/wrappingPapers")
-@CrossOrigin(origins = "http://localhost:5173")  // Ensure this is correctly set for your frontend URL
+@CrossOrigin(origins = "http://localhost:5173")
 public class WrappingPaperController {
 
     private final WrappingPaperService wrappingPaperService;
@@ -20,16 +20,12 @@ public class WrappingPaperController {
         this.wrappingPaperService = wrappingPaperService;
     }
 
-    /**
-     * Endpoint to add a wrapping paper image
-     *
-     * @param image MultipartFile for wrapping paper image
-     * @return ResponseEntity with the created wrapping paper or error message
-     */
+    // CREATE
     @PostMapping(consumes = "multipart/form-data")
     public ResponseEntity<?> addWrappingPaper(
             @RequestParam("image") MultipartFile image,
-            @RequestParam("price") Double price){
+            @RequestParam("price") Double price) {
+
         if (image.isEmpty()) {
             return ResponseEntity.badRequest().body("Image file is empty.");
         }
@@ -38,24 +34,47 @@ public class WrappingPaperController {
             WrappingPaper wrappingPaper = wrappingPaperService.addWrappingPaper(image, price);
             return ResponseEntity.ok(wrappingPaper);
         } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body("Invalid file type. Please upload a valid image.");
+            return ResponseEntity.badRequest().body(e.getMessage());
         } catch (IOException e) {
             return ResponseEntity.status(500).body("Error saving wrapping paper image.");
         }
     }
 
-    /**
-     * Endpoint to retrieve all wrapping papers with Base64-encoded images
-     *
-     * @return List of all wrapping papers with Base64 image data
-     */
+    // READ
     @GetMapping
     public ResponseEntity<List<WrappingPaper>> getAllWrappingPapers() {
         List<WrappingPaper> wrappingPapers = wrappingPaperService.getAllWrappingPapers();
         if (wrappingPapers.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
-
         return ResponseEntity.ok(wrappingPapers);
+    }
+
+    // UPDATE
+    @PutMapping(value = "/{id}", consumes = "multipart/form-data")
+    public ResponseEntity<?> updateWrappingPaper(
+            @PathVariable String id,
+            @RequestParam(value = "image", required = false) MultipartFile image,
+            @RequestParam("price") Double price) {
+
+        try {
+            WrappingPaper updatedPaper = wrappingPaperService.updateWrappingPaper(id, image, price);
+            return ResponseEntity.ok(updatedPaper);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (IOException e) {
+            return ResponseEntity.status(500).body("Error updating wrapping paper image.");
+        }
+    }
+
+    // DELETE
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteWrappingPaper(@PathVariable String id) {
+        try {
+            wrappingPaperService.deleteWrappingPaper(id);
+            return ResponseEntity.ok("Wrapping paper deleted successfully.");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 }

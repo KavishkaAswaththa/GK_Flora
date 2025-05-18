@@ -1,113 +1,152 @@
-:root {
-  --yellow-primary: #fdd835;
-  --yellow-dark: #fbc02d;
-  --yellow-light: #fff9c4;
-  --text-dark: #333;
-  --border-color: #ddd;
-}
-
-body {
-  margin: 0;
-  font-family: 'Segoe UI', sans-serif;
-  background-color: var(--yellow-light);
-}
-
 .admin-page {
-  padding: 40px;
-  background-color: var(--yellow-light);
+  padding: 2rem;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f9f9f9;
   min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
 }
 
 .admin-title {
-  font-size: 36px;
-  color: var(--yellow-dark);
-  margin-bottom: 30px;
-  font-weight: bold;
-  text-shadow: 1px 1px 0 white;
+  font-size: 2rem;
+  margin-bottom: 1.5rem;
+  color: #333;
+  text-align: center;
 }
 
 .message {
-  padding: 10px 20px;
-  margin-bottom: 20px;
-  background-color: var(--yellow-primary);
-  color: var(--text-dark);
-  border-radius: 10px;
-  font-weight: 600;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
-  transition: opacity 0.3s ease-in-out;
+  background-color: #d1ffd6;
+  color: #155724;
+  padding: 1rem;
+  margin: 1rem auto;
+  border-radius: 8px;
+  max-width: 500px;
+  text-align: center;
 }
 
 .form-columns {
   display: flex;
-  justify-content: center;
   flex-wrap: wrap;
-  gap: 40px;
-  width: 100%;
-  max-width: 1000px;
+  gap: 2rem;
+  margin-bottom: 2rem;
+  justify-content: center;
 }
 
 .form-card {
-  background: white;
-  padding: 30px;
-  border-radius: 16px;
-  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
-  width: 100%;
-  max-width: 420px;
-  transition: transform 0.3s ease;
-}
-
-.form-card:hover {
-  transform: translateY(-5px);
+  background-color: #fff;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  min-width: 300px;
+  flex: 1;
+  max-width: 400px;
 }
 
 .form-card h3 {
-  color: var(--yellow-dark);
-  margin-bottom: 20px;
-  font-size: 24px;
-  font-weight: 600;
-  text-align: center;
-}
-
-.form-card form {
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
+  margin-bottom: 1rem;
+  color: #444;
 }
 
 .form-card input[type="text"],
 .form-card input[type="number"],
 .form-card input[type="file"] {
-  padding: 12px;
-  border: 1px solid var(--border-color);
-  border-radius: 10px;
-  transition: border-color 0.3s;
-}
-
-.form-card input:focus {
-  border-color: var(--yellow-dark);
-  outline: none;
-  box-shadow: 0 0 5px var(--yellow-primary);
+  display: block;
+  width: 100%;
+  margin-bottom: 1rem;
+  padding: 0.7rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
 }
 
 .form-card button {
-  background-color: var(--yellow-primary);
-  color: var(--text-dark);
-  padding: 14px;
-  font-weight: 600;
+  background-color: #007bff;
+  color: white;
+  padding: 0.7rem 1.2rem;
   border: none;
-  border-radius: 10px;
+  border-radius: 6px;
   cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.2s ease;
+  font-size: 1rem;
+  width: 100%;
+  transition: background-color 0.2s ease;
 }
 
 .form-card button:hover {
-  background-color: var(--yellow-dark);
-  transform: scale(1.03);
+  background-color: #0056b3;
 }
 
-.form-card button:active {
-  transform: scale(0.97);
+.list-section {
+  margin-top: 3rem;
+}
+
+.list-section h3 {
+  margin-bottom: 1rem;
+  color: #333;
+  text-align: center;
+}
+
+.scroll-container {
+  display: flex;
+  overflow-x: auto;
+  padding-bottom: 1rem;
+  gap: 1rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.card-container {
+  background-color: white;
+  border-radius: 12px;
+  padding: 1rem;
+  min-width: 200px;
+  max-width: 220px;
+  text-align: center;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+  flex-shrink: 0;
+}
+
+.card-image {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+  border-radius: 10px;
+  margin-bottom: 0.8rem;
+}
+
+.card-title {
+  font-weight: bold;
+  font-size: 1.1rem;
+  margin-bottom: 0.3rem;
+}
+
+.card-price {
+  color: #28a745;
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.card-container button {
+  margin: 0.3rem 0.2rem;
+  padding: 0.4rem 0.7rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+}
+
+.card-container button:first-of-type {
+  background-color: #ffc107;
+  color: #333;
+}
+
+.card-container button:first-of-type:hover {
+  background-color: #e0a800;
+}
+
+.card-container button:last-of-type {
+  background-color: #dc3545;
+  color: white;
+}
+
+.card-container button:last-of-type:hover {
+  background-color: #c82333;
 }
