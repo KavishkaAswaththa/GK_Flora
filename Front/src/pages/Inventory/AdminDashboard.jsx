@@ -188,6 +188,12 @@ function AdminDashboard() {
         >
           Delivery person asign
         </button>
+         <button
+          className={styles["admin-dashboard__nav-button"]}
+          onClick={() => navigate('/faqadmin')}
+        >
+          FAQ
+        </button>
       </div>
 
       <TopbarControls

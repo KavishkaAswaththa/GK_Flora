@@ -69,14 +69,15 @@ const Cart = () => {
 
   const handleCheckout = () => {
     const totals = calculateTotals();
-    navigate('/deliveryform', { 
-      state: { 
+    navigate('/deliveryform', {
+      state: {
         cartItems,
         orderSummary: {
           subTotal: totals.subTotal,
           flatDiscount: totals.flatDiscount,
           total: totals.total,
-          itemCount: cartItems.length
+          itemCount: cartItems.length,
+          source: 'cart'
         }
       }
     });
