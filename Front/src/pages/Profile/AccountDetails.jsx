@@ -187,6 +187,9 @@ const AccountDetails = () => {
             {user.isAdmin && (
               <li className="sidebar-item" onClick={() => navigate('/admindashboard')}>Admin Dashboard</li>
             )}
+            {user.isAdmin && (
+              <li className="sidebar-item" onClick={() => navigate('/userlist')}>User List</li>
+            )}
           </ul>
         </nav>
       </div>
