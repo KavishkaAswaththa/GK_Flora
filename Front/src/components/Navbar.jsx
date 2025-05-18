@@ -1,15 +1,24 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom"; // ✅ useNavigate added
 import "../styles/Navbar.css";
 import logo from "../images/logo.png";
 import profileIcon from "../images/profile.png";
 import cartIcon from "../images/cart.png";
 import searchIcon from "../images/search.png";
 import { FaBars, FaTimes } from "react-icons/fa";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [searchText, setSearchText] = useState("");
+  const navigate = useNavigate(); // ✅ Hook initialization
+
+  const handleSignOut = () => {
+    localStorage.removeItem("token");
+    toast.info("You have been signed out");
+    navigate("/");
+  };
 
   return (
     <nav className="navbar">
@@ -46,14 +55,18 @@ const Navbar = () => {
           onChange={(e) => setSearchText(e.target.value)}
         />
         {searchText && (
-          <span className="clear-icon" onClick={() => setSearchText("")}>×</span>
+          <span className="clear-icon" onClick={() => setSearchText("")}>
+            ×
+          </span>
         )}
         <img src={searchIcon} alt="Search" className="icon search-icon" />
       </div>
 
       {/* Nav Links */}
       <div className="nav-links">
-        <Link to="/status" className="nav-item">Order Status</Link>
+        <Link to="/status" className="nav-item">
+          Order Status
+        </Link>
       </div>
 
       {/* Icons */}
@@ -70,6 +83,7 @@ const Navbar = () => {
           <div className="dropdown-content right">
             <Link to="/login">Login</Link>
             <Link to="/account-details">My Profile</Link>
+            <Link to="/" onClick={handleSignOut}>Sign Out</Link>
           </div>
         </div>
       </div>
