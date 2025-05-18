@@ -147,22 +147,8 @@ const InventoryDetailsImage = () => {
       </div>
 
       {/* Footer */}
-      <div className="inventory-footer">
-        <div className="inventory-footer-icons">
-          <Link to="/faq" className="inventory-footer-icon">
-            <img src={faqImage} alt="FAQ" className="inventory-footer-icon-image" />
-            <span>FAQ</span>
-          </Link>
-          <Link to="/chat" className="inventory-footer-icon">
-            <img src={chatImage} alt="Chat" className="inventory-footer-icon-image" />
-            <span>Chat</span>
-          </Link>
-          <Link to="/contact" className="inventory-footer-icon">
-            <img src={contactImage} alt="Contact" className="inventory-footer-icon-image" />
-            <span>Contact</span>
-          </Link>
-        </div>
-      </div>
+      
+      
     </>
   );
 };

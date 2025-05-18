@@ -1,17 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-
 import { useNavigate } from 'react-router-dom';
-
 import "../../styles/Order/Cart.css";
 
 const Cart = () => {
   const [cartItems, setCartItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
-
-  const navigate = useNavigate(); // 👈 navigation hook
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchCartItems();
@@ -71,21 +67,29 @@ const Cart = () => {
     };
   };
 
-  if (loading) return <div className="loading">Loading cart...</div>;
-  if (error) return <div className="error">{error}</div>;
-
-  const totals = calculateTotals();
-
-
-  // 👇 Handlers for button navigation
   const handleCheckout = () => {
-    navigate('/deliveryform');
+    const totals = calculateTotals();
+    navigate('/deliveryform', { 
+      state: { 
+        cartItems,
+        orderSummary: {
+          subTotal: totals.subTotal,
+          flatDiscount: totals.flatDiscount,
+          total: totals.total,
+          itemCount: cartItems.length
+        }
+      }
+    });
   };
 
   const handleContinueShopping = () => {
     navigate('/');
   };
 
+  if (loading) return <div className="loading">Loading cart...</div>;
+  if (error) return <div className="error">{error}</div>;
+
+  const totals = calculateTotals();
 
   return (
     <div className="cart-container">
@@ -166,9 +170,6 @@ const Cart = () => {
         <button className="continue-shopping" onClick={handleContinueShopping}>
           CONTINUE SHOPPING
         </button>
-
-       
-
       </div>
     </div>
   );

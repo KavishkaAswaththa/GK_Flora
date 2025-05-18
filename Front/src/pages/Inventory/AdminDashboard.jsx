@@ -169,6 +169,27 @@ function AdminDashboard() {
     <div className={styles["admin-dashboard"]}>
       <h2 className={styles["admin-dashboard__title"]}>Admin Dashboard</h2>
 
+      <div className={styles["admin-dashboard__nav-buttons"]}>
+        <button
+          className={styles["admin-dashboard__nav-button"]}
+          onClick={() => navigate('/city')}
+        >
+          City Edite
+        </button>
+        <button
+          className={styles["admin-dashboard__nav-button"]}
+          onClick={() => navigate('/adminpayment')}
+        >
+        Payment Status
+        </button>
+        <button
+          className={styles["admin-dashboard__nav-button"]}
+          onClick={() => navigate('/admin')}
+        >
+          Delivery person asign
+        </button>
+      </div>
+
       <TopbarControls
         searchTerm={searchTerm}
         setSearchTerm={setSearchTerm}
