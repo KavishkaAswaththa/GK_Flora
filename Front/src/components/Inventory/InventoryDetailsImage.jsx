@@ -134,60 +134,7 @@ const InventoryDetailsImage = () => {
               className="inventory-thumbnail"
               onClick={() => handleThumbnailClick(index)}
             />
-
           ))}
-
-          ) : (
-            <p>No images available</p>
-          )}
-
-          <div className="inventory-thumbnail-container">
-            {images.map((image, index) => (
-              <img
-                key={image.id}
-                src={image.src}
-                alt={metadata.name || "Inventory Item"}
-                className="inventory-thumbnail"
-                onClick={() => handleThumbnailClick(index)}
-              />
-            ))}
-          </div>
-        </div>
-            
-        {/* Metadata Display */}
-        <div className="inventory-details-content">
-          <h1>{metadata.name}</h1>
-          <p>
-            <strong>Category:</strong> {metadata.category}
-          </p>
-          <p>
-            <strong>Description:</strong> {metadata.description}
-          </p>
-          <p className="inventory-price">LKR {metadata.price}</p>
-          <p>
-            <strong>Bloom Contains:</strong> {metadata.bloomContains}
-          </p>
-
-          {/* Quantity and Buttons */}
-          <div className="inventory-quantity-container">
-            <input
-              type="number"
-              value={quantity}
-              min="1"
-              onChange={handleQuantityChange}
-            />
-          </div>
-
-          <div className="inventory-button-container">
-            <button onClick={handleAddToCart}>ADD TO CART</button>
-            <button
-              className="inventory-secondary-button"
-              onClick={() => navigate("/deliveryform")}
-            >
-              BUY IT NOW
-            </button>
-          </div>
-
         </div>
       </div>
 
