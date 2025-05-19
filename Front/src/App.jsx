@@ -125,6 +125,9 @@ const App = () => {
 
         <Route path="/orderAdmin" element={<OrderAdminDashbord/>}/>
         <Route path="/cart1" element={<Cart/>}/>
+
+        <Route path="/" element={<UserFlowerCustomization />} />
+        <Route path="/delivery-form" element={<DeliveryForm />} />
         
       </Routes>
     </>
