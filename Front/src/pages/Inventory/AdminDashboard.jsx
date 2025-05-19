@@ -174,7 +174,7 @@ function AdminDashboard() {
           className={styles["admin-dashboard__nav-button"]}
           onClick={() => navigate('/city')}
         >
-          City Edite
+          City Edit
         </button>
         <button
           className={styles["admin-dashboard__nav-button"]}

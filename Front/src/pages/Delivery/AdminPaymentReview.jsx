@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import '../../styles/delivery/AdminPaymentReview.css';
 
 const AdminPaymentReview = () => {
@@ -9,6 +10,7 @@ const AdminPaymentReview = () => {
     const [viewerOpen, setViewerOpen] = useState(false);
     const [statusFilter, setStatusFilter] = useState('PENDING');
     const [isUpdating, setIsUpdating] = useState(false);
+    const navigate = useNavigate();
 
     useEffect(() => {
         fetchBankSlips();
@@ -72,7 +74,6 @@ const AdminPaymentReview = () => {
             setViewerOpen(false);
             fetchBankSlips();
             
-            // Update order status counts in localStorage for MyOrdersPage
             updateOrderStatusCountsInLocalStorage(status);
         } catch (error) {
             alert(error.message);
@@ -127,10 +128,8 @@ const AdminPaymentReview = () => {
         }
     };
 
-    // New function to update order status counts in localStorage
     const updateOrderStatusCountsInLocalStorage = async (newStatus) => {
         try {
-            // Fetch updated order counts after status change
             const response = await fetch(`http://localhost:8080/api/orders/status-counts`, {
                 headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
             });
@@ -139,10 +138,8 @@ const AdminPaymentReview = () => {
             
             const statusCounts = await response.json();
             
-            // Store updated counts in localStorage
             localStorage.setItem('orderStatusCounts', JSON.stringify(statusCounts));
             
-            // Dispatch a custom event to notify MyOrdersPage of the update
             window.dispatchEvent(new CustomEvent('orderStatusUpdated', { 
                 detail: { statusCounts } 
             }));
@@ -175,9 +172,7 @@ const AdminPaymentReview = () => {
 
             alert('Shipping status updated and email sent');
             
-            // Update order status counts for real-time updates in MyOrdersPage
             try {
-                // Fetch latest counts
                 const countsResponse = await fetch(`http://localhost:8080/api/orders/status-counts`, {
                     headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
                 });
@@ -186,10 +181,8 @@ const AdminPaymentReview = () => {
                 
                 const statusCounts = await countsResponse.json();
                 
-                // Store in localStorage
                 localStorage.setItem('orderStatusCounts', JSON.stringify(statusCounts));
                 
-                // Notify any listening components with a custom event
                 window.dispatchEvent(new CustomEvent('orderStatusUpdated', { 
                     detail: { statusCounts, updatedStatus: newStatus } 
                 }));
@@ -221,6 +214,7 @@ const AdminPaymentReview = () => {
                         <option value="REJECTED">Rejected</option>
                         <option value="all">All</option>
                     </select>
+                   
                 </div>
             </div>
 
@@ -314,14 +308,22 @@ const AdminPaymentReview = () => {
                         )}
 
                         {selectedSlip.status === 'VERIFIED' && (
-                            <div className="shipping-status">
-                                <label>Shipping Status:</label>
-                                <select onChange={(e) => handleShippingStatusChange(e.target.value)} defaultValue="">
-                                    <option value="" disabled>Select status</option>
-                                    <option value="TO_BE_SHIPPED">To Be Shipped</option>
-                                    <option value="SHIPPED">Shipped</option>
-                                    <option value="COMPLETE">Complete</option>
-                                </select>
+                            <div className="shipping-status-container">
+                                <div className="shipping-status">
+                                    <label>Shipping Status:</label>
+                                    <select onChange={(e) => handleShippingStatusChange(e.target.value)} defaultValue="">
+                                        <option value="" disabled>Select status</option>
+                                        <option value="TO_BE_SHIPPED">To Be Shipped</option>
+                                        <option value="SHIPPED">Shipped</option>
+                                        <option value="COMPLETE">Complete</option>
+                                    </select>
+                                </div>
+                                <button 
+                                    className="assign-delivery-button"
+                                    onClick={() => navigate('/admintable')}
+                                >
+                                    Assign Delivery Person
+                                </button>
                             </div>
                         )}
                     </div>

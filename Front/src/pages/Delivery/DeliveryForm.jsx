@@ -10,6 +10,15 @@ const DeliveryForm = () => {
     const editFormData = location.state?.formData;
 
     const [cartItems, setCartItems] = useState(location.state?.cartItems || []);
+
+    const [orderSummary, setOrderSummary] = useState(location.state?.orderSummary || {
+        subTotal: 0,
+        flatDiscount: 0,
+        total: 0,
+        itemCount: 0,
+        flowers: [],
+        wrappingPaper: null
+
     const [selectedWrappingPaper, setSelectedWrappingPaper] = useState(location.state?.selectedWrappingPaper || null);
     
     const wrappingPaperPrice = selectedWrappingPaper?.price || 0;
@@ -20,6 +29,7 @@ const DeliveryForm = () => {
             ...summary,
             total: (summary.total || 0) + wrappingPaperPrice
         };
+
     });
 
     const [formData, setFormData] = useState({
@@ -210,10 +220,17 @@ const DeliveryForm = () => {
                     cartItems,
                     orderSummary: {
                         ...orderSummary,
+
+                        flowers: cartItems,
+                        wrappingPaper: orderSummary.wrappingPaper || null
+                    }
+                } 
+
                         total: orderSummary.total + 350
                     },
                     selectedWrappingPaper
                 }
+
             });
         } catch (error) {
             console.error('Submission error:', error);
@@ -248,11 +265,16 @@ const DeliveryForm = () => {
                             </div>
                         ))}
 
-                        {selectedWrappingPaper && (
+
+                        {orderSummary.wrappingPaper && (
                             <div className="order-item">
                                 <div className="item-info">
                                     <span className="item-name">Wrapping Paper</span>
-                                    <span className="item-price">Rs. {selectedWrappingPaper.price.toFixed(2)}</span>
+                                    <span className="item-price">Rs. {orderSummary.wrappingPaper.price.toFixed(2)}</span>
+                                </div>
+                                <div className="item-quantity">
+                                    <span>Qty: 1</span>
+
                                 </div>
                             </div>
                         )}
@@ -322,7 +344,14 @@ const DeliveryForm = () => {
                             <div className="form-row">
                                 <div className="form-group">
                                     <label>City *</label>
-                                    <select name="city" value={formData.city} onChange={handleChange} required>
+
+                                    <select 
+                                        name="city" 
+                                        value={formData.city} 
+                                        onChange={handleChange} 
+                                        required
+                                    >
+
                                         <option value="">Select City</option>
                                         {cities.map(city => (
                                             <option key={city.id} value={city.name}>{city.name}</option>

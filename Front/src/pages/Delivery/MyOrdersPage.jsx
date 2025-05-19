@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import '../../styles/Delivery/MyOrdersPage.css';
 
 const MyOrdersPage = () => {
@@ -10,6 +10,15 @@ const MyOrdersPage = () => {
     SHIPPED: 0,
     COMPLETE: 0
   });
+  const [deliveryPerson, setDeliveryPerson] = useState(null);
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (location.state?.deliveryPerson) {
+      setDeliveryPerson(location.state.deliveryPerson);
+    }
+  }, [location.state]);
 
   const fetchOrders = async () => {
     try {
@@ -20,30 +29,35 @@ const MyOrdersPage = () => {
         },
       });
       setOrders(response.data);
-      
-      // Calculate status counts from fetched orders
-      const counts = {
-        TO_BE_SHIPPED: 0,
-        SHIPPED: 0,
-        COMPLETE: 0
-      };
-      
-      response.data.forEach(order => {
-        if (counts.hasOwnProperty(order.status)) {
-          counts[order.status]++;
-        }
-      });
-      
-      setStatusCounts(counts);
+      calculateStatusCounts(response.data);
     } catch (error) {
       console.error('Failed to fetch orders:', error);
     }
   };
 
+  const calculateStatusCounts = (ordersData) => {
+    const counts = {
+      TO_BE_SHIPPED: 0,
+      SHIPPED: 0,
+      COMPLETE: 0
+    };
+    
+    ordersData.forEach(order => {
+      if (counts.hasOwnProperty(order.status)) {
+        counts[order.status]++;
+      }
+    });
+    
+    setStatusCounts(counts);
+  };
+
+  const handleViewDeliveryPerson = () => {
+    navigate('/delivery', { state: { deliveryPerson } });
+  };
+
   useEffect(() => {
     fetchOrders();
     
-    // Check if there are updated status counts in localStorage
     const savedCounts = localStorage.getItem('orderStatusCounts');
     if (savedCounts) {
       try {
@@ -57,27 +71,36 @@ const MyOrdersPage = () => {
       }
     }
     
-    // Add event listener for real-time updates from AdminPaymentReview page
     const handleStatusUpdate = (event) => {
-      console.log('Status update received:', event.detail);
       if (event.detail?.statusCounts) {
         setStatusCounts(prevCounts => ({
           ...prevCounts,
           ...event.detail.statusCounts
         }));
-        
-        // Refresh orders to show latest statuses
         fetchOrders();
       }
     };
     
     window.addEventListener('orderStatusUpdated', handleStatusUpdate);
     
-    // Clean up event listener on component unmount
     return () => {
       window.removeEventListener('orderStatusUpdated', handleStatusUpdate);
     };
   }, []);
+
+  const formatDate = (dateString) => {
+    const options = { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' };
+    return new Date(dateString).toLocaleDateString(undefined, options);
+  };
+
+  const getStatusIcon = (status) => {
+    const statusIcons = {
+      TO_BE_SHIPPED: '⏳',
+      SHIPPED: '🚚',
+      COMPLETE: '✅'
+    };
+    return statusIcons[status] || '';
+  };
 
   return (
     <div className="my-orders-container">
@@ -86,79 +109,81 @@ const MyOrdersPage = () => {
           <h1>My Orders</h1>
         </div>
 
-        {/* Order status banner with updated counts */}
+        {deliveryPerson && (
+          <div className="delivery-person-info">
+            <h3>Assigned Delivery Person</h3>
+            <div className="delivery-person-details">
+              <p><strong>Name:</strong> {deliveryPerson.delivername}</p>
+              <p><strong>Phone:</strong> {deliveryPerson.deliverphone}</p>
+              <button 
+                className="view-delivery-person-btn"
+                onClick={handleViewDeliveryPerson}
+              >
+                View Delivery Person Details
+              </button>
+            </div>
+          </div>
+        )}
+
         <div className="order-status-tabs">
-          {['TO_BE_SHIPPED', 'SHIPPED', 'COMPLETE'].map((status) => (
+          {Object.entries(statusCounts).map(([status, count]) => (
             <div className="status-tab" key={status}>
-              <div className={`status-icon ${status?.toLowerCase()}`}>
-                <img
-                  src={`src/images/delivery/${status?.toLowerCase().replace(/_/g, '-')}.png`}
-                  alt={status}
-                />
-                <span className="badge">
-                  {statusCounts[status] || 0}
-                </span>
+              <div className={`status-icon ${status.toLowerCase()}`}>
+                <span className="status-emoji">{getStatusIcon(status)}</span>
+                <span className="badge">{count}</span>
               </div>
-              <p>{status?.replace(/_/g, ' ')}</p>
+              <p>{status.replace(/_/g, ' ')}</p>
             </div>
           ))}
         </div>
 
-        {/* No orders message */}
-        {orders.length === 0 && (
+        {orders.length === 0 ? (
           <div className="no-orders">
             <p>You have no orders yet.</p>
           </div>
-        )}
-
-        {/* Orders List */}
-        {orders.map((order) => (
-          <div key={order.id} className="order-container">
-            {/* Order Header */}
-            <div className="order-header">
-              <div className="order-status">
-                <p>{order.status.replace(/_/g, ' ')}</p>
-              </div>
-              <div className="order-details-link">
-                <Link to={`/orders/${order.id}`}>Order details &gt;</Link>
-              </div>
-            </div>
-
-            {/* Order Confirmation Info */}
-            <div className="order-confirmation">
-              <p><strong>Order ID:</strong> {order.id}</p>
-              <p><strong>Order Date:</strong> {new Date(order.createdAt).toLocaleString()}</p>
-              <p><strong>Delivery Address:</strong> {order.deliveryAddress}</p>
-              <p><strong>Payment Status:</strong> {order.paymentStatus}</p>
-            </div>
-
-            {/* Items in the order */}
-            <div className="order-items">
-              {order.items.map((item) => (
-                <div key={item.id} className="order-item">
-                  <div className="item-image">
-                    <img src={item.image} alt={item.name} />
-                  </div>
-                  <div className="item-details">
-                    <h3>{item.name}</h3>
-                    <p>Quantity: {item.quantity}</p>
-                    <p className="item-price">Rs. {item.price.toFixed(2)}</p>
-                    {item.category && <p>Category: {item.category}</p>}
-                    {item.description && <p>Description: {item.description}</p>}
-                    {item.productId && (
-                      <Link to={`/product/${item.productId}`}>View Product</Link>
-                    )}
-                  </div>
-                  <div className="item-total">
-                    <p className="total-label">Total</p>
-                    <p className="total-price">Rs {order.total.toFixed(2)}</p>
-                  </div>
+        ) : (
+          orders.map((order) => (
+            <div key={order.id} className="order-container">
+              <div className="order-header">
+                <div className="order-status">
+                  <span className={`status-badge ${order.status.toLowerCase()}`}>
+                    {order.status.replace(/_/g, ' ')}
+                  </span>
                 </div>
-              ))}
+                <div className="order-details-link">
+                  <Link to={`/orders/${order.id}`}>Order details &gt;</Link>
+                </div>
+              </div>
+
+              <div className="order-summary">
+                <div className="order-meta">
+                  <p><strong>Order #:</strong> {order.id}</p>
+                  <p><strong>Date:</strong> {formatDate(order.createdAt)}</p>
+                  <p><strong>Total:</strong> Rs. {order.total?.toFixed(2) || '0.00'}</p>
+                </div>
+
+                <div className="order-items-preview">
+                  {order.items?.slice(0, 3).map((item) => (
+                    <div key={item.id} className="preview-item">
+                      <img src={item.image} alt={item.name} />
+                      <span>{item.quantity} × {item.name}</span>
+                    </div>
+                  ))}
+                  {order.items?.length > 3 && (
+                    <div className="more-items">+{order.items.length - 3} more items</div>
+                  )}
+                </div>
+              </div>
             </div>
-          </div>
-        ))}
+          ))
+        )}
       </div>
+      <button 
+                                    className="assign-delivery-button"
+                                    onClick={() => navigate('/delivery')}
+                                >
+                                    View delivery person details
+                                </button>
     </div>
   );
 };

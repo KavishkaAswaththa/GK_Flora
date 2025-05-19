@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:5173")
@@ -77,6 +78,14 @@ public class DeliveryController {
         return existingDelivery;
     }
 
+    // Add this to DeliveryController.java
+
+    @GetMapping(value = "/delivery-persons")
+    public List<Delivery> getAllDeliveryPersons() {
+        return StreamSupport.stream(deliveryServices.listAll().spliterator(), false)
+                .filter(delivery -> delivery.getDelivername() != null && !delivery.getDelivername().isEmpty())
+                .collect(Collectors.toList());
+    }
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/deleteperson/{id}")
     private void deleteDelivery(@PathVariable("id") String _id) {

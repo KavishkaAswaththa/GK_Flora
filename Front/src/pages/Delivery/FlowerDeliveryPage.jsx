@@ -1,15 +1,17 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import '../../styles/Delivery/FlowerDeliveryPage.css';
 
 const FlowerDeliveryPage = () => {
+  const navigate = useNavigate();
   const [deliveryPerson, setDeliveryPerson] = useState({
     name: "John",
     phone: "0789654123"
   });
 
   const handleBackClick = () => {
-    console.log('Back button clicked');
+    navigate('/'); // Navigate to admin dashboard
   };
 
   useEffect(() => {
@@ -58,16 +60,6 @@ const FlowerDeliveryPage = () => {
         </div>
 
         <div className="flower-delivery-info-container">
-          <div className="flower-order-info">
-            <img src="src/images/delivery/rose.jpg" alt="Flower Bouquet" className="flower-bouquet-image" />
-            <div className="flower-total-bill">
-              <p>Total Bill Rs.</p>
-              <p className="flower-amount">2580.00</p>
-            </div>
-            <p className="flower-delivery-note">This order will be delivered to you safely.</p>
-            <p className="flower-delivery-note">If you want to know more about delivery, call the courier.</p>
-          </div>
-
           <div className="flower-delivery-illustration">
             <img src="src/images/delivery/delivery.png" alt="delivery" className="flower-delivery-image" />
           </div>
