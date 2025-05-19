@@ -24,7 +24,7 @@ public class InventoryTest {
         assertEquals("Flowers", inventory.getCategory());
         assertEquals("Beautiful bouquet", inventory.getDescription());
         assertEquals(20.5, inventory.getPrice());
-        assertEquals("Roses, Lilies", inventory.getBloomContains());
+        assertEquals("[Roses, Lilies]", inventory.getBloomContains());
         assertEquals(imageIds, inventory.getImageIds());
     }
 
@@ -44,7 +44,7 @@ public class InventoryTest {
         assertEquals("Flowers", inventory.getCategory());
         assertEquals("Bright yellow sunflowers", inventory.getDescription());
         assertEquals(15.0, inventory.getPrice());
-        assertEquals("Sunflowers", inventory.getBloomContains());
+        assertEquals("[Sunflowers]", inventory.getBloomContains());
         assertEquals(List.of("img3"), inventory.getImageIds());
     }
 }

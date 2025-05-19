@@ -23,6 +23,7 @@ const InventoryDetailsImage = () => {
         setMetadata({
           id: data.id,
           name: data.name,
+          qty: data.qty,
           category: data.category,
           description: data.description,
           price: data.price,
@@ -167,12 +168,22 @@ const InventoryDetailsImage = () => {
 
         <div className="inventory-button-container">
           <button onClick={handleAddToCart}>ADD TO CART</button>
-          <button
-            className="inventory-secondary-button"
-            onClick={handleBuyNow}
-          >
-            BUY IT NOW
-          </button>
+          {metadata.qty > 0 ? (
+  <button
+    className="inventory-secondary-button"
+    onClick={handleBuyNow}
+  >
+    BUY IT NOW
+  </button>
+) : (
+  <button
+    className="inventory-secondary-button"
+    onClick={() => alert("Added to wishlist!")}
+  >
+    ADD TO WISHLIST
+  </button>
+)}
+
         </div>
       </div>
     </div>

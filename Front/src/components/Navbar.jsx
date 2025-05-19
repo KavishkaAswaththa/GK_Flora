@@ -72,7 +72,7 @@ const Navbar = () => {
       {/* Icons */}
       <div className="nav-icons">
         <div className="cart-wrapper">
-          <Link to="/cart">
+          <Link to="/cart1">
             <img src={cartIcon} alt="Cart" className="icon cart-icon" />
 
           </Link>
