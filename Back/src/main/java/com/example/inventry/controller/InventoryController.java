@@ -30,6 +30,9 @@ public class InventoryController {
     @Autowired
     private ObjectMapper objectMapper;
 
+    /**
+     * Save a new inventory item along with images.
+     */
     @PostMapping("/save")
     public ResponseEntity<String> saveInventoryWithImages(
             @RequestParam("files") MultipartFile[] files,
@@ -44,6 +47,7 @@ public class InventoryController {
         try {
             String email = principal.getName();
 
+            // Validate image count
             if (files.length < 1 || files.length > 6) {
                 return ResponseEntity.badRequest().body("Please upload between 1 and 6 images.");
             }
@@ -51,6 +55,7 @@ public class InventoryController {
             List<String> imageIds = imageService.uploadImages(files);
             List<String> bloomTags = objectMapper.readValue(bloomContainsJson, new TypeReference<List<String>>() {});
 
+            // Populate inventory object
             Inventory inventory = new Inventory();
             inventory.setName(name.trim());
             inventory.set_id(id.trim());
@@ -61,6 +66,7 @@ public class InventoryController {
             inventory.setBloomContains(bloomTags);
             inventory.setImageIds(imageIds);
 
+            // Save only if user is an admin
             boolean saved = inventoryService.save(inventory, email);
 
             if (!saved) {
@@ -73,6 +79,9 @@ public class InventoryController {
         }
     }
 
+    /**
+     * Update quantity of an inventory item by ID.
+     */
     @PutMapping("/updateQty/{id}")
     public ResponseEntity<String> updateQty(@PathVariable String id, @RequestBody Map<String, Integer> payload, Principal principal) {
         try {
@@ -90,6 +99,9 @@ public class InventoryController {
         }
     }
 
+    /**
+     * Get details of a specific inventory item by ID, including images in Base64.
+     */
     @GetMapping("/{id}")
     public ResponseEntity<Map<String, Object>> getInventoryDetails(@PathVariable String id) {
         try {
@@ -107,6 +119,7 @@ public class InventoryController {
                 images.add(Map.of("id", imageId, "base64", base64Image));
             }
 
+            // Construct response
             Map<String, Object> response = new HashMap<>();
             response.put("id", inventory.get_id());
             response.put("name", inventory.getName());
@@ -124,6 +137,9 @@ public class InventoryController {
         }
     }
 
+    /**
+     * Get a summarized list of all inventory items including one base64 image.
+     */
     @GetMapping("/search/all")
     public ResponseEntity<List<Map<String, Object>>> getAllItems() {
         try {
@@ -157,6 +173,9 @@ public class InventoryController {
         }
     }
 
+    /**
+     * Update an existing inventory item, optionally updating images.
+     */
     @PutMapping("/update")
     public ResponseEntity<String> updateInventoryWithImages(
             @RequestParam("id") String id,
@@ -177,6 +196,7 @@ public class InventoryController {
                         .body("Inventory item with ID " + id + " not found.");
             }
 
+            // Update inventory fields
             existingInventory.setName(name.trim());
             existingInventory.setCategory(category.trim());
             existingInventory.setDescription(description.trim());
@@ -186,6 +206,7 @@ public class InventoryController {
             List<String> bloomTags = objectMapper.readValue(bloomContainsJson, new TypeReference<List<String>>() {});
             existingInventory.setBloomContains(bloomTags);
 
+            // Replace images if new ones are provided
             if (files != null && files.length > 0) {
                 if (files.length < 1 || files.length > 6) {
                     return ResponseEntity.badRequest()
@@ -210,7 +231,9 @@ public class InventoryController {
         }
     }
 
-
+    /**
+     * Delete an inventory item by ID. Only admin users are authorized.
+     */
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteInventory(@PathVariable String id, Principal principal) {
         try {
@@ -226,12 +249,18 @@ public class InventoryController {
         }
     }
 
+    /**
+     * Get all inventory items as a raw list (e.g., for admin view).
+     */
     @GetMapping
     public ResponseEntity<List<Inventory>> getAllInventories() {
         List<Inventory> inventories = inventoryService.getAllInventories();
         return ResponseEntity.ok(inventories);
     }
 
+    /**
+     * Manually trigger the low-stock email notification check.
+     */
     @GetMapping("/trigger-low-stock-email")
     public ResponseEntity<String> triggerLowStockEmail() {
         inventoryService.checkLowStockInventory();

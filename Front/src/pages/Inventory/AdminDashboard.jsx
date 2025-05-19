@@ -1,3 +1,4 @@
+// Import necessary dependencies and components
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from "react-router-dom";
@@ -11,34 +12,40 @@ import PaginationControls from '../../components/Inventory/PaginationControls';
 function AdminDashboard() {
   const navigate = useNavigate();
 
-  const [items, setItems] = useState([]);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [sortConfig, setSortConfig] = useState({ key: 'name', direction: 'asc' });
-  const [currentPage, setCurrentPage] = useState(1);
-  const [selectedItems, setSelectedItems] = useState([]);
-  const itemsPerPage = 5;
+  // State declarations
+  const [items, setItems] = useState([]); // All inventory items
+  const [searchTerm, setSearchTerm] = useState(""); // Search query
+  const [sortConfig, setSortConfig] = useState({ key: 'name', direction: 'asc' }); // Sorting configuration
+  const [currentPage, setCurrentPage] = useState(1); // Current page in pagination
+  const [selectedItems, setSelectedItems] = useState([]); // Items selected for deletion
+  const itemsPerPage = 5; // Number of items shown per page
 
-  const [bloomTags, setBloomTags] = useState([]);
-  const [newBloomTag, setNewBloomTag] = useState("");
-  const [isBloomTagModalOpen, setIsBloomTagModalOpen] = useState(false);
+  // Bloom tag related states
+  const [bloomTags, setBloomTags] = useState([]); // Existing bloom tags
+  const [newBloomTag, setNewBloomTag] = useState(""); // New bloom tag input
+  const [isBloomTagModalOpen, setIsBloomTagModalOpen] = useState(false); // Bloom tag modal visibility
 
+  // Fetch items and bloom tags when component mounts
   useEffect(() => {
     fetchItems();
     fetchBloomTags();
   }, []);
 
+  // Fetch all inventory items
   const fetchItems = () => {
     axios.get('http://localhost:8080/api/inventory/search/all')
       .then(response => setItems(response.data))
       .catch(error => console.error('Error fetching data:', error));
   };
 
+  // Fetch all bloom tags
   const fetchBloomTags = () => {
     axios.get("http://localhost:8080/api/bloom-tags")
       .then(res => setBloomTags(res.data))
       .catch(err => console.error("Failed to load bloom tags", err));
   };
 
+  // Handle sorting logic based on column key
   const handleSort = (key) => {
     let direction = 'asc';
     if (sortConfig.key === key && sortConfig.direction === 'asc') {
@@ -47,6 +54,7 @@ function AdminDashboard() {
     setSortConfig({ key, direction });
   };
 
+  // Update quantity of an item
   const updateQty = (id, newQty) => {
     axios.put(`http://localhost:8080/api/inventory/updateQty/${id}`, { qty: newQty })
       .then(() => fetchItems())
@@ -56,6 +64,7 @@ function AdminDashboard() {
       });
   };
 
+  // Delete a single item
   const handleDelete = (id) => {
     const confirmDelete = window.confirm("Are you sure you want to delete this item?");
     if (!confirmDelete) return;
@@ -71,6 +80,7 @@ function AdminDashboard() {
       });
   };
 
+  // Delete all selected items
   const handleDeleteSelected = () => {
     if (selectedItems.length === 0) {
       alert("No items selected!");
@@ -94,18 +104,21 @@ function AdminDashboard() {
       });
   };
 
+  // Toggle selection for individual item
   const toggleItemSelection = (id) => {
     setSelectedItems(prev =>
       prev.includes(id) ? prev.filter(itemId => itemId !== id) : [...prev, id]
     );
   };
 
+  // Toggle select all items on the current page
   const toggleSelectAll = () => {
     const allIds = paginatedItems.map(item => item.id);
     const allSelected = allIds.every(id => selectedItems.includes(id));
     setSelectedItems(allSelected ? [] : [...new Set([...selectedItems, ...allIds])]);
   };
 
+  // Get sorted items based on current sort configuration
   const getSortedItems = () => {
     const sorted = [...items].sort((a, b) => {
       const aVal = a[sortConfig.key];
@@ -123,15 +136,18 @@ function AdminDashboard() {
     return sorted;
   };
 
+  // Filter items based on search term
   const filteredItems = getSortedItems().filter(item =>
     item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     item.category.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  // Pagination logic
   const totalPages = Math.ceil(filteredItems.length / itemsPerPage);
   const startIdx = (currentPage - 1) * itemsPerPage;
   const paginatedItems = filteredItems.slice(startIdx, startIdx + itemsPerPage);
 
+  // Change page handler
   const changePage = (direction) => {
     if (direction === 'next' && currentPage < totalPages) {
       setCurrentPage(prev => prev + 1);
@@ -140,6 +156,7 @@ function AdminDashboard() {
     }
   };
 
+  // Add a new bloom tag
   const handleAddBloomTag = () => {
     if (newBloomTag.trim()) {
       axios.post("http://localhost:8080/api/bloom-tags", newBloomTag.trim())
@@ -154,6 +171,7 @@ function AdminDashboard() {
     }
   };
 
+  // Delete a bloom tag
   const handleDeleteBloomTag = (tag) => {
     axios.delete(`http://localhost:8080/api/bloom-tags/${tag}`)
       .then(() => {
@@ -169,33 +187,15 @@ function AdminDashboard() {
     <div className={styles["admin-dashboard"]}>
       <h2 className={styles["admin-dashboard__title"]}>Admin Dashboard</h2>
 
+      {/* Navigation buttons to other admin panels */}
       <div className={styles["admin-dashboard__nav-buttons"]}>
-        <button
-          className={styles["admin-dashboard__nav-button"]}
-          onClick={() => navigate('/city')}
-        >
-          City Edit
-        </button>
-        <button
-          className={styles["admin-dashboard__nav-button"]}
-          onClick={() => navigate('/adminpayment')}
-        >
-        Payment Status
-        </button>
-        <button
-          className={styles["admin-dashboard__nav-button"]}
-          onClick={() => navigate('/admin')}
-        >
-          Delivery person asign
-        </button>
-         <button
-          className={styles["admin-dashboard__nav-button"]}
-          onClick={() => navigate('/faqadmin')}
-        >
-          FAQ
-        </button>
+        <button onClick={() => navigate('/city')}>City Edite</button>
+        <button onClick={() => navigate('/adminpayment')}>Payment Status</button>
+        <button onClick={() => navigate('/admin')}>Delivery person asign</button>
+        <button onClick={() => navigate('/faqadmin')}>FAQ</button>
       </div>
 
+      {/* Top controls: search, delete selected, bloom tag modal toggle */}
       <TopbarControls
         searchTerm={searchTerm}
         setSearchTerm={setSearchTerm}
@@ -207,6 +207,7 @@ function AdminDashboard() {
         styles={styles}
       />
 
+      {/* Table displaying inventory items */}
       <InventoryTable
         paginatedItems={paginatedItems}
         selectedItems={selectedItems}
@@ -219,12 +220,14 @@ function AdminDashboard() {
         sortConfig={sortConfig}
       />
 
+      {/* Pagination controls */}
       <PaginationControls
         currentPage={currentPage}
         totalPages={totalPages}
         onPageChange={changePage}
       />
 
+      {/* Modal to manage bloom tags */}
       {isBloomTagModalOpen && (
         <BloomTagModal
           bloomTags={bloomTags}

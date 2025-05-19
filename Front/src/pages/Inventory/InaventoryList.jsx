@@ -28,6 +28,8 @@ const InventoryList = () => {
     return <p>Loading items...</p>;
   }
 
+  console.log(items.qty);
+
   return (
     <div className={styles["inventory-list"]}>
       <h1 className={styles["inventory-list__title"]}>All Bouquets</h1>
