@@ -17,10 +17,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/users")
-@CrossOrigin(origins = "http://localhost:5173",
-        allowedHeaders = "*",
-        exposedHeaders = "Authorization",
-        allowCredentials = "true")
+@CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", exposedHeaders = "Authorization", allowCredentials = "true")
 @RequiredArgsConstructor
 public class UserController {
 
@@ -28,7 +25,7 @@ public class UserController {
     private final JwtService jwtService;
     private final UserService userService;
 
-    // Utility method to extract email from token
+    // Utility method to extract email from the Authorization token
     private String extractEmailFromToken(String token) {
         if (token == null || !token.startsWith("Bearer ")) {
             throw new JwtException("Invalid Authorization header");
@@ -36,6 +33,7 @@ public class UserController {
         return jwtService.extractUsername(token.substring(7));
     }
 
+    // Get currently logged-in user's basic details
     @GetMapping("/me")
     public ResponseEntity<?> getCurrentUser(@RequestHeader(value = "Authorization", required = false) String token) {
         try {
@@ -52,6 +50,7 @@ public class UserController {
             userResponse.put("birthday", user.getBirthday() != null ? user.getBirthday() : "");
             userResponse.put("address", user.getAddress() != null ? user.getAddress() : "");
 
+            // Convert profile image bytes to base64 string
             if (user.getProfileImage() != null) {
                 String base64Image = Base64.getEncoder().encodeToString(user.getProfileImage());
                 userResponse.put("profileImage", "data:image/jpeg;base64," + base64Image);
@@ -72,6 +71,7 @@ public class UserController {
         }
     }
 
+    // Update profile details including optional profile image
     @PutMapping(value = "/profile", consumes = "multipart/form-data")
     public ResponseEntity<?> updateProfile(
             @RequestHeader("Authorization") String token,
@@ -83,12 +83,14 @@ public class UserController {
             User existingUser = userRepository.findByEmail(email)
                     .orElseThrow(() -> new RuntimeException("User not found"));
 
+            // Update user fields
             existingUser.setName(updatedUser.getName());
             existingUser.setMobileNo(updatedUser.getMobileNo());
             existingUser.setBirthday(updatedUser.getBirthday());
             existingUser.setAvatarType(updatedUser.getAvatarType());
             existingUser.setAddress(updatedUser.getAddress());
 
+            // Update profile image if provided
             if (profileImage != null && !profileImage.isEmpty()) {
                 existingUser.setProfileImage(profileImage.getBytes());
             }
@@ -103,6 +105,7 @@ public class UserController {
             updatedResponse.put("avatarType", existingUser.getAvatarType());
             updatedResponse.put("address", existingUser.getAddress());
 
+            // Convert profile image bytes to base64 string
             if (existingUser.getProfileImage() != null) {
                 String base64Image = Base64.getEncoder().encodeToString(existingUser.getProfileImage());
                 updatedResponse.put("profileImage", "data:image/jpeg;base64," + base64Image);
@@ -120,6 +123,7 @@ public class UserController {
         }
     }
 
+    // Get a list of all users (Admin functionality)
     @GetMapping("/all")
     public ResponseEntity<?> getAllUsers() {
         try {
@@ -130,6 +134,7 @@ public class UserController {
         }
     }
 
+    // Delete user by ID (Admin functionality)
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteUserById(@PathVariable String id) {
         try {
@@ -146,6 +151,7 @@ public class UserController {
         }
     }
 
+    // Delete the currently logged-in user's account
     @DeleteMapping("/me")
     public ResponseEntity<?> deleteCurrentUser(@RequestHeader("Authorization") String token) {
         try {
@@ -167,6 +173,7 @@ public class UserController {
         }
     }
 
+    // Get full user object by email (from token)
     @GetMapping("/profile")
     public ResponseEntity<?> getUserByEmail(@RequestHeader("Authorization") String token) {
         try {

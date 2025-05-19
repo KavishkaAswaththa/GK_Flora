@@ -11,83 +11,91 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @RestController
-@RequestMapping("/api/auth")
-@CrossOrigin(origins = "http://localhost:5173")
-@RequiredArgsConstructor
+@RequestMapping("/api/auth") // Base URL path for all endpoints in this controller
+@CrossOrigin(origins = "http://localhost:5173") // Allow CORS requests from frontend
+@RequiredArgsConstructor // Lombok annotation to generate constructor for final fields
 public class AuthController {
-    private static final Logger logger = LoggerFactory.getLogger(AuthController.class);
-    private final AuthService authService;
 
+    private static final Logger logger = LoggerFactory.getLogger(AuthController.class); // Logger for debugging
+    private final AuthService authService; // Injecting AuthService
+
+    // Endpoint for user registration
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody RegisterRequest request) {
         try {
-            AuthResponse response = authService.register(request);
-            return ResponseEntity.ok(response);
+            AuthResponse response = authService.register(request); // Call register logic
+            return ResponseEntity.ok(response); // Return successful response
         } catch (Exception e) {
-            logger.error("Registration failed: {}", e.getMessage());
-            return ResponseEntity.badRequest().body(new ApiResponse(false, e.getMessage()));
+            logger.error("Registration failed: {}", e.getMessage()); // Log the error
+            return ResponseEntity.badRequest().body(new ApiResponse(false, e.getMessage())); // Return error response
         }
     }
 
+    // Endpoint for user login
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest request) {
         try {
-            AuthResponse response = authService.login(request);
-            return ResponseEntity.ok(response);
+            AuthResponse response = authService.login(request); // Call login logic
+            return ResponseEntity.ok(response); // Return successful login response with token
         } catch (Exception e) {
-            logger.error("Login failed: {}", e.getMessage());
-            return ResponseEntity.badRequest().body(new ApiResponse(false, e.getMessage()));
+            logger.error("Login failed: {}", e.getMessage()); // Log error
+            return ResponseEntity.badRequest().body(new ApiResponse(false, e.getMessage())); // Return error response
         }
     }
 
+    // Endpoint for user logout
     @PostMapping("/logout")
     public ResponseEntity<?> logout(HttpServletRequest request, HttpServletResponse response) {
         try {
-            authService.logout(request, response);
-            return ResponseEntity.ok(new ApiResponse(true, "Logged out successfully"));
+            authService.logout(request, response); // Perform logout logic
+            return ResponseEntity.ok(new ApiResponse(true, "Logged out successfully")); // Success response
         } catch (Exception e) {
-            logger.error("Logout failed: {}", e.getMessage());
-            return ResponseEntity.badRequest().body(new ApiResponse(false, e.getMessage()));
+            logger.error("Logout failed: {}", e.getMessage()); // Log error
+            return ResponseEntity.badRequest().body(new ApiResponse(false, e.getMessage())); // Return error response
         }
     }
 
+    // Endpoint to validate a JWT token
     @GetMapping("/validate")
     public ResponseEntity<?> validateToken(@RequestHeader("Authorization") String token) {
         try {
-            boolean isValid = authService.isAuthenticated(extractToken(token));
-            return ResponseEntity.ok(new ApiResponse(true, "Token is valid", isValid));
+            boolean isValid = authService.isAuthenticated(extractToken(token)); // Validate token
+            return ResponseEntity.ok(new ApiResponse(true, "Token is valid", isValid)); // Return success
         } catch (Exception e) {
-            logger.error("Token validation failed: {}", e.getMessage());
-            return ResponseEntity.badRequest().body(new ApiResponse(false, e.getMessage()));
+            logger.error("Token validation failed: {}", e.getMessage()); // Log error
+            return ResponseEntity.badRequest().body(new ApiResponse(false, e.getMessage())); // Return error
         }
     }
 
+    // Endpoint to send OTP for password reset
     @PostMapping("/send-reset-otp")
     public ResponseEntity<?> sendResetOtp(@RequestBody ResetOtpRequest request) {
         try {
-            String result = authService.sendResetOtp(request.getEmail());
-            return ResponseEntity.ok(new ApiResponse(true, result));
+            String result = authService.sendResetOtp(request.getEmail()); // Send OTP to email
+            return ResponseEntity.ok(new ApiResponse(true, result)); // Return success
         } catch (Exception e) {
-            logger.error("Failed to send reset OTP: {}", e.getMessage());
-            return ResponseEntity.badRequest().body(new ApiResponse(false, e.getMessage()));
+            logger.error("Failed to send reset OTP: {}", e.getMessage()); // Log error
+            return ResponseEntity.badRequest().body(new ApiResponse(false, e.getMessage())); // Return error
         }
     }
 
+    // Endpoint to reset password using OTP
     @PostMapping("/reset-password")
     public ResponseEntity<?> resetPassword(@RequestBody ResetPasswordRequest request) {
         try {
-            String result = authService.resetPassword(request.getOtp(), request.getNewPassword());
-            return ResponseEntity.ok(new ApiResponse(true, result));
+            String result = authService.resetPassword(request.getOtp(), request.getNewPassword()); // Reset password
+            return ResponseEntity.ok(new ApiResponse(true, result)); // Return success
         } catch (Exception e) {
-            logger.error("Password reset failed: {}", e.getMessage());
-            return ResponseEntity.badRequest().body(new ApiResponse(false, e.getMessage()));
+            logger.error("Password reset failed: {}", e.getMessage()); // Log error
+            return ResponseEntity.badRequest().body(new ApiResponse(false, e.getMessage())); // Return error
         }
     }
 
+    // Helper method to extract JWT token from "Authorization" header
     private String extractToken(String authHeader) {
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            throw new IllegalArgumentException("Invalid authorization header");
+            throw new IllegalArgumentException("Invalid authorization header"); // Throw if invalid
         }
-        return authHeader.substring(7);
+        return authHeader.substring(7); // Remove "Bearer " prefix
     }
 }

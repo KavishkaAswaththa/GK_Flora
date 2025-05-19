@@ -1,40 +1,44 @@
 import React, { useContext, useState, useRef } from 'react';
-import { assets } from "../../assets/Profile/assets";
-import { useNavigate } from 'react-router-dom';
-import { AppContext } from '../../context/Profile/AppContext';
-import axios from 'axios';
-import { toast } from 'react-toastify';
-import '../../styles/Profile/ResetPassword.css';
+import { assets } from "../../assets/Profile/assets"; // Importing assets like icons
+import { useNavigate } from 'react-router-dom'; // For navigation after password reset
+import { AppContext } from '../../context/Profile/AppContext'; // Context to access backend URL
+import axios from 'axios'; // For making HTTP requests
+import { toast } from 'react-toastify'; // For showing success/error messages
+import '../../styles/Profile/ResetPassword.css'; // CSS for styling
 
 const ResetPassword = () => {
-  const { backendUrl } = useContext(AppContext);
-  const navigate = useNavigate();
+  const { backendUrl } = useContext(AppContext); // Get backend URL from context
+  const navigate = useNavigate(); // Hook for navigation
   
+  // States
   const [email, setEmail] = useState('');
   const [newPassword, setNewPassword] = useState('');
-  const [isEmailSent, setIsEmailSent] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const otpRefs = useRef([]);
+  const [isEmailSent, setIsEmailSent] = useState(false); // Controls form steps
+  const [isLoading, setIsLoading] = useState(false); // Loading spinner
+  const otpRefs = useRef([]); // For accessing OTP input fields
 
+  // Handle input in OTP boxes
   const handleOtpInput = (e, index) => {
     const value = e.target.value;
-    // Only allow numeric input
-    if (!/^\d*$/.test(value)) {
+    if (!/^\d*$/.test(value)) { // Allow only digits
       e.target.value = value.replace(/\D/g, '');
       return;
     }
-    
+
+    // Move to next input automatically
     if (value.length > 0 && index < otpRefs.current.length - 1) {
       otpRefs.current[index + 1].focus();
     }
   };
 
+  // Navigate back to previous input on backspace
   const handleOtpKeyDown = (e, index) => {
     if (e.key === 'Backspace' && e.target.value === '' && index > 0) {
       otpRefs.current[index - 1].focus();
     }
   };
 
+  // Handle OTP paste (fills multiple fields)
   const handleOtpPaste = (e) => {
     e.preventDefault();
     const paste = e.clipboardData.getData('text');
@@ -47,6 +51,7 @@ const ResetPassword = () => {
     });
   };
 
+  // Handle email submission (step 1)
   const onSubmitEmail = async (e) => {
     e.preventDefault();
     setIsLoading(true);
@@ -54,7 +59,7 @@ const ResetPassword = () => {
       const { data } = await axios.post(`${backendUrl}/api/auth/send-reset-otp`, { email });
       if (data.success) {
         toast.success(data.message);
-        setIsEmailSent(true);
+        setIsEmailSent(true); // Move to OTP/password form
       } else {
         toast.error(data.message || 'Failed to send OTP');
       }
@@ -65,11 +70,13 @@ const ResetPassword = () => {
     }
   };
 
+  // Handle new password submission (step 2)
   const onSubmitNewPassword = async (e) => {
     e.preventDefault();
     setIsLoading(true);
     try {
       const otp = otpRefs.current.map(input => input.value).join('');
+      
       if (otp.length !== 6) {
         toast.error('Please enter the 6-digit OTP');
         return;
@@ -88,7 +95,7 @@ const ResetPassword = () => {
       
       if (data.success) {
         toast.success('Password reset successfully!');
-        navigate('/login');
+        navigate('/login'); // Redirect to login page
       } else {
         toast.error(data.message || 'Failed to reset password');
       }
@@ -102,6 +109,7 @@ const ResetPassword = () => {
   return (
     <div className="reset-password-page">
 
+      {/* Form for email input */}
       {!isEmailSent ? (
         <form onSubmit={onSubmitEmail} className="reset-password-form email-form">
           <h1 className="reset-password-title">Reset Password</h1>
@@ -124,10 +132,12 @@ const ResetPassword = () => {
           </button>
         </form>
       ) : (
+        // Form for OTP and new password
         <form onSubmit={onSubmitNewPassword} className="reset-password-form password-form">
           <h1 className="reset-password-title">Reset Password</h1>
           <p className="reset-password-subtitle">Enter the OTP and new password</p>
           
+          {/* OTP Input */}
           <div className="otp-container" onPaste={handleOtpPaste}>
             {Array(6).fill(0).map((_, index) => (
               <input
@@ -145,6 +155,7 @@ const ResetPassword = () => {
             ))}
           </div>
 
+          {/* New Password Input */}
           <div className="input-container">
             <img src={assets.lock_icon} alt="Password" />
             <input

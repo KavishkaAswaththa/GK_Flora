@@ -1,28 +1,31 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Camera } from 'lucide-react';
+import { Camera } from 'lucide-react'; // Importing camera icon from Lucide React
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import '../../styles/Profile/AccountDetails.css';
 
 const AccountDetails = () => {
-  // Define admin emails
+  // Define admin emails - these users will have access to admin features
   const ADMIN_EMAILS = [
     'dinithi0425@gmail.com',
     'kavindiyapa1999@gmail.com',
     'gamindumpasan1997@gmail.com'
   ];
   
+  // Navigation hook from react-router
   const navigate = useNavigate();
+  
+  // State for user data with initial empty values
   const [user, setUser] = useState({
     firstName: '',
     lastName: '',
     email: '',
     mobileNo: '',
     birthday: '',
-    profileImage: null,
-    isAdmin: false,
-    address: {
+    profileImage: null, // Will store the profile image file
+    isAdmin: false, // Flag to check if user is admin
+    address: { // Nested address object
       streetAddress: '',
       city: '',
       state: '',
@@ -31,38 +34,46 @@ const AccountDetails = () => {
     }
   });
   
+  // Loading state for API calls
   const [loading, setLoading] = useState(true);
+  // Editing mode state
   const [isEditing, setIsEditing] = useState(false);
+  // Address view state (show/hide address form)
   const [addressView, setAddressView] = useState(false);
+  // Preview URL for profile image
   const [profileImagePreview, setProfileImagePreview] = useState(null);
 
+  // Effect hook that runs when component mounts or navigate changes
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (!token) {
-      navigate('/login');
+      navigate('/login'); // Redirect to login if no token
       return;
     }
-    fetchUserData();
+    fetchUserData(); // Fetch user data if token exists
   }, [navigate]);
 
+  // Function to fetch user data from API
   const fetchUserData = async () => {
     try {
       setLoading(true);
       const token = localStorage.getItem('token');
       
+      // API call to get user data
       const response = await axios.get('http://localhost:8080/api/users/me', {
         headers: {
           'Authorization': `Bearer ${token}`
         }
       });
 
+      // Process response data into our state format
       const userData = {
         ...response.data,
-        firstName: response.data.name?.split(' ')[0] || '',
+        firstName: response.data.name?.split(' ')[0] || '', // Split name into first/last
         lastName: response.data.name?.split(' ').slice(1).join(' ') || '',
         profileImage: response.data.profileImage || null,
-        isAdmin: ADMIN_EMAILS.includes(response.data.email), // Check if email is in admin list
-        address: response.data.address || {
+        isAdmin: ADMIN_EMAILS.includes(response.data.email), // Check admin status
+        address: response.data.address || { // Default empty address if none exists
           streetAddress: '',
           city: '',
           state: '',
@@ -71,101 +82,111 @@ const AccountDetails = () => {
         }
       };
       
+      // Update state with processed data
       setUser(userData);
       if (userData.profileImage) {
-        setProfileImagePreview(userData.profileImage);
+        setProfileImagePreview(userData.profileImage); // Set image preview if exists
       }
       setLoading(false);
     } catch (error) {
       console.error('Error fetching user data:', error);
       toast.error('Failed to load user data. Please try again.');
       setLoading(false);
-      if (error.response?.status === 401) {
+      if (error.response?.status === 401) { // Unauthorized - token invalid
         localStorage.removeItem('token');
         navigate('/login');
       }
     }
   };
 
+  // Handler for profile image change
   const handleProfileImageChange = (e) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
       
-      // Create a preview
+      // Create a preview URL for the image
       const reader = new FileReader();
       reader.onloadend = () => {
         setProfileImagePreview(reader.result);
       };
       reader.readAsDataURL(file);
       
-      // Update user state with file
+      // Update user state with the file
       setUser({...user, profileImage: file});
     }
   };
 
+  // Form submission handler
   const handleSubmit = async (e) => {
-  e.preventDefault();
-  try {
-    const token = localStorage.getItem('token');
-    if (!token) {
-      navigate('/login');
-      return;
-    }
-
-    const userPayload = {
-      name: `${user.firstName} ${user.lastName}`.trim(),
-      email: user.email,
-      mobileNo: user.mobileNo,
-      birthday: user.birthday,
-      avatarType: user.avatarType,
-      address: {
-        streetAddress: user.address.streetAddress || '',
-        city: user.address.city || '',
-        state: user.address.state || '',
-        zipCode: user.address.zipCode || '',
-        country: user.address.country || ''
+    e.preventDefault();
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        navigate('/login');
+        return;
       }
-    };
 
-    const formData = new FormData();
-    formData.append("user", new Blob([JSON.stringify(userPayload)], { type: "application/json" }));
+      // Prepare the user data payload
+      const userPayload = {
+        name: `${user.firstName} ${user.lastName}`.trim(),
+        email: user.email,
+        mobileNo: user.mobileNo,
+        birthday: user.birthday,
+        avatarType: user.avatarType,
+        address: {
+          streetAddress: user.address.streetAddress || '',
+          city: user.address.city || '',
+          state: user.address.state || '',
+          zipCode: user.address.zipCode || '',
+          country: user.address.country || ''
+        }
+      };
 
-    if (user.profileImage && user.profileImage instanceof File) {
-      formData.append("profileImage", user.profileImage);
-    }
+      // Create FormData for multipart request (needed for file upload)
+      const formData = new FormData();
+      formData.append("user", new Blob([JSON.stringify(userPayload)], { type: "application/json" }));
 
-    const response = await axios.put('http://localhost:8080/api/users/profile', formData, {
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'multipart/form-data'
+      // Add profile image if it exists and is a File object
+      if (user.profileImage && user.profileImage instanceof File) {
+        formData.append("profileImage", user.profileImage);
       }
-    });
 
-    const updatedUser = {
-      ...response.data,
-      firstName: response.data.name?.split(' ')[0] || '',
-      lastName: response.data.name?.split(' ').slice(1).join(' ') || '',
-      isAdmin: ADMIN_EMAILS.includes(response.data.email || user.email),
-      address: response.data.address || user.address
-    };
+      // API call to update user data
+      const response = await axios.put('http://localhost:8080/api/users/profile', formData, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'multipart/form-data'
+        }
+      });
 
-    setUser(updatedUser);
-    setIsEditing(false);
-    setAddressView(false);
-    toast.success('Account details updated successfully!');
-  } catch (error) {
-    console.error('Error updating user data:', error);
-    toast.error(error.response?.data?.message || 'Failed to update account details. Please try again.');
-  }
-};
+      // Process the updated user data
+      const updatedUser = {
+        ...response.data,
+        firstName: response.data.name?.split(' ')[0] || '',
+        lastName: response.data.name?.split(' ').slice(1).join(' ') || '',
+        isAdmin: ADMIN_EMAILS.includes(response.data.email || user.email),
+        address: response.data.address || user.address
+      };
 
+      // Update state with new data
+      setUser(updatedUser);
+      setIsEditing(false); // Exit edit mode
+      setAddressView(false); // Hide address form
+      toast.success('Account details updated successfully!');
+    } catch (error) {
+      console.error('Error updating user data:', error);
+      toast.error(error.response?.data?.message || 'Failed to update account details. Please try again.');
+    }
+  };
 
+  // Sign out handler
   const handleSignOut = () => {
-    localStorage.removeItem('token');
-    navigate('/');
+    localStorage.removeItem('token'); // Clear token
+    navigate('/'); // Navigate to home
     toast.info('You have been signed out');
   };
 
+  // Loading state UI
   if (loading) {
     return (
       <div className="account-details-loading">
@@ -174,9 +195,10 @@ const AccountDetails = () => {
     );
   }
 
+  // Main component render
   return (
     <div className="account-details-page">
-      
+      {/* Sidebar navigation */}
       <div className="account-details-sidebar">
         <div className="sidebar-spacer"></div>
         <nav>
@@ -184,6 +206,7 @@ const AccountDetails = () => {
             <li className="sidebar-item active">Dashboard</li>
             <li className="sidebar-item" onClick={() => navigate('/order-history')}>Order History</li>
             <li className="sidebar-item" onClick={() => navigate('/loyalty')}>Loyalty Membership</li>
+            {/* Admin-only navigation items */}
             {user.isAdmin && (
               <li className="sidebar-item" onClick={() => navigate('/admindashboard')}>Admin Dashboard</li>
             )}
@@ -194,8 +217,10 @@ const AccountDetails = () => {
         </nav>
       </div>
 
+      {/* Main content area */}
       <div className="account-details-main">
         <div className="account-details-card">
+          {/* Profile header section */}
           <div className="account-details-header">
             <div className="profile-header-container">
               <div className="profile-image-container">
@@ -211,6 +236,7 @@ const AccountDetails = () => {
                   </div>
                 )}
                 
+                {/* Profile image upload button (visible in edit mode) */}
                 {isEditing && (
                   <div className="profile-image-upload">
                     <label htmlFor="profile-image-input" className="profile-image-upload-label">
@@ -239,11 +265,13 @@ const AccountDetails = () => {
             </button>
           </div>
 
+          {/* Account details title section */}
           <div className="account-details-title-section">
             <div className="title-container">
               <h2>Account Details</h2>
               <p className="account-details-subtitle">Here you can manage your personal details</p>
             </div>
+            {/* Edit button (visible when not in edit mode) */}
             {!isEditing && (
               <button 
                 className="edit-button-compact"
@@ -253,9 +281,10 @@ const AccountDetails = () => {
             )}
           </div>
 
+          {/* Main form */}
           <form onSubmit={handleSubmit}>
-
             <div className="form-grid">
+              {/* First Name field */}
               <div className="form-field">
                 <label htmlFor="firstName">First Name</label>
                 <input
@@ -266,6 +295,8 @@ const AccountDetails = () => {
                   readOnly={!isEditing}
                 />
               </div>
+              
+              {/* Last Name field */}
               <div className="form-field">
                 <label htmlFor="lastName">Last Name</label>
                 <input
@@ -276,6 +307,8 @@ const AccountDetails = () => {
                   readOnly={!isEditing}
                 />
               </div>
+              
+              {/* Email field (read-only) */}
               <div className="form-field full-width">
                 <label htmlFor="email">Email Address</label>
                 <input
@@ -286,6 +319,8 @@ const AccountDetails = () => {
                 />
                 <p className="input-hint">Email cannot be changed</p>
               </div>
+              
+              {/* Mobile Number field */}
               <div className="form-field full-width">
                 <label htmlFor="mobileNo">Mobile No (with Country Code +xxxxxxxx)</label>
                 <input
@@ -297,6 +332,8 @@ const AccountDetails = () => {
                   readOnly={!isEditing}
                 />
               </div>
+              
+              {/* Birthday field */}
               <div className="form-field full-width">
                 <label htmlFor="birthday">Birthday</label>
                 <input
@@ -310,9 +347,11 @@ const AccountDetails = () => {
               </div>
             </div>
 
+            {/* Address section */}
             <div className="address-section">
               <div className="address-header">
                 <h4>Saved Address</h4>
+                {/* Address edit toggle button (visible in edit mode) */}
                 {isEditing && (
                   <button 
                     type="button" 
@@ -325,6 +364,7 @@ const AccountDetails = () => {
                 )}
               </div>
 
+              {/* Display address or address form based on state */}
               {user.address.streetAddress && !addressView ? (
                 <div className="address-display">
                   <p>{user.address.streetAddress}</p>
@@ -333,6 +373,7 @@ const AccountDetails = () => {
                 </div>
               ) : (addressView || !user.address.streetAddress) && isEditing && (
                 <div className="address-form">
+                  {/* Street Address field */}
                   <div className="form-field full-width">
                     <label htmlFor="streetAddress">Street Address</label>
                     <input
@@ -345,6 +386,8 @@ const AccountDetails = () => {
                       })}
                     />
                   </div>
+                  
+                  {/* City field */}
                   <div className="form-field">
                     <label htmlFor="city">City</label>
                     <input
@@ -357,6 +400,8 @@ const AccountDetails = () => {
                       })}
                     />
                   </div>
+                  
+                  {/* State field */}
                   <div className="form-field">
                     <label htmlFor="state">State/Province</label>
                     <input
@@ -369,6 +414,8 @@ const AccountDetails = () => {
                       })}
                     />
                   </div>
+                  
+                  {/* ZIP Code field */}
                   <div className="form-field">
                     <label htmlFor="zipCode">ZIP/Postal Code</label>
                     <input
@@ -381,6 +428,8 @@ const AccountDetails = () => {
                       })}
                     />
                   </div>
+                  
+                  {/* Country field */}
                   <div className="form-field">
                     <label htmlFor="country">Country</label>
                     <input
@@ -397,6 +446,7 @@ const AccountDetails = () => {
               )}
             </div>
 
+            {/* Form action buttons (visible in edit mode) */}
             {isEditing && (
               <div className="form-actions">
                 <button 
