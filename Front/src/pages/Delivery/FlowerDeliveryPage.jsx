@@ -11,7 +11,7 @@ const FlowerDeliveryPage = () => {
   });
 
   const handleBackClick = () => {
-    navigate('/'); // Navigate to admin dashboard
+    navigate('/adminpayment'); // Navigate to admin dashboard
   };
 
   useEffect(() => {
