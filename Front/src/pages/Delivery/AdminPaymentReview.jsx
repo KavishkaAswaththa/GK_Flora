@@ -25,7 +25,13 @@ const AdminPaymentReview = () => {
 
             if (!response.ok) throw new Error('Failed to fetch bank slips');
 
-            const data = await response.json();
+            let data = await response.json();
+            
+            // Sort by upload date in descending order (newest first)
+            data = data.sort((a, b) => {
+                return new Date(b.uploadDate) - new Date(a.uploadDate);
+            });
+            
             setBankSlips(data);
         } catch (error) {
             setError(error.message);
@@ -209,12 +215,11 @@ const AdminPaymentReview = () => {
                 <div className="filter-controls">
                     <label>Status:</label>
                     <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
-                        <option value="PENDING">Pending</option>
+                        <option value="PENDING">Pending </option>
                         <option value="VERIFIED">Verified</option>
-                        <option value="REJECTED">Rejected</option>
-                        <option value="all">All</option>
+                        <option value="REJECTED">Rejected </option>
+                        <option value="all">All </option>
                     </select>
-                   
                 </div>
             </div>
 
@@ -333,4 +338,4 @@ const AdminPaymentReview = () => {
     );
 };
 
-export default AdminPaymentReview;
+export default AdminPaymentReview; 

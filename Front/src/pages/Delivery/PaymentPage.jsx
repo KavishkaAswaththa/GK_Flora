@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-// import jwtDecode from 'jwt-decode'; // Make sure to install this: npm install jwt-decode
 import { jwtDecode } from 'jwt-decode';
-
 import '../../styles/Delivery/PaymentPage.css';
 
 const PaymentPage = () => {
@@ -10,9 +8,19 @@ const PaymentPage = () => {
     const [bankSlip, setBankSlip] = useState(null);
     const [uploadStatus, setUploadStatus] = useState('');
     const [userEmail, setUserEmail] = useState('');
-    const [orderId, setOrderId] = useState('123456'); // Replace with dynamic value if needed
+    const [orderId, setOrderId] = useState('');
 
     useEffect(() => {
+        // Generate a random order ID when component mounts
+        const generateOrderId = () => {
+            const randomNum = Math.floor(100000 + Math.random() * 900000); // 6-digit random number
+            const timestamp = Date.now().toString().slice(-6); // Last 6 digits of timestamp
+            return `ORD-${randomNum}-${timestamp}`;
+        };
+        
+        setOrderId(generateOrderId());
+
+        // Get user email from token
         const token = localStorage.getItem('token');
         if (token) {
             try {
@@ -62,57 +70,56 @@ const PaymentPage = () => {
     };
 
     const handleSubmit = async () => {
-    if (!bankSlip) {
-        setUploadStatus('Please upload a bank slip');
-        return;
-    }
-
-    if (!userEmail) {
-        setUploadStatus('Email not found. Please login again.');
-        return;
-    }
-
-    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailPattern.test(userEmail)) {
-        setUploadStatus('Invalid email address');
-        return;
-    }
-
-    if (userEmail.toLowerCase() === 'dinithi0425@gmail.com') { // Match backend check
-        setUploadStatus('Invalid email address');
-        return;
-    }
-
-    try {
-        const formData = new FormData();
-        formData.append('slip', bankSlip);
-        formData.append('userEmail', userEmail);
-        formData.append('orderId', orderId); // Added this line
-
-        setUploadStatus('Uploading...');
-
-        const token = localStorage.getItem('token');
-        const response = await fetch('http://localhost:8080/email/upload-slip', {
-            method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${token}` // Added authorization header
-            },
-            body: formData,
-        });
-
-        if (response.ok) {
-            setUploadStatus('Upload successful!');
-            await sendNotification('Bank slip uploaded. Payment pending review.');
-            navigate('/payment-confirmation', { state: { orderId } });
-        } else {
-            const errorText = await response.text();
-            setUploadStatus(`Upload failed: ${errorText}`);
+        if (!bankSlip) {
+            setUploadStatus('Please upload a bank slip');
+            return;
         }
-    } catch (error) {
-        setUploadStatus(`Network error: ${error.message}`);
-    }
-};
 
+        if (!userEmail) {
+            setUploadStatus('Email not found. Please login again.');
+            return;
+        }
+
+        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailPattern.test(userEmail)) {
+            setUploadStatus('Invalid email address');
+            return;
+        }
+
+        if (userEmail.toLowerCase() === 'dinithi0425@gmail.com') {
+            setUploadStatus('Invalid email address');
+            return;
+        }
+
+        try {
+            const formData = new FormData();
+            formData.append('slip', bankSlip);
+            formData.append('userEmail', userEmail);
+            formData.append('orderId', orderId);
+
+            setUploadStatus('Uploading...');
+
+            const token = localStorage.getItem('token');
+            const response = await fetch('http://localhost:8080/email/upload-slip', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                },
+                body: formData,
+            });
+
+            if (response.ok) {
+                setUploadStatus('Upload successful!');
+                await sendNotification('Bank slip uploaded. Payment pending review.');
+                navigate('/payment-confirmation', { state: { orderId } });
+            } else {
+                const errorText = await response.text();
+                setUploadStatus(`Upload failed: ${errorText}`);
+            }
+        } catch (error) {
+            setUploadStatus(`Network error: ${error.message}`);
+        }
+    };
 
     return (
         <div className="payment-container">
@@ -149,6 +156,16 @@ const PaymentPage = () => {
                         />
                     </div>
 
+                    <div className="orderid-input">
+                        <label htmlFor="orderId">Order ID:</label>
+                        <input
+                            type="text"
+                            id="orderId"
+                            value={orderId}
+                            readOnly
+                        />
+                    </div>
+
                     <div className="terms-section">
                         <h4>Terms of Use</h4>
                         <ol>
@@ -172,11 +189,10 @@ const PaymentPage = () => {
                 </div>
             </div>
 
-                    <div className="action-buttons">
-            <button className="back-button" onClick={() => navigate('/deliveryform')}>Back</button>
-            <button className="continue-button" onClick={handleSubmit}>Continue</button>
-        </div>
-
+            <div className="action-buttons">
+                <button className="back-button" onClick={() => navigate('/deliveryform')}>Back</button>
+                <button className="continue-button" onClick={handleSubmit}>Continue</button>
+            </div>
         </div>
     );
 };
