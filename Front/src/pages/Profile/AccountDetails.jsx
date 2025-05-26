@@ -116,68 +116,80 @@ const AccountDetails = () => {
     }
   };
 
-  // Form submission handler
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const token = localStorage.getItem('token');
-      if (!token) {
-        navigate('/login');
-        return;
-      }
+// Add this function to your AccountDetails component's handleSubmit method
+// Replace the existing success handling in your handleSubmit function with this:
 
-      // Prepare the user data payload
-      const userPayload = {
-        name: `${user.firstName} ${user.lastName}`.trim(),
-        email: user.email,
-        mobileNo: user.mobileNo,
-        birthday: user.birthday,
-        avatarType: user.avatarType,
-        address: {
-          streetAddress: user.address.streetAddress || '',
-          city: user.address.city || '',
-          state: user.address.state || '',
-          zipCode: user.address.zipCode || '',
-          country: user.address.country || ''
-        }
-      };
-
-      // Create FormData for multipart request (needed for file upload)
-      const formData = new FormData();
-      formData.append("user", new Blob([JSON.stringify(userPayload)], { type: "application/json" }));
-
-      // Add profile image if it exists and is a File object
-      if (user.profileImage && user.profileImage instanceof File) {
-        formData.append("profileImage", user.profileImage);
-      }
-
-      // API call to update user data
-      const response = await axios.put('http://localhost:8080/api/users/profile', formData, {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'multipart/form-data'
-        }
-      });
-
-      // Process the updated user data
-      const updatedUser = {
-        ...response.data,
-        firstName: response.data.name?.split(' ')[0] || '',
-        lastName: response.data.name?.split(' ').slice(1).join(' ') || '',
-        isAdmin: ADMIN_EMAILS.includes(response.data.email || user.email),
-        address: response.data.address || user.address
-      };
-
-      // Update state with new data
-      setUser(updatedUser);
-      setIsEditing(false); // Exit edit mode
-      setAddressView(false); // Hide address form
-      toast.success('Account details updated successfully!');
-    } catch (error) {
-      console.error('Error updating user data:', error);
-      toast.error(error.response?.data?.message || 'Failed to update account details. Please try again.');
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  try {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      navigate('/login');
+      return;
     }
-  };
+
+    // Prepare the user data payload
+    const userPayload = {
+      name: `${user.firstName} ${user.lastName}`.trim(),
+      email: user.email,
+      mobileNo: user.mobileNo,
+      birthday: user.birthday,
+      avatarType: user.avatarType,
+      address: {
+        streetAddress: user.address.streetAddress || '',
+        city: user.address.city || '',
+        state: user.address.state || '',
+        zipCode: user.address.zipCode || '',
+        country: user.address.country || ''
+      }
+    };
+
+    // Create FormData for multipart request (needed for file upload)
+    const formData = new FormData();
+    formData.append("user", new Blob([JSON.stringify(userPayload)], { type: "application/json" }));
+
+    // Add profile image if it exists and is a File object
+    if (user.profileImage && user.profileImage instanceof File) {
+      formData.append("profileImage", user.profileImage);
+    }
+
+    // API call to update user data
+    const response = await axios.put('http://localhost:8080/api/users/profile', formData, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'multipart/form-data'
+      }
+    });
+
+    // Process the updated user data
+    const updatedUser = {
+      ...response.data,
+      firstName: response.data.name?.split(' ')[0] || '',
+      lastName: response.data.name?.split(' ').slice(1).join(' ') || '',
+      isAdmin: ADMIN_EMAILS.includes(response.data.email || user.email),
+      address: response.data.address || user.address
+    };
+
+    // Update state with new data
+    setUser(updatedUser);
+    setIsEditing(false); // Exit edit mode
+    setAddressView(false); // Hide address form
+    
+    // ✅ IMPORTANT: Dispatch custom event to notify navbar of profile update
+    const profileUpdateEvent = new CustomEvent('profileUpdated', {
+      detail: {
+        profileImage: response.data.profileImage,
+        name: response.data.name
+      }
+    });
+    window.dispatchEvent(profileUpdateEvent);
+    
+    toast.success('Account details updated successfully!');
+  } catch (error) {
+    console.error('Error updating user data:', error);
+    toast.error(error.response?.data?.message || 'Failed to update account details. Please try again.');
+  }
+};
 
   // Sign out handler
   const handleSignOut = () => {
