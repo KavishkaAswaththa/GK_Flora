@@ -1,24 +1,29 @@
 /* InventoryForm.css */
 
 .inventory-form {
-  max-width: 800px;
+  max-width: 1800px;
   margin: 40px auto;
   padding: 30px;
   background: #fffbea;
   border-radius: 20px;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 1.25rem;
 }
 
-.inventory-form form > div {
-  margin-bottom: 20px;
+.inventory-form form {
+  display: flex;
+  gap: 2rem;
+  flex-wrap: wrap;
 }
 
 .inventory-form label {
+  padding-top: 25px;
   display: block;
   margin-bottom: 6px;
   font-weight: 600;
   color: #444;
+  font-size: 1.3rem;
 }
 
 .inventory-form input[type="text"],
@@ -26,11 +31,11 @@
 .inventory-form textarea,
 .inventory-form select {
   width: 100%;
-  padding: 10px 12px;
+  padding: 14px 16px;
   border: 2px solid #ffd60a;
   border-radius: 8px;
   background-color: #fffdf1;
-  font-size: 1rem;
+  font-size: 1.25rem;
   transition: 0.3s ease;
 }
 
@@ -45,21 +50,23 @@
 }
 
 .inventory-form textarea {
-  min-height: 80px;
+  min-height: 200px;
   resize: vertical;
 }
 
 .inventory-form input[type="file"] {
   margin-top: 8px;
+  font-size: 1.1rem;
 }
 
 .inventory-form small {
   display: block;
   margin-top: 5px;
-  font-size: 0.85rem;
+  font-size: 1.1rem;
   color: #666;
 }
 
+/* Image Previews */
 .inventory-form .image-previews {
   display: flex;
   flex-wrap: wrap;
@@ -80,11 +87,39 @@
   transform: scale(1.1);
 }
 
+/* Image Preview with Remove Button */
+.preview-container {
+  position: relative;
+  display: inline-block;
+  margin: 5px;
+}
+
+.preview-container img {
+  width: 100px;
+  height: auto;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
+.remove-image-button {
+  position: absolute;
+  top: 3px;
+  right: 3px;
+  background-color: #ff4444;
+  color: white;
+  border: none;
+  border-radius: 15%;
+  cursor: pointer;
+  font-size: 1.1rem;
+  line-height: 1.2rem;
+}
+
+/* Submit Button */
 .inventory-form button[type="submit"] {
   background-color: #ffd60a;
   color: #333;
-  padding: 12px 25px;
-  font-size: 1rem;
+  padding: 14px 30px;
+  font-size: 1.3rem;
   font-weight: bold;
   border: none;
   border-radius: 12px;
@@ -109,7 +144,6 @@
   }
 }
 
-
 /* Bloom Contains Tags */
 .tag-selector {
   display: flex;
@@ -119,12 +153,13 @@
 }
 
 .tag-button {
-  padding: 8px 16px;
+  padding: 10px 20px;
   border: 2px solid #ffd60a;
   border-radius: 20px;
   background-color: #fffdf1;
   color: #333;
-  font-weight: 500;
+  font-weight: 600;
+  font-size: 1.1rem;
   cursor: pointer;
   transition: background-color 0.3s, color 0.3s, transform 0.2s;
 }
@@ -138,8 +173,16 @@
 .tag-button:hover {
   background-color: #ffeb83;
 }
- 
 
+/* Province - Island Wide Option */
+.island-wide {
+  background-color: #ffc107;
+  font-weight: bold;
+  font-size: 1.2rem;
+  border: 2px dashed #000;
+}
+
+/* Modal Styles */
 .admin-dashboard__modal-overlay {
   position: fixed;
   top: 0;
@@ -160,14 +203,23 @@
   width: 400px;
   max-width: 90%;
   position: relative;
+  font-size: 1.25rem;
 }
 
 .admin-dashboard__close-modal-btn {
   margin-top: 1rem;
   background-color: #ff5c5c;
   color: white;
-  padding: 0.5rem 1rem;
+  padding: 0.75rem 1.25rem;
+  font-size: 1.2rem;
   border: none;
   border-radius: 8px;
   cursor: pointer;
+}
+
+/* Form Column Layout */
+.form-left,
+.form-right {
+  flex: 1;
+  min-width: 300px;
 }

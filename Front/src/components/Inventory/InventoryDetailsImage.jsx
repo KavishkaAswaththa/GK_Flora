@@ -103,11 +103,11 @@ const InventoryDetailsImage = () => {
     });
   };
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) return <p className="loading-text">Loading...</p>;
   if (error)
     return (
       <div>
-        <p>Error: {error}</p>
+        <p className="error-text">Error: {error}</p>
         <button onClick={() => navigate("/")}>Go Back</button>
       </div>
     );
@@ -142,23 +142,17 @@ const InventoryDetailsImage = () => {
       {/* Metadata Display */}
       <div className="inventory-details-content">
         <h1>{metadata.name}</h1>
-        <p>
-          <strong>Category:</strong> {metadata.category}
-        </p>
-        <p>
-          <strong>Description:</strong> {metadata.description}
-        </p>
+        <p><strong>Category:</strong> {metadata.category}</p>
+        <p><strong>Description:</strong> {metadata.description}</p>
         <p className="inventory-price">LKR {metadata.price}</p>
-        <p className="inventory-total">
-          <strong>Total:</strong> LKR {total.toFixed(2)}
-        </p>
-        <p>
-          <strong>Bloom Contains:</strong> {metadata.bloomContains}
-        </p>
+        <p className="inventory-total"><strong>Total:</strong> LKR {total.toFixed(2)}</p>
+        <p><strong>Bloom Contains:</strong> {metadata.bloomContains}</p>
 
         {/* Quantity and Buttons */}
         <div className="inventory-quantity-container">
+          <label htmlFor="quantity"><strong>Quantity:</strong></label>
           <input
+            id="quantity"
             type="number"
             value={quantity}
             min="1"
@@ -167,23 +161,25 @@ const InventoryDetailsImage = () => {
         </div>
 
         <div className="inventory-button-container">
-          <button onClick={handleAddToCart}>ADD TO CART</button>
           {metadata.qty > 0 ? (
-  <button
-    className="inventory-secondary-button"
-    onClick={handleBuyNow}
-  >
-    BUY IT NOW
-  </button>
-) : (
-  <button
-    className="inventory-secondary-button"
-    onClick={() => alert("Added to wishlist!")}
-  >
-    ADD TO WISHLIST
-  </button>
-)}
-
+            <>
+              <button onClick={handleAddToCart}>ADD TO CART</button>
+              <button className="inventory-secondary-button" onClick={handleBuyNow}>BUY IT NOW</button>
+            </>
+          ) : (
+            <>
+              <h3 className="wishlist-msg">
+                This item is currently unavailable. <br />
+                You can add it to your wishlist, and we'll notify you once it's back in stock.
+              </h3>
+              <button
+                className="inventory-secondary-button"
+                onClick={() => alert("Added to wishlist!")}
+              >
+                ADD TO WISHLIST
+              </button>
+            </>
+          )}
         </div>
       </div>
     </div>
