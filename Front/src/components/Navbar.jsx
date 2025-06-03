@@ -136,6 +136,12 @@ const Navbar = () => {
         </Link>
       </div>
 
+      <div className="nav-links">
+        <Link to="/wishlist" className="nav-item">
+          My Wishlist
+        </Link>
+      </div>
+
       {/* Icons */}
       <div className="nav-icons">
         <div className="cart-wrapper">
