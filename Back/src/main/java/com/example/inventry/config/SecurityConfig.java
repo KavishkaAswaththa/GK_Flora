@@ -49,6 +49,8 @@ public class SecurityConfig {
                                 "/api/wrappingPapers",
                                 "/api/wrappingPapers/save",
                                 "/api/inventory",
+                                "/api/wishlist",
+
                                 "/api/inventory/**",
                                 "/api/inventory/search/all",
 

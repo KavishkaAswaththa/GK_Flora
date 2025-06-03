@@ -15,6 +15,12 @@ import AdminDashboard from "./pages/Inventory/AdminDashboard";
 import InventoryForm from "./components/Inventory/InventoryForm";
 import InventoryList from "./pages/Inventory/InaventoryList";
 import InventoryDetailsImage from "./components/Inventory/InventoryDetailsImage";
+
+
+//Wishlist
+
+import WishlistPage from './components/Inventory/Wishlist';
+
 //delivery pages
 import DeliveryForm from "./pages/Delivery/DeliveryForm";
 import OrderConfirmation from "./pages/Delivery/OrderConfirmation";
@@ -77,6 +83,9 @@ const App = () => {
         <Route path="/form" element={<InventoryFormWrapper />} />
         <Route path="/inventory/edit/:id" element={<InventoryForm />} />
         <Route path="/inventory/:id" element={<InventoryDetailsImage />} />
+
+        <Route path="/wishlist" element={<WishlistPage />} />
+
         
         
         <Route path="/category/:category" element={<h1>Category Page</h1>} />

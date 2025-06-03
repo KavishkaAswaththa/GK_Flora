@@ -4,6 +4,8 @@ import axios from "axios";
 import "../../styles/Inventory/InventoryDetails.css";
 
 const InventoryDetailsImage = () => {
+  const [added, setAdded] = useState(false);
+  const token = localStorage.getItem("token");
   const { id } = useParams();
   const navigate = useNavigate();
   const [images, setImages] = useState([]);
@@ -52,6 +54,23 @@ const InventoryDetailsImage = () => {
     }
   }, [quantity, metadata.price]);
 
+  useEffect(() => {
+    const checkWishlist = async () => {
+      try {
+        const res = await axios.get(`http://localhost:8080/api/wishlist/check/${id}`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        setAdded(res.data === true);
+      } catch (error) {
+        console.error("Error checking wishlist:", error);
+      }
+    };
+
+    if (token) {
+      checkWishlist();
+    }
+  }, [id, token]);
+
   const handleQuantityChange = (e) => {
     const newQuantity = Math.max(1, parseInt(e.target.value) || 1);
     setQuantity(newQuantity);
@@ -70,11 +89,37 @@ const InventoryDetailsImage = () => {
         imageUrl: images[selectedImageIndex]?.src || "",
       };
 
-      await axios.post("http://localhost:8080/api/cart/add", cartItem);
+      await axios.post("http://localhost:8080/api/cart/add", cartItem, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
       navigate("/cart1");
     } catch (error) {
       console.error("Error adding to cart:", error);
       alert("Failed to add item to cart");
+    }
+  };
+
+  const handleAdd = async () => {
+    try {
+      await axios.post(`http://localhost:8080/api/wishlist/add/${id}`, {}, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setAdded(true);
+    } catch (error) {
+      console.error("Error adding to wishlist:", error);
+      alert("Failed to add to wishlist.");
+    }
+  };
+
+  const handleRemove = async () => {
+    try {
+      await axios.delete(`http://localhost:8080/api/wishlist/remove/${id}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setAdded(false);
+    } catch (error) {
+      console.error("Error removing from wishlist:", error);
+      alert("Failed to remove from wishlist.");
     }
   };
 
@@ -131,8 +176,8 @@ const InventoryDetailsImage = () => {
             <img
               key={image.id}
               src={image.src}
-              alt={metadata.name || "Inventory Item"}
-              className="inventory-thumbnail"
+              alt={`${metadata.name} thumbnail ${index + 1}`}
+              className={`inventory-thumbnail ${index === selectedImageIndex ? "selected" : ""}`}
               onClick={() => handleThumbnailClick(index)}
             />
           ))}
@@ -174,9 +219,9 @@ const InventoryDetailsImage = () => {
               </h3>
               <button
                 className="inventory-secondary-button"
-                onClick={() => alert("Added to wishlist!")}
+                onClick={added ? handleRemove : handleAdd}
               >
-                ADD TO WISHLIST
+                {added ? 'Remove from Wishlist ❤️' : 'Add to Wishlist 🤍'}
               </button>
             </>
           )}

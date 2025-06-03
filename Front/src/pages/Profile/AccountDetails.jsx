@@ -64,7 +64,10 @@ const AccountDetails = () => {
         headers: {
           'Authorization': `Bearer ${token}`
         }
+        
       });
+
+      console.log(token);
 
       // Process response data into our state format
       const userData = {
