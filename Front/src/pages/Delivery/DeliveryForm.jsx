@@ -91,10 +91,23 @@ const DeliveryForm = () => {
         fetchUserData();
         fetchCities();
 
+        // Initialize form data based on different scenarios
         if (editFormData) {
             setFormData(editFormData);
             return;
         }
+                if (deliveryId) {
+            const fetchDelivery = async () => {
+                try {
+                    const response = await axios.get(`http://localhost:8080/api/v1/delivery/${deliveryId}`);
+                    setFormData(response.data);
+                } catch (error) {
+                    console.error('Error loading delivery:', error);
+                    alert('Failed to load delivery details');
+                }
+            };
+            fetchDelivery();
+        } else {
         
         // Set default delivery time (2 hours from now)
         const now = new Date();
@@ -104,6 +117,8 @@ const DeliveryForm = () => {
             deliveryDate: future.toISOString().split('T')[0],
             deliveryTime: `${future.getHours().toString().padStart(2, '0')}:${future.getMinutes().toString().padStart(2, '0')}`
         }));
+
+    }
 
         if (deliveryId) {
             const fetchDelivery = async () => {
@@ -218,7 +233,7 @@ const DeliveryForm = () => {
                 <p>Loading your information...</p>
             </div>
         );
-    }
+    };
 
     return (
         <div className="checkout-container">
@@ -430,7 +445,7 @@ const DeliveryForm = () => {
                         </div>
 
                         <div className="form-actions">
-                            <button type="submit" className="submit-button">
+                            <button type="submit1" className="submit-button1">
                                 {deliveryId ? 'Update Delivery' : 'Proceed to Payment'}
                             </button>
                         </div>
@@ -439,6 +454,7 @@ const DeliveryForm = () => {
             </div>
         </div>
     );
+    
 };
 
 export default DeliveryForm;
