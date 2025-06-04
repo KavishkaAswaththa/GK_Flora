@@ -73,6 +73,22 @@ const Home = () => {
         </div>
       </section>
 
+
+      
+      {/* Featured Bouquets */}
+      <section className={styles.featured}>
+        <h2>Featured Bouquets</h2>
+        <InventoryList />
+      </section>
+
+      {/* Call to Action */}
+      <section className={styles.cta}>
+        <h2>Ready to Make Someone Smile?</h2>
+        <Link to="/inventory" className={styles.ctaButton}>
+          Explore All Bouquets
+        </Link>
+      </section>
+
       {/* Coupon Section */}
       <section className={styles.coupon}>
         <div className={styles.couponContent}>
@@ -126,19 +142,6 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Featured Bouquets */}
-      <section className={styles.featured}>
-        <h2>Featured Bouquets</h2>
-        <InventoryList />
-      </section>
-
-      {/* Call to Action */}
-      <section className={styles.cta}>
-        <h2>Ready to Make Someone Smile?</h2>
-        <Link to="/inventory" className={styles.ctaButton}>
-          Explore All Bouquets
-        </Link>
-      </section>
 
       {/* Footer */}
       <footer className={styles.footer}>

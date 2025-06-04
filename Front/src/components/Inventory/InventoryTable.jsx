@@ -1,6 +1,6 @@
 // src/components/AdminDashboard/InventoryTable.jsx
 import React from 'react';
-import styles from '../../styles/Inventory/AdminDashboard.module.css';
+import styles from '../../styles/Inventory/InventoryTable.module.css';
 
 function InventoryTable({
   paginatedItems = [], // ✅ default to empty array
