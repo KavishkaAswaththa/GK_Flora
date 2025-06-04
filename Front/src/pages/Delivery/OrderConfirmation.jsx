@@ -88,56 +88,68 @@ const OrderConfirmation = () => {
           </div>
         </div>
 
-        {/* Order Summary */}
-        <div className="order-summary">
-          <h2>Order Summary</h2>
-          <div className="summary-card">
-            {cartItems.map((item) => (
-              <div key={item.id + item.name} className="order-item">
-                <div className="item-info">
-                  <span className="item-name">{item.name}</span>
-                  <span className="item-price">Rs. {item.price.toFixed(2)}</span>
-                </div>
-                <div className="item-quantity">
-                  <span>Qty: {item.quantity}</span>
-                </div>
-              </div>
-            ))}
-
-            {wrappingPaper && (
-              <div className="order-item">
-                <div className="item-info">
-                  <span className="item-name">Wrapping Paper</span>
-                  <span className="item-price">Rs. {wrappingPaper.price.toFixed(2)}</span>
-                </div>
-                <div className="item-quantity">
-                  <span>Qty: 1</span>
-                </div>
-              </div>
-            )}
-
-            <div className="total-section">
-              <div className="total-row">
-                <span>Subtotal:</span>
-                <span>Rs. {calculateTotal().toFixed(2)}</span>
-              </div>
-              <div className="total-row">
-                <span>Delivery Fee:</span>
-                <span>Rs. 350.00</span>
-              </div>
-              <div className="total-row grand-total">
-                <span>Total:</span>
-                <span>Rs. {(calculateTotal() + 350).toFixed(2)}</span>
-              </div>
-            </div>
-          </div>
-
-          <button className="place-order-button" onClick={handlePlaceOrder}>
-            Place Order
-          </button>
+{/* Order Summary */}
+<div className="order-summary">
+  <h2>Order Summary</h2>
+  <div className="summary-card">
+    {cartItems.map((item) => (
+      <div key={item.id + item.name} className="order-item">
+        <div className="item-info">
+          <span className="item-name">{item.name}</span>
+          <span className="item-price">Rs. {item.price.toFixed(2)}</span>
         </div>
+        <div className="item-quantity">
+          <span>Qty: {item.quantity}</span>
+        </div>
+        
       </div>
+      
+      
+    ))}
+
+    {wrappingPaper && (
+      <div className="order-item">
+        <div className="item-info">
+          <span className="item-name">Wrapping Paper</span>
+          <span className="item-price">Rs. {wrappingPaper.price.toFixed(2)}</span>
+        </div>
+        <div className="item-quantity">
+          <span>Qty: 1</span>
+        </div>
+        
+      </div>
+    )}
+
+    <div className="total-section">
+      <div className="total-row">
+        <span>Subtotal:</span>
+        <span>Rs. {calculateTotal().toFixed(2)}</span>
+      </div>
+      <div className="total-row">
+        <span>Delivery Fee:</span>
+        <span>Rs. 350.00</span>
+      </div>
+      <div className="total-row grand-total">
+        <span>Total:</span>
+        <span>Rs. {(calculateTotal() + 350).toFixed(2)}</span>
+        
+      </div>
+        <div className="place-order-button">
+    <button className="place-order-button" onClick={handlePlaceOrder}>
+      Place Order
+    </button>
     </div>
+    </div>
+  </div>
+  
+</div>
+
+
+  
+</div>
+</div>
+
+  
   );
 };
 

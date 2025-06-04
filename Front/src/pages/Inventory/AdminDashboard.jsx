@@ -189,7 +189,7 @@ function AdminDashboard() {
 
       {/* Navigation buttons to other admin panels */}
       <div className={styles["admin-dashboard__nav-buttons"]}>
-        <button onClick={() => navigate('/city')}>City Edite</button>
+        <button onClick={() => navigate('/city')}>City Edit</button>
         <button onClick={() => navigate('/adminpayment')}>Payment Status</button>
         <button onClick={() => navigate('/admin')}>Delivery person asign</button>
         <button onClick={() => navigate('/faqadmin')}>FAQ</button>

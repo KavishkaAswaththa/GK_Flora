@@ -13,8 +13,10 @@ const PaymentPage = () => {
     useEffect(() => {
         // Generate a random order ID when component mounts
         const generateOrderId = () => {
-            const randomNum = Math.floor(100000 + Math.random() * 900000); // 6-digit random number
-            const timestamp = Date.now().toString().slice(-6); // Last 6 digits of timestamp
+
+            const randomNum = Math.floor(100000 + Math.random() * 900000);
+            const timestamp = Date.now().toString().slice(-6);
+
             return `ORD-${randomNum}-${timestamp}`;
         };
         
@@ -123,76 +125,138 @@ const PaymentPage = () => {
 
     return (
         <div className="payment-container">
-            <div className="header">
-                <div className="logo-container"></div>
-                <div className="user-icon"></div>
-            </div>
-
-            <div className="payment-content">
-                <div className="payment-details">
-                    <h2>Payment Details</h2>
-                    <div className="bank-details">
-                        <h3>Bank of Ceylon</h3>
-                        <div className="detail-item"><span>Account Number - </span><span>1002547896531</span></div>
-                        <div className="detail-item"><span>Beneficiary Name - </span><span>Gamindu Pasan</span></div>
-                        <div className="detail-item"><span>Branch - </span><span>Baththaramulla</span></div>
+            {/* Header */}
+            <header className="header">
+                <div className="header-content">
+                    <div className="logo-section">
+                        <div className="logo-icon"></div>
+                        <h1 className="header-title">Payment Portal</h1>
                     </div>
-                    <div className="payment-icon">
-                        <img src="src/images/delivery/payment.png" alt="Payment" />
+                    <div className="user-icon"></div>
+                </div>
+            </header>
+
+            {/* Main Content */}
+            <main className="main-content">
+                <div className="content-grid">
+                    {/* Payment Details Section */}
+                    <div className="payment-details-section">
+                        <div className="section-header">
+                            <div className="section-icon payment-icon"></div>
+                            <h2>Payment Details</h2>
+                        </div>
+
+                        <div className="bank-details-card">
+                            <h3>Bank of Ceylon</h3>
+                            <div className="bank-info">
+                                <div className="info-row">
+                                    <span className="info-label">Account Number</span>
+                                    <span className="info-value">1002547896531</span>
+                                </div>
+                                <div className="info-row">
+                                    <span className="info-label">Beneficiary Name</span>
+                                    <span className="info-value">Gamindu Pasan</span>
+                                </div>
+                                <div className="info-row">
+                                    <span className="info-label">Branch</span>
+                                    <span className="info-value">Baththaramulla</span>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div className="payment-illustration">
+                            <div className="illustration-circle">
+                                <div className="credit-card-icon"></div>
+                            </div>
+                            <p>Secure Bank Transfer</p>
+                        </div>
+
+                    </div>
+
+                    {/* Upload Section */}
+                    <div className="upload-section">
+                        <div className="section-header">
+                            <div className="section-icon upload-icon"></div>
+                            <h2>Upload Bank Slip</h2>
+                        </div>
+
+                        <p className="upload-description">Please upload a bank slip or screenshot in case of online payment.</p>
+
+                        {/* Email Input */}
+                        <div className="input-group">
+                            <label htmlFor="email">Your Email Address</label>
+                            <input
+                                type="email"
+                                id="email"
+                                value={userEmail}
+                                readOnly
+                                className="readonly-input"
+                            />
+                        </div>
+
+                        {/* Order ID Input */}
+                        <div className="input-group">
+                            <label htmlFor="orderId">Order ID</label>
+                            <input
+                                type="text"
+                                id="orderId"
+                                value={orderId}
+                                readOnly
+                                className="readonly-input order-id"
+                            />
+                        </div>
+
+                        {/* Terms Section */}
+                        <div className="terms-section">
+                            <h4>Terms of Use</h4>
+                            <ol>
+                                <li>The bank slip must clearly show the payment amount and bank stamp.</li>
+                                <li>Uploading the wrong, unclear, or fake bank slip may result in payment failure.</li>
+                                <li>You can upload bank slips in PNG, JPEG, or PDF format.</li>
+                            </ol>
+                        </div>
+
+                        {/* File Upload */}
+                        <div className="file-upload-section">
+                            <input
+                                type="file"
+                                id="bank-slip"
+                                accept=".png,.jpeg,.jpg,.pdf"
+                                onChange={handleFileChange}
+                                className="file-input"
+                            />
+                            <label htmlFor="bank-slip" className="file-upload-label">
+                                <div className="upload-icon-small"></div>
+                                <span>{bankSlip ? bankSlip.name : 'Choose File'}</span>
+                            </label>
+                        </div>
+
+                        {/* Upload Status */}
+                        {uploadStatus && (
+                            <div className={`upload-status ${uploadStatus.includes('successful') ? 'success' : 'error'}`}>
+                                {uploadStatus.includes('successful') && <div className="success-icon"></div>}
+                                <span>{uploadStatus}</span>
+                            </div>
+                        )}
                     </div>
                 </div>
 
-                <div className="upload-section">
-                    <h2>Upload Bank Slip</h2>
-                    <p>Please upload a bank slip or screenshot in case of online payment.</p>
+            </main>
 
-                    <div className="email-input">
-                        <label htmlFor="email">Your Email Address:</label>
-                        <input
-                            type="email"
-                            id="email"
-                            value={userEmail}
-                            readOnly
-                        />
-                    </div>
-
-                    <div className="orderid-input">
-                        <label htmlFor="orderId">Order ID:</label>
-                        <input
-                            type="text"
-                            id="orderId"
-                            value={orderId}
-                            readOnly
-                        />
-                    </div>
-
-                    <div className="terms-section">
-                        <h4>Terms of Use</h4>
-                        <ol>
-                            <li>The bank slip must clearly show the payment amount and bank stamp.</li>
-                            <li>Uploading the wrong, unclear, or fake bank slip may result in payment failure.</li>
-                            <li>You can upload bank slips in PNG, JPEG, or PDF format.</li>
-                        </ol>
-                    </div>
-
-                    <div className="file-upload">
-                        <input
-                            type="file"
-                            id="bank-slip"
-                            accept=".png,.jpeg,.jpg,.pdf"
-                            onChange={handleFileChange}
-                        />
-                        <label htmlFor="bank-slip">Choose File</label>
-                        {bankSlip && <span>{bankSlip.name}</span>}
-                    </div>
-                    {uploadStatus && <p className="upload-status">{uploadStatus}</p>}
+            {/* Action Buttons */}
+            <footer className="action-footer">
+                <div className="footer-content">
+                    <button onClick={() => navigate('/deliveryform')} className="back-button">
+                        <span className="back-arrow">←</span>
+                        <span>Back</span>
+                    </button>
+                    <button onClick={handleSubmit} className="continue-button">
+                        Continue
+                    </button>
                 </div>
-            </div>
+            </footer>
 
-            <div className="action-buttons">
-                <button className="back-button" onClick={() => navigate('/deliveryform')}>Back</button>
-                <button className="continue-button" onClick={handleSubmit}>Continue</button>
-            </div>
         </div>
     );
 };
