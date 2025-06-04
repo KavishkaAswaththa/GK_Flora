@@ -4,6 +4,8 @@ import axios from "axios";
 import "../../styles/Inventory/InventoryDetails.css";
 
 const InventoryDetailsImage = () => {
+  const [added, setAdded] = useState(false);
+  const token = localStorage.getItem("token");
   const { id } = useParams();
   const navigate = useNavigate();
   const [images, setImages] = useState([]);
@@ -52,6 +54,23 @@ const InventoryDetailsImage = () => {
     }
   }, [quantity, metadata.price]);
 
+  useEffect(() => {
+    const checkWishlist = async () => {
+      try {
+        const res = await axios.get(`http://localhost:8080/api/wishlist/check/${id}`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        setAdded(res.data === true);
+      } catch (error) {
+        console.error("Error checking wishlist:", error);
+      }
+    };
+
+    if (token) {
+      checkWishlist();
+    }
+  }, [id, token]);
+
   const handleQuantityChange = (e) => {
     const newQuantity = Math.max(1, parseInt(e.target.value) || 1);
     setQuantity(newQuantity);
@@ -70,11 +89,37 @@ const InventoryDetailsImage = () => {
         imageUrl: images[selectedImageIndex]?.src || "",
       };
 
-      await axios.post("http://localhost:8080/api/cart/add", cartItem);
+      await axios.post("http://localhost:8080/api/cart/add", cartItem, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
       navigate("/cart1");
     } catch (error) {
       console.error("Error adding to cart:", error);
       alert("Failed to add item to cart");
+    }
+  };
+
+  const handleAdd = async () => {
+    try {
+      await axios.post(`http://localhost:8080/api/wishlist/add/${id}`, {}, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setAdded(true);
+    } catch (error) {
+      console.error("Error adding to wishlist:", error);
+      alert("Failed to add to wishlist.");
+    }
+  };
+
+  const handleRemove = async () => {
+    try {
+      await axios.delete(`http://localhost:8080/api/wishlist/remove/${id}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setAdded(false);
+    } catch (error) {
+      console.error("Error removing from wishlist:", error);
+      alert("Failed to remove from wishlist.");
     }
   };
 
@@ -103,11 +148,11 @@ const InventoryDetailsImage = () => {
     });
   };
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) return <p className="loading-text">Loading...</p>;
   if (error)
     return (
       <div>
-        <p>Error: {error}</p>
+        <p className="error-text">Error: {error}</p>
         <button onClick={() => navigate("/")}>Go Back</button>
       </div>
     );
@@ -131,8 +176,8 @@ const InventoryDetailsImage = () => {
             <img
               key={image.id}
               src={image.src}
-              alt={metadata.name || "Inventory Item"}
-              className="inventory-thumbnail"
+              alt={`${metadata.name} thumbnail ${index + 1}`}
+              className={`inventory-thumbnail ${index === selectedImageIndex ? "selected" : ""}`}
               onClick={() => handleThumbnailClick(index)}
             />
           ))}
@@ -142,23 +187,17 @@ const InventoryDetailsImage = () => {
       {/* Metadata Display */}
       <div className="inventory-details-content">
         <h1>{metadata.name}</h1>
-        <p>
-          <strong>Category:</strong> {metadata.category}
-        </p>
-        <p>
-          <strong>Description:</strong> {metadata.description}
-        </p>
+        <p><strong>Category:</strong> {metadata.category}</p>
+        <p><strong>Description:</strong> {metadata.description}</p>
         <p className="inventory-price">LKR {metadata.price}</p>
-        <p className="inventory-total">
-          <strong>Total:</strong> LKR {total.toFixed(2)}
-        </p>
-        <p>
-          <strong>Bloom Contains:</strong> {metadata.bloomContains}
-        </p>
+        <p className="inventory-total"><strong>Total:</strong> LKR {total.toFixed(2)}</p>
+        <p><strong>Bloom Contains:</strong> {metadata.bloomContains}</p>
 
         {/* Quantity and Buttons */}
         <div className="inventory-quantity-container">
+          <label htmlFor="quantity"><strong>Quantity:</strong></label>
           <input
+            id="quantity"
             type="number"
             value={quantity}
             min="1"
@@ -167,23 +206,25 @@ const InventoryDetailsImage = () => {
         </div>
 
         <div className="inventory-button-container">
-          <button onClick={handleAddToCart}>ADD TO CART</button>
           {metadata.qty > 0 ? (
-  <button
-    className="inventory-secondary-button"
-    onClick={handleBuyNow}
-  >
-    BUY IT NOW
-  </button>
-) : (
-  <button
-    className="inventory-secondary-button"
-    onClick={() => alert("Added to wishlist!")}
-  >
-    ADD TO WISHLIST
-  </button>
-)}
-
+            <>
+              <button onClick={handleAddToCart}>ADD TO CART</button>
+              <button className="inventory-secondary-button" onClick={handleBuyNow}>BUY IT NOW</button>
+            </>
+          ) : (
+            <>
+              <h3 className="wishlist-msg">
+                This item is currently unavailable. <br />
+                You can add it to your wishlist, and we'll notify you once it's back in stock.
+              </h3>
+              <button
+                className="inventory-secondary-button"
+                onClick={added ? handleRemove : handleAdd}
+              >
+                {added ? 'Remove from Wishlist ❤️' : 'Add to Wishlist 🤍'}
+              </button>
+            </>
+          )}
         </div>
       </div>
     </div>

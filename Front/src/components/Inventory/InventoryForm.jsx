@@ -8,9 +8,8 @@ import chatImage from "../../images/chat.png";
 import contactImage from "../../images/contact.png";
 
 const InventoryForm = ({ onSuccess }) => {
-  const { id } = useParams(); // Retrieve inventory ID from route parameters (if editing an item)
+  const { id } = useParams();
 
-  // Initialize form state
   const [formData, setFormData] = useState({
     id: id || "",
     name: "",
@@ -19,22 +18,31 @@ const InventoryForm = ({ onSuccess }) => {
     price: "",
     qty: "",
     bloomContains: "",
+    province: "",
     files: [],
   });
 
-  const [imagePreviews, setImagePreviews] = useState([]); // For previewing selected images
-  const [isUpdate, setIsUpdate] = useState(false); // Track if form is in update mode
-  const [bloomTags, setBloomTags] = useState([]); // Store bloom tags fetched from backend
+  const [imagePreviews, setImagePreviews] = useState([]);
+  const [isUpdate, setIsUpdate] = useState(false);
+  const [bloomTags, setBloomTags] = useState([]);
 
-  // Fetch item data and bloom tags on component mount or when `id` changes
+  const provinceOptions = [
+    { code: "we", label: "Western" },
+    { code: "no", label: "Northern" },
+    { code: "ne", label: "North Eastern" },
+    { code: "es", label: "Eastern" },
+    { code: "nc", label: "North Central" },
+    { code: "nw", label: "North Western" },
+    { code: "sb", label: "Sabaragamuwa" },
+    { code: "so", label: "Southern" },
+    { code: "uv", label: "Uva" },
+  ];
+
   useEffect(() => {
-    if (id) {
-      fetchItemData(id);
-    }
+    if (id) fetchItemData(id);
     fetchBloomTags();
   }, [id]);
 
-  // Fetch all available bloom tags from backend
   const fetchBloomTags = async () => {
     try {
       const response = await axios.get("http://localhost:8080/api/bloom-tags");
@@ -44,36 +52,46 @@ const InventoryForm = ({ onSuccess }) => {
     }
   };
 
-  // Fetch inventory item data if updating
-  const fetchItemData = async (itemId) => {
-    try {
-      const response = await axios.get(`http://localhost:8080/api/inventory/${itemId}`);
-      const item = response.data;
-      setFormData({
-        id: item.id,
-        name: item.name,
-        category: item.category,
-        description: item.description,
-        price: item.price,
-        qty: item.qty,
-        bloomContains: item.bloomContains.join(","), // Convert array to comma-separated string
-        files: [],
-      });
-      setIsUpdate(true); // Set form to update mode
-      setImagePreviews([]); // Reset image previews
-    } catch (error) {
-      console.error("Failed to fetch inventory:", error);
-      alert("No inventory found with the given ID!");
-    }
-  };
+  const handleRemoveImage = (indexToRemove) => {
+  const updatedFiles = formData.files.filter((_, index) => index !== indexToRemove);
+  const updatedPreviews = imagePreviews.filter((_, index) => index !== indexToRemove);
+  setFormData({ ...formData, files: updatedFiles });
+  setImagePreviews(updatedPreviews);
+};
 
-  // Handle text and number input changes
+const fetchItemData = async (itemId) => {
+  try {
+    const response = await axios.get(`http://localhost:8080/api/inventory/${itemId}`);
+    const item = response.data;
+
+    setFormData({
+      id: item.id,
+      name: item.name,
+      category: item.category,
+      description: item.description,
+      price: item.price,
+      qty: item.qty,
+      bloomContains: item.bloomContains.join(","),
+      province: item.province.join(","),
+      files: [],
+    });
+
+    setImagePreviews(item.images.map(img => `data:image/jpeg;base64,${img.base64}`));
+
+    console.log(item.images); // ✅ lowercase
+    setIsUpdate(true);
+  } catch (error) {
+    console.error("Failed to fetch inventory:", error);
+    alert("No inventory found with the given ID!");
+  }
+};
+
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
-  // Handle file input changes and generate previews
   const handleFileChange = (e) => {
     const files = Array.from(e.target.files);
     if (files.length > 6) {
@@ -81,23 +99,33 @@ const InventoryForm = ({ onSuccess }) => {
       return;
     }
     setFormData({ ...formData, files });
-
-    // Generate image previews
-    const previews = files.map((file) => URL.createObjectURL(file));
-    setImagePreviews(previews);
+    setImagePreviews(files.map((file) => URL.createObjectURL(file)));
   };
 
-  // Handle tag selection/deselection
   const handleTagClick = (tag) => {
     const current = formData.bloomContains.split(",").filter(Boolean);
     const updated = current.includes(tag)
-      ? current.filter((t) => t !== tag) // Remove tag
-      : [...current, tag]; // Add tag
-
+      ? current.filter((t) => t !== tag)
+      : [...current, tag];
     setFormData({ ...formData, bloomContains: updated.join(",") });
   };
 
-  // Handle form submission for both create and update operations
+  const handleProvinceClick = (code) => {
+    const current = formData.province.split(",").filter(Boolean);
+    const updated = current.includes(code)
+      ? current.filter((c) => c !== code)
+      : [...current, code];
+    setFormData({ ...formData, province: updated.join(",") });
+  };
+
+  const handleIslandWideClick = () => {
+    const allCodes = provinceOptions.map((p) => p.code);
+    const selected = formData.province.split(",").filter(Boolean);
+    const allSelected = allCodes.every((code) => selected.includes(code));
+    const updated = allSelected ? [] : allCodes;
+    setFormData({ ...formData, province: updated.join(",") });
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -112,12 +140,12 @@ const InventoryForm = ({ onSuccess }) => {
     data.append("id", formData.id);
     data.append("name", formData.name);
     data.append("category", formData.category);
+    data.append("province", JSON.stringify(formData.province.split(",").filter(Boolean)));
     data.append("description", formData.description);
     data.append("price", formData.price);
     data.append("qty", formData.qty);
     data.append("bloomContains", JSON.stringify(formData.bloomContains.split(",").filter(Boolean)));
 
-    // Determine whether to POST or PUT
     const url = isUpdate
       ? "http://localhost:8080/api/inventory/update"
       : "http://localhost:8080/api/inventory/save";
@@ -136,8 +164,6 @@ const InventoryForm = ({ onSuccess }) => {
       alert(response.data || `Inventory ${isUpdate ? "updated" : "saved"} successfully!`);
       setIsUpdate(false);
       setImagePreviews([]);
-      // Optional: call parent handler after success
-      // onSuccess();
     } catch (error) {
       console.error(`Failed to ${isUpdate ? "update" : "save"} inventory:`, error);
       alert("An error occurred while saving the inventory.");
@@ -147,19 +173,22 @@ const InventoryForm = ({ onSuccess }) => {
   return (
     <div className="inventory-form">
       <form onSubmit={handleSubmit}>
-        {/* ID Field */}
+
+  <div className="form-left">
+
+        {/* ID */}
         <div>
           <label>ID:</label>
           <input type="text" name="id" value={formData.id} onChange={handleInputChange} required />
         </div>
 
-        {/* Title Field */}
+        {/* Name */}
         <div>
           <label>Title:</label>
           <input type="text" name="name" value={formData.name} onChange={handleInputChange} required />
         </div>
 
-        {/* Category Selector */}
+        {/* Category */}
         <div>
           <label>Category:</label>
           <select name="category" value={formData.category} onChange={handleInputChange} required>
@@ -171,25 +200,57 @@ const InventoryForm = ({ onSuccess }) => {
           </select>
         </div>
 
-        {/* Description Field */}
-        <div>
-          <label>Description:</label>
-          <textarea name="description" value={formData.description} onChange={handleInputChange} required />
-        </div>
 
-        {/* Price Field */}
+
+        {/* Price */}
         <div>
           <label>Price:</label>
           <input type="number" name="price" value={formData.price} onChange={handleInputChange} required />
         </div>
 
-        {/* Quantity Field */}
+        {/* Quantity */}
         <div>
           <label>QTY:</label>
           <input type="number" name="qty" value={formData.qty} onChange={handleInputChange} required />
         </div>
 
-        {/* Bloom Tags Selector */}
+                    {/* Province Multi-select */}
+        <div>
+          <label>Available Provinces:</label>
+          <div className="tag-selector">
+            <button
+              type="button"
+              className="tag-button island-wide"
+              onClick={handleIslandWideClick}
+            >
+              Island-wide
+            </button>
+            {provinceOptions.map((prov) => (
+              <button
+                type="button"
+                key={prov.code}
+                className={`tag-button ${formData.province.includes(prov.code) ? "selected" : ""}`}
+                onClick={() => handleProvinceClick(prov.code)}
+              >
+                {prov.label}
+              </button>
+            ))}
+          </div>
+          <small>Click to select multiple provinces</small>
+        </div>
+
+        </div>
+  <div className="form-right">
+
+
+
+        {/* Description */}
+        <div>
+          <label>Description:</label>
+          <textarea name="description" value={formData.description} onChange={handleInputChange} required />
+        </div>    
+
+        {/* Bloom Tags */}
         <div>
           <label>Bloom Contains:</label>
           <div className="tag-selector">
@@ -207,22 +268,34 @@ const InventoryForm = ({ onSuccess }) => {
           <small>Click to select multiple tags</small>
         </div>
 
-        {/* Image Upload Field */}
+        {/* Images */}
         <div>
           <label>Images:</label>
           <input type="file" multiple accept="image/*" onChange={handleFileChange} />
           <small>Maximum 6 images allowed</small>
         </div>
 
-        {/* Image Previews */}
-        <div className="image-previews">
-          {imagePreviews.map((preview, index) => (
-            <img key={index} src={preview} alt={`Preview ${index + 1}`} />
-          ))}
-        </div>
+{/* Image Previews */}
+<div className="image-previews">
+  {imagePreviews.map((preview, index) => (
+    <div key={index} className="preview-container">
+      <img src={preview} alt={`Preview ${index + 1}`} />
+      <button
+        type="button"
+        className="remove-image-button"
+        onClick={() => handleRemoveImage(index)}
+      >
+        ✕
+      </button>
+    </div>
+  ))}
+</div>
 
-        {/* Submit Button */}
+
+        {/* Submit */}
         <button type="submit">{isUpdate ? "Update Inventory" : "Save Inventory"}</button>
+          </div>
+
       </form>
     </div>
   );

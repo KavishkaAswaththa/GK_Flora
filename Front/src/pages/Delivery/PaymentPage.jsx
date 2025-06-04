@@ -13,8 +13,10 @@ const PaymentPage = () => {
     useEffect(() => {
         // Generate a random order ID when component mounts
         const generateOrderId = () => {
+
             const randomNum = Math.floor(100000 + Math.random() * 900000);
             const timestamp = Date.now().toString().slice(-6);
+
             return `ORD-${randomNum}-${timestamp}`;
         };
         
@@ -162,12 +164,14 @@ const PaymentPage = () => {
                             </div>
                         </div>
 
+
                         <div className="payment-illustration">
                             <div className="illustration-circle">
                                 <div className="credit-card-icon"></div>
                             </div>
                             <p>Secure Bank Transfer</p>
                         </div>
+
                     </div>
 
                     {/* Upload Section */}
@@ -237,6 +241,7 @@ const PaymentPage = () => {
                         )}
                     </div>
                 </div>
+
             </main>
 
             {/* Action Buttons */}
@@ -251,6 +256,7 @@ const PaymentPage = () => {
                     </button>
                 </div>
             </footer>
+
         </div>
     );
 };

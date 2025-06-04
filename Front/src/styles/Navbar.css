@@ -15,7 +15,7 @@
 
 /* Logo */
 .logoo img {
-  width: 100px;
+  width: 110px;
   transition: transform 0.3s ease;
 }
 
@@ -74,7 +74,7 @@
   color: #110e0e;
   padding: 10px 15px;
   border-radius: 15px;
-  font-size: 1rem;
+  font-size: 1.2rem;
   cursor: pointer;
   transition: 0.3s;
 }
@@ -163,7 +163,7 @@
 .nav-item {
   color: black;
   text-decoration: none;
-  font-size: 1rem;
+  font-size: 1.3rem;
   position: relative;
 }
 
@@ -216,8 +216,69 @@
 }
 
 /* Profile */
+.profile-image-navbar {
+  width: 50px !important;
+  height: 50px !important;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #e0e0e0;
+  transition: border-color 0.3s ease;
+}
+
+.profile-image-navbar:hover {
+  border-color: #007bff;
+}
+
+/* Profile initials placeholder */
+.profile-initials-navbar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.profile-initials-navbar:hover {
+  transform: scale(1.05);
+}
+
+/* Dropdown button styling for sign out */
+.dropdown-signout-btn, .mobile-signout-btn {
+  background: none;
+  border: none;
+  padding: 8px 16px;
+  text-align: left;
+  width: 100%;
+  cursor: pointer;
+  font-size: 14px;
+  color: inherit;
+  transition: background-color 0.2s ease;
+}
+
+.dropdown-signout-btn:hover, .mobile-signout-btn:hover {
+  background-color: #f5f5f5;
+}
+
+/* Mobile menu button styling */
+.mobile-signout-btn {
+  display: block;
+  padding: 12px 20px;
+  text-decoration: none;
+  color: inherit;
+  border-bottom: 1px solid #eee;
+}
+
+/* Ensure profile dropdown positioning works with different content */
 .profile-dropdown {
   position: relative;
+  display: inline-block;
 }
 
 .profile-icon {
