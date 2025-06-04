@@ -129,6 +129,8 @@ const Navbar = () => {
         <img src={searchIcon} alt="Search" className="icon search-icon" />
       </div>
 
+      
+
       {/* Nav Links */}
       <div className="nav-links">
         <Link to="/status" className="nav-item">

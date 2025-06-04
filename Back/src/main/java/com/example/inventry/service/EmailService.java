@@ -4,6 +4,7 @@ import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -16,8 +17,11 @@ import java.util.List;
 @Service
 public class EmailService {
 
-
     private final JavaMailSender mailSender;
+
+    @Value("${app.sender.email}")
+    private String senderEmail;
+
     private static final Logger logger = LoggerFactory.getLogger(EmailService.class);
 
     public EmailService(JavaMailSender mailSender) {
@@ -29,6 +33,7 @@ public class EmailService {
         try {
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true); // true = multipart
+            helper.setFrom(senderEmail);
             helper.setTo(to);
             helper.setSubject(subject);
             helper.setText(body, true); // true = HTML email
@@ -55,8 +60,8 @@ public class EmailService {
     }
 
     public void sendRejectToUser(String toEmail) {
-        String subject = "Payment Reject";
-        String body = "Dear customer,<br><br>Your payment has been <b>Reject</b>.<br>Try Again";
+        String subject = "Payment Rejected";
+        String body = "Dear customer,<br><br>Your payment has been <b>rejected</b>.<br>Please try again.";
         sendEmail(toEmail, subject, body);
     }
 
@@ -66,10 +71,11 @@ public class EmailService {
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true);
 
+            helper.setFrom(senderEmail);
             helper.setTo(adminEmail);
             helper.setSubject("Payment Slip from " + userEmail);
             helper.setText("User " + userEmail + " uploaded a payment slip. Please find the attachment.");
-            helper.setReplyTo(userEmail); // Add reply-to so admin can reply directly to the user
+            helper.setReplyTo(userEmail);
             helper.addAttachment(slipFile.getOriginalFilename(), slipFile);
 
             mailSender.send(message);
@@ -80,12 +86,12 @@ public class EmailService {
         }
     }
 
-
     // Low stock alert to admins
     public void sendLowStockAlert(String itemName, int qty, List<String> adminEmails) {
         for (String email : adminEmails) {
             try {
                 SimpleMailMessage message = new SimpleMailMessage();
+                message.setFrom(senderEmail);
                 message.setTo(email);
                 message.setSubject("⚠️ Low Stock Alert: " + itemName);
                 message.setText("The item \"" + itemName + "\" is low in stock. Current quantity: " + qty);
@@ -97,11 +103,38 @@ public class EmailService {
         }
     }
 
-
-
     public void sendSimpleMessage(String userEmail, String emailSubject, String emailBody) {
+        try {
+            SimpleMailMessage message = new SimpleMailMessage();
+            message.setFrom(senderEmail);
+            message.setTo(userEmail);
+            message.setSubject(emailSubject);
+            message.setText(emailBody);
+            mailSender.send(message);
+            logger.info("Simple email sent to: {}", userEmail);
+        } catch (Exception e) {
+            logger.error("Failed to send simple message to: {}. Error: {}", userEmail, e.getMessage());
+            throw new RuntimeException("Failed to send email: " + e.getMessage());
+        }
     }
 
     public void sendEmailWithAttachment(String adminEmail, String subject, String message, MultipartFile file, String userEmail) {
+        try {
+            MimeMessage mimeMessage = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
+
+            helper.setFrom(senderEmail);
+            helper.setTo(adminEmail);
+            helper.setSubject(subject);
+            helper.setText(message);
+            helper.setReplyTo(userEmail);
+            helper.addAttachment(file.getOriginalFilename(), file);
+
+            mailSender.send(mimeMessage);
+            logger.info("Email with attachment sent to: {}", adminEmail);
+        } catch (Exception e) {
+            logger.error("Failed to send email with attachment to: {}. Error: {}", adminEmail, e.getMessage());
+            throw new RuntimeException("Failed to send email with attachment: " + e.getMessage());
+        }
     }
 }

@@ -15,7 +15,7 @@
 
 /* Logo */
 .logoo img {
-  width: 100px;
+  width: 110px;
   transition: transform 0.3s ease;
 }
 
@@ -74,7 +74,7 @@
   color: #110e0e;
   padding: 10px 15px;
   border-radius: 15px;
-  font-size: 1rem;
+  font-size: 1.2rem;
   cursor: pointer;
   transition: 0.3s;
 }
@@ -163,7 +163,7 @@
 .nav-item {
   color: black;
   text-decoration: none;
-  font-size: 1rem;
+  font-size: 1.3rem;
   position: relative;
 }
 
@@ -217,8 +217,8 @@
 
 /* Profile */
 .profile-image-navbar {
-  width: 32px !important;
-  height: 32px !important;
+  width: 50px !important;
+  height: 50px !important;
   border-radius: 50%;
   object-fit: cover;
   border: 2px solid #e0e0e0;
