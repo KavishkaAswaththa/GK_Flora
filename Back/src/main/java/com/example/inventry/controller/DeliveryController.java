@@ -1,6 +1,7 @@
 package com.example.inventry.controller;
 
 import com.example.inventry.entity.City;
+import com.example.inventry.service.CityService;
 import com.example.inventry.entity.Delivery;
 import com.example.inventry.service.DeliveryServices;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,8 @@ public class DeliveryController {
 
     @Autowired
     private DeliveryServices deliveryServices;
+    @Autowired  // Add this annotation
+    private CityService cityService;
 
     // In-memory city list with City objects instead of strings
     private List<City> cityList = new ArrayList<>();
@@ -102,41 +105,27 @@ public class DeliveryController {
     // City management endpoints (Admin only)
     // -----------------------------------------------
 
-    // ADMIN: View all cities
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     @GetMapping("/cities")
     public List<City> getCities() {
-        return cityList;
+        return cityService.getAllCities();
     }
 
-    // ADMIN: View all cities
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/cities")
     public City addCity(@RequestBody City cityRequest) {
-        // Generate unique ID for the city
-        City newCity = new City(UUID.randomUUID().toString(), cityRequest.getName());
-        cityList.add(newCity);
-        return newCity;
+        return cityService.addCity(cityRequest);
     }
-    // ADMIN: View all cities
+
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/cities/{id}")
     public City updateCity(@PathVariable String id, @RequestBody City cityRequest) {
-        for (int i = 0; i < cityList.size(); i++) {
-            if (cityList.get(i).getId().equals(id)) {
-                City updatedCity = new City(id, cityRequest.getName());
-                cityList.set(i, updatedCity);
-                return updatedCity;
-            }
-        }
-        throw new RuntimeException("City not found with id: " + id);
+        return cityService.updateCity(id, cityRequest);
     }
-    // ADMIN: View all cities
+
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/cities/{id}")
     public void deleteCity(@PathVariable String id) {
-        cityList = cityList.stream()
-                .filter(city -> !city.getId().equals(id))
-                .collect(Collectors.toList());
+        cityService.deleteCity(id);
     }
 }

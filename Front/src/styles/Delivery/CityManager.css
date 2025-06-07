@@ -201,15 +201,15 @@
 }
 
 .edit-button {
-    background-color: #f39c12;
+    background-color: #c4dd38;
     color: white;
-    box-shadow: 0 2px 5px rgba(243, 156, 18, 0.2);
+    box-shadow: 0 2px 5px rgba(192, 222, 75, 0.2);
 }
 
 .edit-button:hover {
-    background-color: #e67e22;
+    background-color: #e1de34;
     transform: translateY(-1px);
-    box-shadow: 0 4px 8px rgba(243, 156, 18, 0.3);
+    box-shadow: 0 4px 8px rgba(190, 224, 80, 0.3);
 }
 
 .delete-button {

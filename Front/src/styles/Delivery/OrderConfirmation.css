@@ -7,7 +7,7 @@
 
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(135deg, #d3ede6 0%, #f1f8a4 100%);
+   
     min-height: 100vh;
     color: #2d3748;
     line-height: 1.6;
@@ -24,7 +24,7 @@ body {
 /* Header Section */
 .header {
     background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(10px);
+    
     border-radius: 20px;
     padding: 30px 40px;
     margin-bottom: 40px;
@@ -48,10 +48,6 @@ body {
     animation: shimmer 2s ease-in-out infinite;
 }
 
-@keyframes shimmer {
-    0%, 100% { transform: translateX(-100%); }
-    50% { transform: translateX(100%); }
-}
 
 .header h1 {
     font-size: 32px;
@@ -82,7 +78,7 @@ body {
 
 .support-btn {
     background: linear-gradient(135deg, #667eea, #764ba2);
-    color: white;
+    color: rgb(23, 19, 19);
     border: none;
     padding: 12px 24px;
     border-radius: 25px;
@@ -110,7 +106,7 @@ body {
 /* Delivery Details Section */
 .delivery-details h2,
 .order-summary h2 {
-    color: white;
+    color: rgb(22, 20, 20);
     font-size: 20px;
     margin-bottom: 20px;
     text-align: center;
@@ -217,7 +213,7 @@ body {
 
 /* Edit Button */
 .edit-button {
-    background: linear-gradient(135deg, #81bde6, #ea8895);
+    background: linear-gradient(135deg, #e9eda1, #bbd461);
     color: white;
     border: none;
     padding: 15px 30px;
@@ -337,7 +333,7 @@ body {
 
 /* Place Order Button - Under order summary */
 .place-order-button {
-    background: linear-gradient(135deg, #48bb78, #38a169);
+    background: linear-gradient(135deg, #bbdd42, #d4e268);
     color: white;
     border: none;
     padding: 5px 70px;
@@ -371,7 +367,7 @@ body {
 .place-order-button:hover {
     transform: translateY(-3px);
     box-shadow: 0 15px 35px rgba(72, 187, 120, 0.4);
-    background: linear-gradient(135deg, #38a169, #2f855a);
+    background: linear-gradient(135deg, #75e0a7, #2f855a);
 }
 
 /* Loading State */
