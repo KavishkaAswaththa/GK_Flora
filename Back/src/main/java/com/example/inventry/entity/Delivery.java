@@ -186,5 +186,18 @@ public class Delivery {
                 ",message = '" + message + '\'' +
                 '}';
     }
+
+    public void setId(String d001) {
+    }
+
+    public void setRecipientName(String johnSmith) {
+    }
+
+    public void setPhone(String number) {
+    }
+
+    public String getRecipientName() {
+        return null;
+    }
 }
 

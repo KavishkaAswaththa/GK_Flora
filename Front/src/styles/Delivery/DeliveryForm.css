@@ -7,16 +7,16 @@
 
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    
     min-height: 100vh;
     color: #cedbf0;
     line-height: 1.6;
 }
 
-/* Main Container */
+/* Main Container - Swapped grid columns */
 .checkout-container {
     display: grid;
-    grid-template-columns: 1fr 1.8fr;
+    grid-template-columns: 1.8fr 1fr; /* Delivery form now takes larger space on left, summary on right */
     max-width: 1400px;
     margin: 40px auto;
     gap: 40px;
@@ -37,7 +37,7 @@ body {
     width: 50px;
     height: 50px;
     border: 4px solid #e2e8f0;
-    border-top: 4px solid #c5fc86;
+    border-top: 4px solid #f0f1a3;
     border-radius: 50%;
     animation: spin 1s linear infinite;
 }
@@ -47,15 +47,17 @@ body {
     100% { transform: rotate(360deg); }
 }
 
-/* Order Summary Section */
+/* Order Summary Section - Now positioned on the right */
 .summary-section {
+     background: rgb(243, 243, 239);
     position: sticky;
     top: 40px;
     height: fit-content;
+    order: 2; /* Ensure it appears on the right */
 }
 
 .order-summary {
-    background: white;
+    background: rgb(241, 240, 181);
     border-radius: 20px;
     padding: 30px;
     box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
@@ -78,7 +80,7 @@ body {
     bottom: 0;
     left: 50%;
     transform: translateX(-50%);
-    width: 60px;
+    width: 100px;
     height: 3px;
     background: linear-gradient(135deg, hsl(70, 75%, 56%), #764ba2);
     border-radius: 2px;
@@ -86,13 +88,14 @@ body {
 
 .summary-card {
     background: transparent;
+
 }
 
 .order-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 18px 0;
+    padding: 8px 0;
     border-bottom: 1px solid rgba(142, 126, 126, 0.08);
     transition: all 0.3s ease;
     position: relative;
@@ -102,7 +105,7 @@ body {
     transform: translateX(8px);
     background: rgba(102, 126, 234, 0.05);
     margin: 0 -20px;
-    padding: 18px 20px;
+    padding: 28px 50px;
     border-radius: 12px;
     border-bottom: 1px solid transparent;
 }
@@ -114,13 +117,13 @@ body {
 .item-info {
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: 2px;
 }
 
 .item-name {
     font-weight: 600;
     color: #2d3748;
-    font-size: 23px;
+    font-size: 30px;
 }
 
 .item-quantity {
@@ -132,11 +135,11 @@ body {
 .item-price {
     font-weight: 700;
     color: #667eea;
-    font-size: 16px;
+    font-size: 19px;
 }
 
 .total-section {
-    margin-top: 30px;
+    margin-top: 50px;
     padding-top: 25px;
     border-top: 2px solid rgba(102, 126, 234, 0.15);
 }
@@ -170,14 +173,15 @@ body {
     box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
 }
 
-/* Delivery Form Section */
+/* Delivery Form Section - Now positioned on the left */
 .delivery-form-section {
     display: flex;
     flex-direction: column;
+    order: 1; /* Ensure it appears on the left */
 }
 
 .delivery-form-container {
-    background: white;
+    background: rgb(243, 243, 239);
     border-radius: 20px;
     padding: 40px;
     box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
@@ -338,7 +342,7 @@ body {
 }
 
 .submit-button1 {
-    background: linear-gradient(135deg, #b2eced, #764ba2);
+    background: linear-gradient(135deg, #dfdf7c, #f5e980);
     color: white;
     border: none;
     padding: 18px 50px;
@@ -354,7 +358,7 @@ body {
 .submit-button1:hover {
     transform: translateY(-3px);
     box-shadow: 0 15px 35px rgba(102, 126, 234, 0.4);
-    background: linear-gradient(135deg, #6be0c5, #e7edc9);
+    background: linear-gradient(135deg, #d0e28a, #e7edc9);
 }
 
 .submit-button1:active {
@@ -381,11 +385,11 @@ body {
     
     .summary-section {
         position: static;
-        order: 2;
+        order: 2; /* Keep summary below form on mobile */
     }
     
     .delivery-form-section {
-        order: 1;
+        order: 1; /* Keep form on top on mobile */
     }
 }
 
