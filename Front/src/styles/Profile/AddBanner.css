@@ -1,0 +1,36 @@
+.add-banner-container {
+  max-width: 600px;
+  margin: 40px auto;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 12px;
+  background-color: #fefefe;
+}
+
+.add-banner-form label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.add-banner-form input,
+.add-banner-form textarea {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+.add-banner-form button {
+  background-color: #28a745;
+  color: white;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.add-banner-form button:hover {
+  background-color: #218838;
+}

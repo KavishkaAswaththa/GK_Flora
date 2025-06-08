@@ -39,6 +39,7 @@ import ResetPassword from './pages/Profile/ResetPassword';
 import AccountDetails from './pages/Profile/AccountDetails';
 import UserList from "./pages/Profile/UserList.jsx";
 
+import AddBanner from "./pages/Profile/AddBanner.jsx";
 
 
 //Loyalty-points
@@ -115,6 +116,9 @@ const App = () => {
         <Route path='/reset-password' element={<ResetPassword/>}/>
         <Route path='/account-details' element={<AccountDetails/>}/>
         <Route path="/userlist" element={<UserList/>}/>
+
+        <Route path="/adminbanner" element={<AddBanner/>}/>
+
 
 
 

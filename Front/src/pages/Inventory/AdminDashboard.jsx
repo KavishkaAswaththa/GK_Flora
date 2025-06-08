@@ -193,6 +193,7 @@ function AdminDashboard() {
         <button onClick={() => navigate('/adminpayment')}>Payment Status</button>
         <button onClick={() => navigate('/admin')}>Delivery person asign</button>
         <button onClick={() => navigate('/faqadmin')}>FAQ</button>
+        <button onClick={() => navigate('/adminbanner')}>Add Banner</button>
       </div>
 
       {/* Top controls: search, delete selected, bloom tag modal toggle */}
