@@ -1,227 +1,96 @@
-/* Main Dashboard Styles */
-.admin-dashboard {
-  padding: 16px;
-}
-
-.admin-dashboard__title {
-  font-size: 32px; /* Increased from 24px */
-  font-weight: bold;
-  color: #d4a017;
-  margin-bottom: 16px;
-}
-
-/* Table Styles */
-.admin-dashboard__table {
-  width: 100%;
-  background-color: #fff3cd;
-  border-collapse: collapse;
-  border: 2px solid #ffcc00;
-  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
-  border-radius: 8px;
-}
-
-.admin-dashboard__table th {
-  background-color: #ffcc00;
-  color: white;
-  padding: 12px;
-  text-align: left;
-  font-weight: bold;
-  font-size: 18px; /* Increased */
-}
-
-.admin-dashboard__table td {
-  padding: 12px;
-  border-bottom: 1px solid #ffcc00;
-  font-size: 16px; /* Increased */
-}
-
-/* Row Styling */
-.admin-dashboard__row--even {
-  background-color: #fff7d1;
-}
-
-.admin-dashboard__row--odd {
-  background-color: #ffeb99;
-}
-
-/* Image Styling */
-.admin-dashboard__image {
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-}
-
-/* Button Styles */
-.admin-dashboard__actions {
+.dashboardWrapper {
   display: flex;
-  gap: 8px;
+  min-height: 100vh;
+  background-color: #fdfdfb;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-.admin-dashboard__edit-btn,
-.admin-dashboard__delete-btn,
-.admin-dashboard__add-btn {
-  padding: 10px 20px;
-  border-radius: 8px;
-  cursor: pointer;
+/* Sidebar styles with yellow theme */
+.sidebar {
+  width: 250px;
+  background-color: #1a1a1a;
+  color: #fff8dc;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.sidebarTitle {
+  font-size: 1.6rem;
+  font-weight: bold;
+  margin-bottom: 25px;
   text-align: center;
-  font-size: 16px; /* Increased */
+  color: #ffd700; /* Yellow accent */
 }
 
-.admin-dashboard__edit-btn {
-  background-color: #4caf50;
-  color: white;
-  border: none;
-  transition: background-color 0.3s ease;
+.navList {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
 }
 
-.admin-dashboard__edit-btn:hover {
-  background-color: #45a049;
-}
-
-.admin-dashboard__delete-btn {
-  background-color: #f44336;
-  color: white;
-  border: none;
-  transition: background-color 0.3s ease;
-}
-
-.admin-dashboard__delete-btn:hover {
-  background-color: #d32f2f;
-}
-
-.admin-dashboard__add-btn {
-  background-color: #f1c40f;
-  color: white;
-  border: none;
-  padding: 10px 20px;
+.navList button {
+  background-color: transparent;
+  border: 2px solid transparent;
+  color: #fff8dc;
+  font-size: 1rem;
+  padding: 10px 14px;
+  text-align: left;
   border-radius: 8px;
   cursor: pointer;
-  font-size: 16px; /* Increased */
-  transition: background-color 0.3s ease;
-  margin-left: auto;
+  transition: all 0.3s ease-in-out;
 }
 
-.admin-dashboard__add-btn:hover {
-  background-color: #f39c12;
+.navList button:hover {
+  background-color: #ffd700;
+  color: #1a1a1a;
+  font-weight: bold;
+  transform: scale(1.03);
 }
 
-.admin-dashboard__customization-btn {
-  background-color: #f1c40f;
-  color: white;
-  border: none;
-  transition: background-color 0.3s ease;
-  font-size: 16px; /* Increased */
-}
-
-.admin-dashboard__customization-btn:hover {
-  background-color: #f39c12;
-}
-
-/* Modal Styling */
-.admin-dashboard__modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
-  z-index: 999;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.admin-dashboard__modal-content {
-  background-color: #fff;
-  padding: 24px;
-  border-radius: 8px;
-  max-width: 500px;
-  width: 100%;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-}
-
-.admin-dashboard__close-modal-btn {
-  background-color: #e74c3c;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  cursor: pointer;
-  font-size: 16px; /* Increased */
-  border-radius: 8px;
-  transition: background-color 0.3s ease;
-}
-
-.admin-dashboard__close-modal-btn:hover {
-  background-color: #c0392b;
-}
-
-/* Bloom Tag Management */
-.admin-dashboard__bloom-tag-controls {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 16px;
-}
-
-.admin-dashboard__input {
-  padding: 10px;
-  width: 240px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  font-size: 16px; /* Increased */
-}
-
-.admin-dashboard__bloom-tag-list {
-  list-style-type: none;
-  padding-left: 0;
-}
-
-.admin-dashboard__bloom-tag-item {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin: 6px 0;
-  font-size: 16px; /* Increased */
-}
-
-.admin-dashboard__delete-btn {
-  background-color: #e63946;
-  color: white;
-  border: none;
-  padding: 6px 12px;
-  cursor: pointer;
-  font-size: 16px; /* Increased */
-  border-radius: 5px;
-}
-
-.admin-dashboard__delete-btn:hover {
-  background-color: #c0392b;
-}
-
-/* Utility: Disabled State */
-.admin-dashboard__delete-multi-btn:disabled {
-  background-color: #ccc;
+.navList button:disabled {
+  opacity: 0.5;
   cursor: not-allowed;
 }
 
-/* Navigation Buttons */
-.admin-dashboard__nav-buttons {
-  display: flex;
-  gap: 1rem;
-  margin-bottom: 1rem;
+/* Main content area */
+.mainContent {
+  flex: 1;
+  padding: 30px;
+  background-color: #fffaf0;
+  overflow-x: auto;
 }
 
-.admin-dashboard__nav-button {
-  padding: 10px 20px;
-  background-color: #4caf50;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: bold;
-  font-size: 16px; /* Increased */
-  transition: background-color 0.3s ease-in-out;
-}
+/* Responsive Design */
+@media (max-width: 768px) {
+  .dashboardWrapper {
+    flex-direction: column;
+  }
 
-.admin-dashboard__nav-button:hover {
-  background-color: #388e3c;
+  .sidebar {
+    width: 100%;
+    flex-direction: row;
+    overflow-x: auto;
+    gap: 8px;
+    padding: 10px;
+    justify-content: center;
+  }
+
+  .navList {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+  }
+
+  .navList button {
+    font-size: 0.9rem;
+    padding: 8px 12px;
+  }
+
+  .mainContent {
+    padding: 20px 10px;
+  }
 }

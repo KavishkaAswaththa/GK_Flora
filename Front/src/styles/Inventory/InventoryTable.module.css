@@ -185,3 +185,27 @@ input[type="checkbox"] {
     font-size: 0.9rem;
   }
 }
+.admin-dashboard__bulk-actions {
+  margin-top: 1rem;
+  text-align: right;
+}
+
+.admin-dashboard__delete-multi-btn {
+  background-color: #ffd700; /* Yellow theme */
+  color: #1a1a1a;
+  font-weight: bold;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.admin-dashboard__delete-multi-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.admin-dashboard__delete-multi-btn:hover:not(:disabled) {
+  background-color: #ffcc00;
+}

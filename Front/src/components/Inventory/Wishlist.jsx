@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from 'react';
+import { Link } from "react-router-dom";
+
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import '../../styles/Inventory/WishlistStyles.css'; // ✅ your CSS file
+
 
 const Wishlist = () => {
   const [wishlistItems, setWishlistItems] = useState([]);
@@ -75,8 +78,29 @@ const Wishlist = () => {
   if (loading) return <div className="wishlist-container">Loading wishlist...</div>;
 
   return (
+    
     <div className="wishlist-container">
       <h2 className="wishlist-title">🌸 My Wishlist 🌸</h2>
+      
+
+            {/* Wishlist Coupon Section */}
+      <section className="wishlistCoupon">
+        <div className="wishlistCouponContent">
+          <h2>🌸 Special Spring Offer + Smart Wishlist</h2>
+          <p>
+            Use code <strong>SPRING25</strong> to get <strong>25% OFF</strong> your first order!
+          </p>
+          <p className="wishlistNote">
+            💡 Can't find your favorite bouquet? Just add it to your <strong>Wishlist</strong> — 
+            We'll <strong>automatically notify</strong> you when it's back in stock!
+          </p>
+          <Link to="/inventory" className="wishlistCouponButton">
+            Explore Bouquets
+          </Link>
+        </div>
+      </section>
+
+
       <div className="wishlist-grid">
         {wishlistItems.map(item => (
           <div key={item.id} className="wishlist-card">
