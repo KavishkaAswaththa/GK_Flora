@@ -4,7 +4,6 @@ import axios from 'axios';
 import { useNavigate } from "react-router-dom";
 import styles from '../../styles/Inventory/AdminDashboard.module.css';
 
-import TopbarControls from '../../components/Inventory/TopActions';
 import BloomTagModal from '../../components/Inventory/BloomTagModal';
 import InventoryTable from '../../components/Inventory/InventoryTable';
 import PaginationControls from '../../components/Inventory/PaginationControls';
@@ -81,6 +80,22 @@ function AdminDashboard() {
   };
 
   // Delete all selected items
+  
+
+  // Toggle selection for individual item
+  const toggleItemSelection = (id) => {
+    setSelectedItems(prev =>
+      prev.includes(id) ? prev.filter(itemId => itemId !== id) : [...prev, id]
+    );
+  };
+
+  // Toggle select all items on the current page
+  const toggleSelectAll = () => {
+    const allIds = paginatedItems.map(item => item.id);
+    const allSelected = allIds.every(id => selectedItems.includes(id));
+    setSelectedItems(allSelected ? [] : [...new Set([...selectedItems, ...allIds])]);
+  };
+
   const handleDeleteSelected = () => {
     if (selectedItems.length === 0) {
       alert("No items selected!");
@@ -102,20 +117,6 @@ function AdminDashboard() {
         console.error('Error deleting selected items:', error);
         alert("Failed to delete some items.");
       });
-  };
-
-  // Toggle selection for individual item
-  const toggleItemSelection = (id) => {
-    setSelectedItems(prev =>
-      prev.includes(id) ? prev.filter(itemId => itemId !== id) : [...prev, id]
-    );
-  };
-
-  // Toggle select all items on the current page
-  const toggleSelectAll = () => {
-    const allIds = paginatedItems.map(item => item.id);
-    const allSelected = allIds.every(id => selectedItems.includes(id));
-    setSelectedItems(allSelected ? [] : [...new Set([...selectedItems, ...allIds])]);
   };
 
   // Get sorted items based on current sort configuration
@@ -184,31 +185,25 @@ function AdminDashboard() {
   };
 
   return (
-    <div className={styles["admin-dashboard"]}>
-      <h2 className={styles["admin-dashboard__title"]}>Admin Dashboard</h2>
+  <div className={styles.dashboardWrapper}>
+    {/* Sidebar */}
+    <aside className={styles.sidebar}>
+      <h2 className={styles.sidebarTitle}>Admin Panel</h2>
+      <nav className={styles.navList}>
+        <button onClick={() => navigate('/city')}>🏙 City Edit</button>
+        <button onClick={() => navigate('/adminpayment')}>💳 Payment Status</button>
+        <button onClick={() => navigate('/admin')}>👤 Assign Delivery</button>
+        <button onClick={() => navigate('/faqadmin')}>❓ FAQ</button>
+        <button onClick={() => navigate('/adminbanner')}>🖼 Add Banner</button>
+        <button onClick={() => navigate('/form')}>➕ Add New Item</button>
+      
+        <button onClick={() => navigate("/AdminFlowerCustomization")}>🌸 Customization</button>
+        <button onClick={() => setIsBloomTagModalOpen(true)}>🏷 Manage Bloom Tags</button>
+      </nav>
+    </aside>
 
-      {/* Navigation buttons to other admin panels */}
-      <div className={styles["admin-dashboard__nav-buttons"]}>
-        <button onClick={() => navigate('/city')}>City Edit</button>
-        <button onClick={() => navigate('/adminpayment')}>Payment Status</button>
-        <button onClick={() => navigate('/admin')}>Delivery person asign</button>
-        <button onClick={() => navigate('/faqadmin')}>FAQ</button>
-        <button onClick={() => navigate('/adminbanner')}>Add Banner</button>
-      </div>
-
-      {/* Top controls: search, delete selected, bloom tag modal toggle */}
-      <TopbarControls
-        searchTerm={searchTerm}
-        setSearchTerm={setSearchTerm}
-        setCurrentPage={setCurrentPage}
-        navigate={navigate}
-        handleDeleteSelected={handleDeleteSelected}
-        selectedItems={selectedItems}
-        setIsBloomTagModalOpen={setIsBloomTagModalOpen}
-        styles={styles}
-      />
-
-      {/* Table displaying inventory items */}
+    {/* Main Content */}
+    <main className={styles.mainContent}>
       <InventoryTable
         paginatedItems={paginatedItems}
         selectedItems={selectedItems}
@@ -217,18 +212,18 @@ function AdminDashboard() {
         handleSort={handleSort}
         updateQty={updateQty}
         handleDelete={handleDelete}
+          handleDeleteSelected={handleDeleteSelected} // ✅ Include this
+
         navigate={navigate}
         sortConfig={sortConfig}
       />
 
-      {/* Pagination controls */}
       <PaginationControls
         currentPage={currentPage}
         totalPages={totalPages}
         onPageChange={changePage}
       />
 
-      {/* Modal to manage bloom tags */}
       {isBloomTagModalOpen && (
         <BloomTagModal
           bloomTags={bloomTags}
@@ -241,8 +236,10 @@ function AdminDashboard() {
           setIsOpen={setIsBloomTagModalOpen}
         />
       )}
-    </div>
-  );
+    </main>
+  </div>
+);
+
 }
 
 export default AdminDashboard;
