@@ -58,7 +58,6 @@ const InventoryForm = ({ onSuccess }) => {
   setFormData({ ...formData, files: updatedFiles });
   setImagePreviews(updatedPreviews);
 };
-
 const fetchItemData = async (itemId) => {
   try {
     const response = await axios.get(`http://localhost:8080/api/inventory/${itemId}`);
@@ -71,20 +70,24 @@ const fetchItemData = async (itemId) => {
       description: item.description,
       price: item.price,
       qty: item.qty,
-      bloomContains: item.bloomContains.join(","),
-      province: item.province.join(","),
+      bloomContains: Array.isArray(item.bloomContains) ? item.bloomContains.join(",") : "",
+      province: Array.isArray(item.province) ? item.province.join(",") : "",
       files: [],
     });
 
-    setImagePreviews(item.images.map(img => `data:image/jpeg;base64,${img.base64}`));
+    setImagePreviews(
+      Array.isArray(item.images)
+        ? item.images.map((img) => `data:image/jpeg;base64,${img.base64}`)
+        : []
+    );
 
-    console.log(item.images); // ✅ lowercase
     setIsUpdate(true);
   } catch (error) {
     console.error("Failed to fetch inventory:", error);
     alert("No inventory found with the given ID!");
   }
 };
+
 
 
   const handleInputChange = (e) => {

@@ -56,3 +56,57 @@
   font-size: 1rem;
   color: #795548;
 }
+
+
+
+.wishlistCoupon {
+  background-color: #fff8dc;
+  padding: 3rem 1rem;
+  text-align: center;
+  border-top: 4px dashed #ffd700;
+  border-bottom: 4px dashed #ffd700;
+}
+
+.wishlistCouponContent {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+.wishlistCoupon h2 {
+  font-size: 2rem;
+  color: #e09b00;
+  margin-bottom: 1rem;
+}
+
+.wishlistCoupon p {
+  font-size: 1.1rem;
+  color: #333;
+  margin: 0.5rem 0;
+}
+
+.wishlistNote {
+  font-size: 1rem;
+  color: #555;
+  margin-top: 1rem;
+  background: #fff3b0;
+  border-left: 4px solid #e09b00;
+  padding: 1rem;
+  border-radius: 0.5rem;
+}
+
+.wishlistCouponButton {
+  display: inline-block;
+  margin-top: 1.5rem;
+  background-color: #ffd700;
+  color: #000;
+  font-weight: bold;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: background-color 0.3s ease;
+}
+
+.wishlistCouponButton:hover {
+  background-color: #f4c200;
+}

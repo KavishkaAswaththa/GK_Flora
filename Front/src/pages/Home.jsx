@@ -114,22 +114,7 @@ const Home = () => {
         </p>
       </section>
 
-      {/* Wishlist Coupon Section */}
-      <section className={styles.wishlistCoupon}>
-        <div className={styles.wishlistCouponContent}>
-          <h2>🌸 Special Spring Offer + Smart Wishlist</h2>
-          <p>
-            Use code <strong>SPRING25</strong> to get <strong>25% OFF</strong> your first order!
-          </p>
-          <p className={styles.wishlistNote}>
-            💡 Can't find your favorite bouquet? Just add it to your <strong>Wishlist</strong> — 
-            We'll <strong>automatically notify</strong> you when it's back in stock!
-          </p>
-          <Link to="/inventory" className={styles.wishlistCouponButton}>
-            Explore Bouquets
-          </Link>
-        </div>
-      </section>
+
 
       {/* ✅ Customer Support Promo Section */}
       <section className={styles.supportPromo}>
