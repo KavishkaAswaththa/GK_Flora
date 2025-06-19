@@ -2,9 +2,11 @@ package com.example.inventry.controller;
 
 import com.example.inventry.entity.*;
 import com.example.inventry.service.AuthService;
+import com.example.inventry.service.LoyaltyService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.slf4j.Logger;
@@ -20,16 +22,33 @@ public class AuthController {
     private final AuthService authService; // Injecting AuthService
 
     // Endpoint for user registration
+
+    @Autowired
+    private LoyaltyService loyaltyService;
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody RegisterRequest request) {
         try {
-            AuthResponse response = authService.register(request); // Call register logic
-            return ResponseEntity.ok(response); // Return successful response
+            // Step 1: Register the user
+            AuthResponse response = authService.register(request);
+
+            // Step 2: Create loyalty account with 0 points
+            LoyaltyCustomer newCustomer = new LoyaltyCustomer();
+            newCustomer.setName(request.getName()); // assuming RegisterRequest has a name field
+            newCustomer.setEmail(request.getEmail());
+            newCustomer.setPoints(0);
+            newCustomer.setLevel("Silver"); // or your default level
+            newCustomer.setLastPurchase(null);
+            newCustomer.setPurchaseDate(null);
+
+            loyaltyService.createCustomer(newCustomer);
+
+            return ResponseEntity.ok(response);
         } catch (Exception e) {
-            logger.error("Registration failed: {}", e.getMessage()); // Log the error
-            return ResponseEntity.badRequest().body(new ApiResponse(false, e.getMessage())); // Return error response
+            logger.error("Registration failed: {}", e.getMessage());
+            return ResponseEntity.badRequest().body(new ApiResponse(false, e.getMessage()));
         }
     }
+
 
     // Endpoint for user login
     @PostMapping("/login")

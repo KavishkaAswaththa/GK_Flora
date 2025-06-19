@@ -40,11 +40,34 @@ const OrderConfirmation = () => {
     navigate("/deliveryform", { state: { formData: deliveryDetails } });
   };
 
-  const handlePlaceOrder = () => {
-    console.log("Order submitted:", { deliveryDetails, cartItems, wrappingPaper });
-    alert("Order placed successfully!");
-    navigate("/payment");
+  const handlePlaceOrder = async () => {
+    const total = calculateTotal(); // total rupees
+    const userEmail = deliveryDetails?.senderEmail;
+    const lastItem = cartItems[0]?.name || "Flowers";
+  
+    if (!userEmail) {
+      alert("Sender email is required to save loyalty points.");
+      return;
+    }
+  
+    try {
+      await fetch(
+        `http://localhost:8080/api/customers/purchase?email=${encodeURIComponent(userEmail)}&amount=${total}&item=${lastItem}`,
+        {
+          method: "POST"
+        }
+      );
+  
+      alert("Order placed and loyalty points saved!");
+      navigate("/payment");
+  
+    } catch (error) {
+      console.error("Failed to save loyalty points:", error);
+      alert("Order placed but failed to update loyalty points.");
+    }
   };
+  
+  
 
   if (loading) return <div>Loading...</div>;
 
@@ -134,6 +157,11 @@ const OrderConfirmation = () => {
         <span>Rs. {(calculateTotal() + 350).toFixed(2)}</span>
         
       </div>
+      <div className="total-row">
+        <span>Eligible Loyalty Points</span>
+        <span> {((calculateTotal())/100).toFixed(0)}</span>
+      </div>
+
         <div className="place-order-button">
     <button className="place-order-button" onClick={handlePlaceOrder}>
       Place Order
