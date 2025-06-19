@@ -7,17 +7,17 @@
 
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    
     min-height: 100vh;
     color: #cedbf0;
     line-height: 1.6;
+    font-size: 20px; /* Increased base font size */
 }
 
-/* Main Container - Swapped grid columns */
+/* Main Container */
 .checkout-container {
     display: grid;
-    grid-template-columns: 1.8fr 1fr; /* Delivery form now takes larger space on left, summary on right */
-    max-width: 1400px;
+    grid-template-columns: 1fr 1fr;
+    max-width: 1800px;
     margin: 40px auto;
     gap: 40px;
     padding: 0 20px;
@@ -47,13 +47,13 @@ body {
     100% { transform: rotate(360deg); }
 }
 
-/* Order Summary Section - Now positioned on the right */
+/* Order Summary Section */
 .summary-section {
-     background: rgb(243, 243, 239);
+    background: rgb(243, 243, 239);
     position: sticky;
     top: 40px;
     height: fit-content;
-    order: 2; /* Ensure it appears on the right */
+    order: 2;
 }
 
 .order-summary {
@@ -63,11 +63,13 @@ body {
     box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
     border: 1px solid rgba(255, 255, 255, 0.5);
     backdrop-filter: blur(10px);
+    font-size: 1.5rem;
+
 }
 
 .order-summary h2 {
     color: #242a35;
-    font-size: 26px;
+    font-size: 36px;
     margin-bottom: 25px;
     text-align: center;
     position: relative;
@@ -88,7 +90,6 @@ body {
 
 .summary-card {
     background: transparent;
-
 }
 
 .order-item {
@@ -123,11 +124,11 @@ body {
 .item-name {
     font-weight: 600;
     color: #2d3748;
-    font-size: 30px;
+    font-size: 1.5rem;
 }
 
 .item-quantity {
-    font-size: 14px;
+    font-size: 1.5rem;
     color: #145bc6;
     font-weight: 500;
 }
@@ -135,7 +136,7 @@ body {
 .item-price {
     font-weight: 700;
     color: #667eea;
-    font-size: 19px;
+    font-size: 22px;
 }
 
 .total-section {
@@ -148,18 +149,22 @@ body {
     display: flex;
     justify-content: space-between;
     margin-bottom: 15px;
-    font-size: 16px;
+    font-size: 1.5rem;
     padding: 8px 0;
 }
 
 .total-row span:first-child {
     color: #4a5568;
     font-weight: 500;
+    font-size: 1.5rem;
+
 }
 
 .total-row span:last-child {
     font-weight: 600;
     color: #2d3748;
+    font-size: 1.5rem;
+
 }
 
 .grand-total {
@@ -168,16 +173,16 @@ body {
     padding: 20px;
     border-radius: 15px;
     margin-top: 20px;
-    font-size: 18px;
+    font-size: 22px;
     font-weight: 700;
     box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
 }
 
-/* Delivery Form Section - Now positioned on the left */
+/* Delivery Form Section */
 .delivery-form-section {
     display: flex;
     flex-direction: column;
-    order: 1; /* Ensure it appears on the left */
+    order: 1;
 }
 
 .delivery-form-container {
@@ -190,7 +195,7 @@ body {
 
 .delivery-form-container h2 {
     color: #2d3748;
-    font-size: 28px;
+    font-size: 36px;
     margin-bottom: 35px;
     text-align: center;
     position: relative;
@@ -217,6 +222,7 @@ body {
     margin-bottom: 30px;
     border: 1px solid rgba(102, 126, 234, 0.1);
     transition: all 0.3s ease;
+    animation: fadeInUp 0.6s ease forwards;
 }
 
 .form-section:hover {
@@ -227,7 +233,7 @@ body {
 .form-section h3 {
     color: #2d3748;
     margin-bottom: 25px;
-    font-size: 20px;
+    font-size: 26px;
     font-weight: 600;
     display: flex;
     align-items: center;
@@ -238,7 +244,7 @@ body {
 
 .form-section h3::before {
     content: '👤';
-    font-size: 22px;
+    font-size: 24px;
 }
 
 .form-section:nth-child(2) h3::before {
@@ -260,7 +266,7 @@ body {
     margin-bottom: 8px;
     font-weight: 600;
     color: #2d3748;
-    font-size: 15px;
+    font-size: 18px;
 }
 
 .form-group input,
@@ -270,7 +276,7 @@ body {
     padding: 15px 18px;
     border: 2px solid #e2e8f0;
     border-radius: 12px;
-    font-size: 16px;
+    font-size: 18px;
     transition: all 0.3s ease;
     background: white;
     color: #2d3748;
@@ -333,6 +339,7 @@ body {
     cursor: pointer;
     font-weight: 500;
     color: #2d3748;
+    font-size: 18px;
 }
 
 /* Form Actions */
@@ -343,10 +350,10 @@ body {
 
 .submit-button1 {
     background: linear-gradient(135deg, #dfdf7c, #f5e980);
-    color: white;
+    color: rgb(57, 56, 57);
     border: none;
-    padding: 18px 50px;
-    font-size: 18px;
+    padding: 20px 60px;
+    font-size: 20px;
     font-weight: 600;
     border-radius: 12px;
     cursor: pointer;
@@ -368,7 +375,7 @@ body {
 /* Error Messages */
 .error-message {
     color: #e53e3e;
-    font-size: 14px;
+    font-size: 16px;
     margin-top: 8px;
     padding: 8px 12px;
     background: rgba(229, 62, 62, 0.1);
@@ -382,44 +389,50 @@ body {
         grid-template-columns: 1fr;
         gap: 30px;
     }
-    
+
     .summary-section {
         position: static;
-        order: 2; /* Keep summary below form on mobile */
+        order: 2;
     }
-    
+
     .delivery-form-section {
-        order: 1; /* Keep form on top on mobile */
+        order: 1;
     }
 }
 
 @media (max-width: 768px) {
+    body {
+        font-size: 18px;
+    }
+
     .checkout-container {
         padding: 0 15px;
         margin: 20px auto;
     }
-    
+
     .order-summary,
     .delivery-form-container {
         padding: 25px;
         border-radius: 15px;
     }
-    
+
     .form-section {
         padding: 20px;
     }
-    
+
     .form-row {
         grid-template-columns: 1fr;
         gap: 20px;
     }
-    
-    .delivery-form-container h2 {
-        font-size: 24px;
-    }
-    
+
+    .delivery-form-container h2,
     .order-summary h2 {
-        font-size: 22px;
+        font-size: 28px;
+    }
+
+    .submit-button1 {
+        font-size: 18px;
+        padding: 18px 40px;
     }
 }
 
@@ -428,17 +441,17 @@ body {
     .delivery-form-container {
         padding: 20px;
     }
-    
+
     .form-section {
         padding: 15px;
     }
-    
+
     .submit-button {
         width: 100%;
         padding: 16px;
         font-size: 16px;
     }
-    
+
     .form-group input,
     .form-group select,
     .form-group textarea {
@@ -446,7 +459,7 @@ body {
     }
 }
 
-/* Animation for form sections */
+/* Animation */
 @keyframes fadeInUp {
     from {
         opacity: 0;
@@ -458,23 +471,11 @@ body {
     }
 }
 
-.form-section {
-    animation: fadeInUp 0.6s ease forwards;
-}
+.form-section:nth-child(1) { animation-delay: 0.1s; }
+.form-section:nth-child(2) { animation-delay: 0.2s; }
+.form-section:nth-child(3) { animation-delay: 0.3s; }
 
-.form-section:nth-child(1) {
-    animation-delay: 0.1s;
-}
-
-.form-section:nth-child(2) {
-    animation-delay: 0.2s;
-}
-
-.form-section:nth-child(3) {
-    animation-delay: 0.3s;
-}
-
-/* Success states for better UX */
+/* Validity indicators */
 .form-group input:valid:not(:placeholder-shown) {
     border-color: #48bb78;
 }
@@ -483,7 +484,7 @@ body {
     border-color: #e53e3e;
 }
 
-/* Custom select styling */
+/* Custom Select Arrow */
 .form-group select {
     background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
     background-position: right 12px center;
@@ -493,7 +494,7 @@ body {
     appearance: none;
 }
 
-/* Focus ring for accessibility */
+/* Focus Ring */
 .form-group input:focus-visible,
 .form-group select:focus-visible,
 .form-group textarea:focus-visible,

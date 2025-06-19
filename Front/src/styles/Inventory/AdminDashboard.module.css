@@ -56,7 +56,8 @@
   background-color: #f7b731;
   color: #1e1e2f;
   font-weight: bold;
-  box-shadow: inset 3px 0 0 #fff;
+  box-shadow: inset 5px 0 0 #fff;
+  width: 250px;
 }
  
 .mainContent {

@@ -101,16 +101,16 @@
   font-weight: 500;
   cursor: pointer;
   transition: background-color 0.3s;
-  font-size: 0.95rem;
+  font-size: 1.3rem;
 }
 
 .admin-dashboard__edit-btn {
-  background-color: #1abc9c;
+  background-color: #d3a900;
   color: white;
 }
 
 .admin-dashboard__edit-btn:hover {
-  background-color: #16a085;
+  background-color: #16a056;
 }
 
 .admin-dashboard__delete-btn {
