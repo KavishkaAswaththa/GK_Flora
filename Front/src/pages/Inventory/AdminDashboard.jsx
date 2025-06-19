@@ -187,20 +187,7 @@ function AdminDashboard() {
   return (
   <div className={styles.dashboardWrapper}>
     {/* Sidebar */}
-    <aside className={styles.sidebar}>
-      <h2 className={styles.sidebarTitle}>Admin Panel</h2>
-      <nav className={styles.navList}>
-        <button onClick={() => navigate('/city')}>🏙 City Edit</button>
-        <button onClick={() => navigate('/adminpayment')}>💳 Payment Status</button>
-        <button onClick={() => navigate('/admin')}>👤 Assign Delivery</button>
-        <button onClick={() => navigate('/faqadmin')}>❓ FAQ</button>
-        <button onClick={() => navigate('/adminbanner')}>🖼 Add Banner</button>
-        <button onClick={() => navigate('/form')}>➕ Add New Item</button>
-      
-        <button onClick={() => navigate("/AdminFlowerCustomization")}>🌸 Customization</button>
-        <button onClick={() => setIsBloomTagModalOpen(true)}>🏷 Manage Bloom Tags</button>
-      </nav>
-    </aside>
+
 
     {/* Main Content */}
     <main className={styles.mainContent}>
