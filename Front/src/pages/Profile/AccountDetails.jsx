@@ -223,7 +223,7 @@ const handleSubmit = async (e) => {
             <li className="sidebar-item" onClick={() => navigate('/loyalty')}>Loyalty Membership</li>
             {/* Admin-only navigation items */}
             {user.isAdmin && (
-              <li className="sidebar-item" onClick={() => navigate('/admindashboard')}>Admin Dashboard</li>
+              <li className="sidebar-item" onClick={() => navigate('/admin')}>Admin Dashboard</li>
             )}
             {user.isAdmin && (
               <li className="sidebar-item" onClick={() => navigate('/userlist')}>User List</li>
