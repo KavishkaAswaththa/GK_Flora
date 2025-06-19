@@ -4,6 +4,7 @@
     padding: 0;
     box-sizing: border-box;
     font-family: Arial, sans-serif;
+    font-size: 1.1rem;
   }
   
   .app {
@@ -266,4 +267,4 @@
   /* Membership Info */
   .membership-info {
     background-color: transparent;
-    padding: 20px;
+    padding: 20px;}

@@ -3,10 +3,14 @@ import { Link } from "react-router-dom";
 import styles from "../styles/Home.module.css";
 import banner1 from "../images/banner.jpg";
 import banner2 from "../images/banner2.png";
+import banner3 from "../images/banner3.png";
+import banner4 from "../images/banner4.png";
+
+
 import InventoryList from "./Inventory/InaventoryList";
 import CustomerSupport from "./FAQ/CustomerSupport"; // ✅ Import added
 
-const banners = [banner1, banner2];
+const banners = [banner1, banner2, banner3,banner4];
 
 const Home = () => {
   const [currentBanner, setCurrentBanner] = useState(0);
@@ -81,13 +85,7 @@ const Home = () => {
         <InventoryList />
       </section>
 
-      {/* Call to Action */}
-      <section className={styles.cta}>
-        <h2>Ready to Make Someone Smile?</h2>
-        <Link to="/inventory" className={styles.ctaButton}>
-          Explore All Bouquets
-        </Link>
-      </section>
+
 
       {/* Coupon Section */}
       <section className={styles.coupon}>
@@ -104,24 +102,13 @@ const Home = () => {
         </div>
       </section>
 
-      {/* About Section */}
-      <section className={styles.about}>
-        <h2>Why Choose GKFlora?</h2>
-        <p>
-          We bring you the freshest and most vibrant bouquets curated with love.
-          Whether it's a birthday, anniversary, or just a kind gesture, we've got
-          you covered with our beautiful collections.
-        </p>
-      </section>
+   
 
 
 
       {/* ✅ Customer Support Promo Section */}
       <section className={styles.supportPromo}>
-        <h2 className={styles.supportPromoTitle}>📚 Got Questions?</h2>
-        <p className={styles.supportPromoText}>
-          Explore our Help Center – scroll through common queries and get instant answers!
-        </p>
+   
         <div className={styles.supportPromoBox}>
           <CustomerSupport />
         </div>
