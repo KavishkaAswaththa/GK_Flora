@@ -48,12 +48,7 @@ const MembershipLevels = () => {
                 <div className="column points-column">101-500</div>
               </div>
               
-              <div className="table-row">
-                <div className="column levels-column">
-                  <span className="crown platinum">👑</span> Platinum Member
-                </div>
-                <div className="column points-column">501-1500</div>
-              </div>
+             
               
               <div className="table-row">
                 <div className="column levels-column">

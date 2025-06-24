@@ -50,6 +50,7 @@ public class SecurityConfig {
                                 "/api/wrappingPapers/save",
                                 "/api/inventory",
                                 "/api/wishlist",
+                                "/api/customers/purchase",
 
                                 "/api/inventory/**",
                                 "/api/inventory/search/all",

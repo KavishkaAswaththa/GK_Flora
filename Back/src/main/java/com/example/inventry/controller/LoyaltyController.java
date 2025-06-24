@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "http://localhost:5173")
 @RestController
 @RequestMapping("/api/customers")
 public class LoyaltyController {
@@ -23,8 +23,15 @@ public class LoyaltyController {
     // Create
     @PostMapping
     public LoyaltyCustomer createCustomer(@RequestBody LoyaltyCustomer customer) {
+        // Set default values
+        customer.setPoints(0);
+        customer.setLevel("Silver"); // or your initial level
+        customer.setLastPurchase("");
+        customer.setPurchaseDate("");
+
         return customerService.createCustomer(customer);
     }
+
 
     // Read All
     @GetMapping
@@ -35,7 +42,7 @@ public class LoyaltyController {
     // Read by ID
     @GetMapping("/{id}")
     public ResponseEntity<LoyaltyCustomer> getCustomer(@PathVariable String id) {
-        return customerService.getCustomerById(id)
+        return customerService.getCustomerByEmail(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
@@ -47,26 +54,28 @@ public class LoyaltyController {
     }
 
     // Purchase
-    @PostMapping("/{id}/purchase")
-    public LoyaltyCustomer purchase(
-            @PathVariable("id") String customerId,
+    @PostMapping("/purchase")
+    public LoyaltyCustomer purchaseByEmail(
+            @RequestParam("email") String email,
             @RequestParam("amount") int amount,
-            @RequestParam("item") String item) {
-        return customerService.processPurchase(customerId, amount, item);
+            @RequestParam("item") String item
+    ) {
+        return customerService.processPurchaseByEmail(email, amount, item);
     }
+
 
     // Redeem Points
     @PostMapping("/{id}/redeem")
     public LoyaltyCustomer redeemPoints(
             @PathVariable("id") String customerId,
             @RequestParam("points") int points) {
-        return customerService.redeemPoints(customerId, points);
+        return customerService.redeemPointsByEmail(customerId, points);
     }
 
     // Delete
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteCustomer(@PathVariable String id) {
-        customerService.deleteCustomer(id);
+        customerService.deleteCustomerByEmail(id);
         return ResponseEntity.ok("Customer deleted successfully.");
     }
 }
