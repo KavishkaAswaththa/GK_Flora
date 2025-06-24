@@ -6,6 +6,22 @@ import { toast } from 'react-toastify';
 import '../../styles/Profile/AccountDetails.css';
 
 const AccountDetails = () => {
+
+  const [points, setPoints] = useState(null);
+  const [showModal, setShowModal] = useState(false);
+  const [level, setLevel] = useState("");
+  const [error, setError] = useState(null);
+
+  const getLevel = (points) => {
+    if (points <= 100) return "Bronze";
+    if (points <= 500) return "Silver";
+    if (points <= 1000) return "Gold";
+    return "Platinum";
+  }
+  
+  
+
+
   // Define admin emails - these users will have access to admin features
   const ADMIN_EMAILS = [
     'dinithi0425@gmail.com',
@@ -68,6 +84,7 @@ const AccountDetails = () => {
       });
 
       console.log(token);
+
 
       // Process response data into our state format
       const userData = {
@@ -209,6 +226,34 @@ const handleSubmit = async (e) => {
       </div>
     );
   }
+  const fetchUserloaylty = async () => {
+    try {
+      const email = user.email
+      if (!email) throw new Error("No email found in localStorage");
+
+      const response = await fetch(`http://localhost:8080/api/customers/${user.email}`, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+        
+      });
+      if (!response.ok) throw new Error("Failed to fetch user data");
+
+      const data = await response.json();
+      setPoints(data.points);
+      setLevel(getLevel(data.points));
+
+    } catch (err) {
+      console.error("Error fetching user data:", err);
+      setError(err.message);
+    }
+  };
+
+  fetchUserloaylty();
+  console.log(localStorage.getItem('token'));
+
+  if (error) return <p>Error: {error}</p>;
+  if (points === null) return <p>Loading...</p>;
 
   // Main component render
   return (
@@ -273,6 +318,27 @@ const handleSubmit = async (e) => {
                 <p>{user.email}</p>
               </div>
             </div>
+            <div className="account-details">
+      <h3>Your Loyalty Points: {points}</h3>
+      <div className={`badge ${level.toLowerCase()}`} onClick={() => setShowModal(true)}>
+        {level} Member
+      </div>
+
+      {showModal && (
+        <div className="modal">
+          <div className="modal-content">
+            <h4>Membership Tiers</h4>
+            <ul>
+              <li>🟫 Bronze: 0–100 pts</li>
+              <li>🥈 Silver: 101–500 pts</li>
+              <li>🥇 Gold: 501–1000 pts</li>
+              <li>💎 Platinum: 1001+ pts</li>
+            </ul>
+            <button onClick={() => setShowModal(false)}>Close</button>
+          </div>
+        </div>
+      )}
+    </div>
             <button 
               className="sign-out-button"
               onClick={handleSignOut}>

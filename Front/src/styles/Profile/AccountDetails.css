@@ -17,6 +17,54 @@
   font-family: 'Inter', sans-serif;
 }
 
+.badge {
+  padding: 10px 20px;
+  font-weight: bold;
+  border-radius: 12px;
+  cursor: pointer;
+  margin-top: 10px;
+  display: inline-block;
+}
+
+.badge.bronze {
+  background-color: #cd7f32;
+  color: white;
+}
+
+.badge.silver {
+  background-color: #c0c0c0;
+  color: black;
+}
+
+.badge.gold {
+  background-color: #ffd700;
+  color: black;
+}
+
+.badge.platinum {
+  background-color: #e5e4e2;
+  color: black;
+}
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.5);
+}
+
+.modal-content {
+  background: white;
+  margin: 10% auto;
+  padding: 20px;
+  width: 300px;
+  text-align: center;
+  border-radius: 10px;
+}
+
+
 /* Loading State */
 .account-details-loading {
   display: flex;
